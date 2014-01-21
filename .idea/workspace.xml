@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="530ad4d7-bb9e-4198-a542-35c72b835f50" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/css/desktop.css" />
-    </list>
+    <list default="true" id="530ad4d7-bb9e-4198-a542-35c72b835f50" name="Default" comment="" />
     <ignored path="Desktop.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
