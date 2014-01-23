@@ -5,6 +5,7 @@
 
     app.directive('mdiDesktopWindow', ['$log', '$document', function($log, $document) {
         return {
+            restrict: 'A',
             replace: true,
             templateUrl: 'src/templates/mdi-desktop-window.html',
             require: '?^mdiDesktop',

@@ -5,6 +5,7 @@
 
     app.directive('mdiDesktopTaskbar', ['$log', function($log) {
         return {
+            restrict: 'A',
             replace: true,
             templateUrl: 'src/templates/mdi-desktop-taskbar.html',
             require: '?^mdiDesktop',

@@ -6,17 +6,20 @@
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
             $scope.openWindow = function() {
-                $scope.desktopController.addWindow();
+                $scope.windows.push({});
             }
         }]);
 
     module.directive('mdiDesktopMenubar', ['$log', function($log) {
         return {
+            restrict: 'A',
             replace: true,
             templateUrl: 'src/templates/mdi-desktop-menubar.html',
             require: '?^mdiDesktop',
             controller: 'mdiDesktopMenubarController',
-            scope: true,
+            scope: {
+                windows: '='
+            },
             compile: function() {
                 return {
                     pre: function($scope, $elm, $attrs, mdiDesktopCtrl) {

@@ -84,22 +84,24 @@
 
             self.addWindow = function() {
                 var test = {}
+
                 $scope.windows.push(test);
+
+
                 alert($scope.windows);
             }
-            $scope.windows = [];
+            $scope.windows = [{}];
         }]);
 
     module.directive('mdiDesktop',
         ['$compile',
             function($compile) {
                 return {
+                    restrict: 'A',
                     templateUrl: 'src/templates/mdi-desktop.html',
                     scope: {},
                     replace: true,
-                    controller: 'mdiDesktopController',
-                    link: function () {
-                    }
+                    controller: 'mdiDesktopController'
                 };
             }
         ]);
