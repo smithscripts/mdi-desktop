@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    describe('mdi-desktop menubar controller', function() {
+    describe('mdi-desktop viewport controller', function() {
         var compile, scope, element, ctrl;
 
         function windows() {
@@ -22,15 +22,17 @@
             var elm = angular.element('<div mdi-desktop></div>');
             element = compile(elm)(scope);
             scope.$digest();
-            ctrl = element.controller('mdiDesktopMenubar');
+            ctrl = element.controller('mdiDesktopViewport');
         }));
 
-        describe('mdi-desktop-menubar', function() {
-            it('should open window on click', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(1);
+
+        describe('mdi-desktop-viewport', function() {
+            it('should create a window template for each array object', function() {
+                element.isolateScope().windows.push({});
+                scope.$digest();
+
+                var windowElements = windows();
+                expect(windowElements.length).toBe(1);
             });
         });
     });

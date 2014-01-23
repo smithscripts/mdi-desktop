@@ -15,9 +15,6 @@
                     pre: function($scope, $elm, $attrs) {
                     },
                     post: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                        if (mdiDesktopCtrl === undefined) {
-                            throw new Error('[mdi-desktop-taskbar] mdiDesktopCtrl is undefined!');
-                        }
                     }
                 };
             }

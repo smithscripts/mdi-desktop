@@ -104,12 +104,19 @@
 }
 
 .desktop-window-title {
-    position: absolute !important;
-    top: 0;
-    left: 60px;
-    right: 80px;
-    bottom: 0;
-    background: transparent;
+     position: absolute !important;
+     top: 0;
+     left: 60px;
+     right: 80px;
+     bottom: 0;
+     height: 27px;
+     background: transparent;
+     display:table;
+ }
+
+.desktop-window-title > span {
+    display:table-cell;
+    vertical-align:middle;
 }
 
 .desktop-window-action {

@@ -8,6 +8,7 @@ module.exports = function(config) {
         // list of files / patterns to load in the browser
         files: [
             // 3rd-party code
+            'test/lib/jquery/jquery.js',
             'test/lib/angular/1.2.9/angular.js',
             'test/lib/angular/1.2.9/angular-animate.js',
             'test/lib/angular/1.2.9/angular-mocks.js',
@@ -59,7 +60,7 @@ module.exports = function(config) {
         // - PhantomJS
         // - IE (only Windows)
         // CLI --browsers Chrome,Firefox,Safari
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
 
         // If browser does not capture in given timeout [ms], kill it
         // CLI --capture-timeout 5000

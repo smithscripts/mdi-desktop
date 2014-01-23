@@ -5,8 +5,8 @@
 
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
-            $scope.openWindow = function() {
-                $scope.windows.push({});
+            $scope.openWindow = function(windowTitle) {
+                $scope.windows.push({ windowTitle: windowTitle });
             }
         }]);
 
@@ -23,13 +23,10 @@
             compile: function() {
                 return {
                     pre: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                        console.log(mdiDesktopCtrl);
                         $scope.desktopController = mdiDesktopCtrl;
                     },
                     post: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                        if (mdiDesktopCtrl === undefined) {
-                            throw new Error('[mdi-desktop-taskbar] mdiDesktopCtrl is undefined!');
-                        }
+
                     }
                 };
             }

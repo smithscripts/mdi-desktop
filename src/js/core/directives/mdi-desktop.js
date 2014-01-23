@@ -84,13 +84,9 @@
 
             self.addWindow = function() {
                 var test = {}
-
                 $scope.windows.push(test);
-
-
-                alert($scope.windows);
             }
-            $scope.windows = [{}];
+            $scope.windows = [];
         }]);
 
     module.directive('mdiDesktop',

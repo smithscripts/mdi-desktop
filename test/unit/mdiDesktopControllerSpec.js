@@ -1,9 +1,8 @@
 (function() {
     "use strict";
     describe('mdi-desktop controller', function() {
-        var element;
-        var $scope;
-        var ctrl;
+
+        var compile, scope, element, ctrl;
 
         beforeEach(module('mdi.desktop'));
 
@@ -14,19 +13,25 @@
             $templateCache.put('src/templates/mdi-desktop-viewport.html', __html__['src/templates/mdi-desktop-viewport.html']);
             $templateCache.put('src/templates/mdi-desktop-window.html', __html__['src/templates/mdi-desktop-window.html']);
 
-            var elm = angular.element('<div mdi-desktop></div>');
-            $scope = $rootScope;
-            element = $compile(elm)($scope);
-            $scope.$digest();
-
-            ctrl = element.controller('mdiDesktop');
+            scope = $rootScope.$new();
+            compile = $compile;
         }));
 
+        function createElement() {
+            var elem, compiledElem;
+            elem = angular.element('<div mdi-desktop></div>');
+            compiledElem = compile(elem)(scope);
+            scope.$digest();
+
+            ctrl = compiledElem.controller('mdiDesktop');
+
+            return compiledElem;
+        }
 
         describe('mdi-desktop init', function() {
             it('should have the correct init values', function() {
-                expect(ctrl.desktop).toNotBe(undefined);
-                expect(ctrl.windows.length).toBe(0);
+                var el = createElement();
+                expect(el.isolateScope().windows.length).toBe(0);
             });
         });
     });
