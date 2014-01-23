@@ -19,13 +19,12 @@
                             throw new Error('[mdi-desktop-window] mdiDesktopCtrl is undefined!');
                         }
 
-
                         var startX = 0, startY = 0, x = 0, y = 0;
 
-                        $elm.css({
-                            position: 'absolute',
-                            cursor: 'pointer'
-                        });
+//                        $elm.css({
+//                            position: 'absolute',
+//                            cursor: 'pointer'
+//                        });
 
                         $elm.on('mousedown', function(event) {
                             // Prevent default dragging of selected content
@@ -50,8 +49,6 @@
                             $document.unbind('mousemove', mousemove);
                             $document.unbind('mouseup', mouseup);
                         }
-
-
                     }
                 };
             }

@@ -76,30 +76,29 @@
             return service;
         }]);
 
-    module.controller('mdiDesktopController', ['$scope', '$element', '$attrs', '$log', '$q', 'mdiDesktopConstants', 'desktopClassFactory',
-        function ($scope, $elm, $attrs, $log, $q, mdiDesktopConstants, desktopClassFactory) {
-            $log.debug('mdi-desktop controller');
-
+    module.controller('mdiDesktopController', ['$scope', 'mdiDesktopConstants', 'desktopClassFactory',
+        function ($scope, mdiDesktopConstants, desktopClassFactory) {
             var self = this;
 
             self.desktop = desktopClassFactory.createDesktop();
 
-            self.windows = [{windowId: 1}, {windowId: 2}];
+            self.addWindow = function() {
+                var test = {}
+                $scope.windows.push(test);
+                alert($scope.windows);
+            }
+            $scope.windows = [];
         }]);
 
     module.directive('mdiDesktop',
-        [
-            '$compile',
-            function(
-                $compile
-                ) {
+        ['$compile',
+            function($compile) {
                 return {
                     templateUrl: 'src/templates/mdi-desktop.html',
                     scope: {},
                     replace: true,
                     controller: 'mdiDesktopController',
                     link: function () {
-
                     }
                 };
             }
