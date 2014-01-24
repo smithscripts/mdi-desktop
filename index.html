@@ -14,6 +14,14 @@
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-taskbar.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-window.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop.js"></script>
+
+    <script type="text/javascript">
+        window.onload = function () { document.onselectstart = handleSelectAttempt; };
+        function handleSelectAttempt(e) {
+            if (window.event) { event.returnValue = false; }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div data-mdi-desktop></div>

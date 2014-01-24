@@ -82,10 +82,24 @@
 
             self.desktop = desktopClassFactory.createDesktop();
 
-            self.addWindow = function() {
-                var test = {}
-                $scope.windows.push(test);
+            self.getWindows = function() {
+                return $scope.windows;
             }
+
+            self.getMaxZIndex = function() {
+                var max = 0;
+                var tmp;
+                for (var i= $scope.windows.length - 1; i >= 0; i--) {
+                    tmp = $scope.windows[i].zIndex;
+                    if (tmp > max) max = tmp;
+                }
+                return max;
+            }
+
+            self.clearActive = function() {
+                angular.forEach($scope.windows, function(window){ window.active = false });
+            }
+
             $scope.windows = [];
         }]);
 

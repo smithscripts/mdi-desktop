@@ -51,11 +51,6 @@
     border: 1px solid #e7e7e7;
 }
 
-.desktop-window-container:focus {
-    outline: 0;
-    box-shadow: 0 0 10px blue;
-}
-
 .desktop-window-header {
     position: absolute !important;
     top: 0;
@@ -132,6 +127,15 @@
     position: absolute !important;
     top: 2px;
     right: 6px;
+}
+
+.desktop-window-close-button {
+
+}
+
+.active {
+    outline: 0;
+    box-shadow: 0 0 10px blue;
 }
 
 .navbar-nav > li > a {padding-top:5px !important; padding-bottom:5px !important;}

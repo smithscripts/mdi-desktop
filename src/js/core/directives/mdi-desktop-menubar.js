@@ -5,8 +5,12 @@
 
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
+            var self = this;
+
             $scope.openWindow = function(windowTitle) {
-                $scope.windows.push({ windowTitle: windowTitle });
+                $scope.desktopCtrl.clearActive();
+                var zIndex = $scope.desktopCtrl.getMaxZIndex() + 1
+                $scope.windows.push({ windowTitle: windowTitle, active: true, zIndex: zIndex });
             }
         }]);
 
@@ -20,15 +24,8 @@
             scope: {
                 windows: '='
             },
-            compile: function() {
-                return {
-                    pre: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                        $scope.desktopController = mdiDesktopCtrl;
-                    },
-                    post: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-
-                    }
-                };
+            link: function(scope, element, attrs, desktopCtrl) {
+                scope.desktopCtrl = desktopCtrl;
             }
         };
     }]);
