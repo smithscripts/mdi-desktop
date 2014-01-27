@@ -9,7 +9,7 @@
 
             $scope.openWindow = function(windowTitle) {
                 $scope.desktopCtrl.clearActive();
-                var zIndex = $scope.desktopCtrl.getMaxZIndex() + 1
+                var zIndex = $scope.desktopCtrl.getNextMaxZIndex()
                 $scope.windows.push({ windowTitle: windowTitle, active: true, zIndex: zIndex });
             }
         }]);

@@ -1,28 +1,30 @@
-<div class="desktop-window-container" data-ng-class="{active: active}" data-ng-style="{'z-index': zIndex}">
+<div class="desktop-window-container" data-ng-class="{active: window.active}" data-ng-style="{'z-index': window.zIndex}" data-ng-mousedown="activate()">
     <div class="desktop-window-header">
         <div class="desktop-window-navigation">
             <div class="btn-group btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="btn btn-default">
+                <button type="button" class="btn btn-default" title="previous">
                     <span class="glyphicon glyphicon-chevron-left"></span>
                 </button>
-                <button type="button" class="btn btn-default">
+                <button type="button" class="btn btn-default" title="next">
                     <span class="glyphicon glyphicon-chevron-right"></span>
                 </button>
             </div>
         </div>
-        <div class="desktop-window-title">
-            <span>{{windowTitle}}</span>
+        <div class="desktop-window-title" data-ng-dblclick="maximize()" data-ng-mousedown="setPosition($event)">
+            <div class="desktop-window-title-container">
+                <div>{{window.windowTitle}}</div>
+            </div>
         </div>
         <div class="desktop-window-action">
             <div class="btn-group btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="btn btn-default">
+                <button type="button" class="btn btn-default" title="Minimize">
                     <span class="glyphicon glyphicon-minus"></span>
                 </button>
-                <button type="button" class="btn btn-default">
+                <button type="button" class="btn btn-default maximize" title="" data-ng-click="maximize()">
                     <span class="glyphicon glyphicon-minus"></span>
                 </button>
-                <button type="button" class="btn btn-default desktop-window-close-button" data-ng-click="close()">
-                    <span class="glyphicon glyphicon-minus"></span>
+                <button type="button" class="btn btn-default desktop-window-close-button" data-ng-click="close()" title="Close">
+                    <span class="glyphicon glyphicon-remove"></span>
                 </button>
             </div>
         </div>

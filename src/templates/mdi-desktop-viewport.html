@@ -1,5 +1,6 @@
 <div class="desktop-viewport-container">
-    <div data-ng-repeat="window in windows">
-        <div data-mdi-desktop-window data-index="$index" data-window-title="window.windowTitle" data-active="window.active" data-z-Index="window.zIndex"></div>
+    <span class="desktop-viewport-dimensions">{{dimensions.height}} x {{dimensions.width}}</span>
+    <div data-ng-repeat="window in windows" class="animation-fadeAndScale">
+        <div data-mdi-desktop-window data-index="$index" data-window="window"></div>
     </div>
 </div>

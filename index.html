@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="//mgcrea.github.io/angular-strap/static/styles/angular-motion.min.css">
     <link rel="stylesheet" href="/mdi-desktop/src/css/desktop.css" />
 
-
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-menubar.js"></script>
@@ -18,7 +17,7 @@
     <script type="text/javascript">
         window.onload = function () { document.onselectstart = handleSelectAttempt; };
         function handleSelectAttempt(e) {
-            if (window.event) { event.returnValue = false; }
+            if (window.event) { event.preventDefault(); }
             return true;
         }
     </script>

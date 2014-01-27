@@ -86,18 +86,20 @@
                 return $scope.windows;
             }
 
-            self.getMaxZIndex = function() {
+            self.getNextMaxZIndex = function() {
                 var max = 0;
                 var tmp;
                 for (var i= $scope.windows.length - 1; i >= 0; i--) {
                     tmp = $scope.windows[i].zIndex;
                     if (tmp > max) max = tmp;
                 }
-                return max;
+                return max + 1;
             }
 
             self.clearActive = function() {
-                angular.forEach($scope.windows, function(window){ window.active = false });
+                angular.forEach($scope.windows, function(window){
+                    window.active = false;
+                });
             }
 
             $scope.windows = [];

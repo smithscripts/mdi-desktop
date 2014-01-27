@@ -3,9 +3,25 @@
 
     var module = angular.module('mdi.desktop.viewport', []);
 
-    module.controller('mdiDesktopViewportController', ['$scope',
-        function ($scope) {
+    module.controller('mdiDesktopViewportController', ['$scope', '$element', '$window',
+        function ($scope, $element, $window) {
+            var self = this;
 
+            self.getViewportDimensions = function() {
+              return $scope.dimensions;
+            };
+
+            angular.element($window).bind('resize', function () {
+                $scope.$apply(function() {
+                    $scope.dimensions.height = $element[0].clientHeight;
+                    $scope.dimensions.width = $element[0].clientWidth;
+                });
+            });
+
+            $scope.dimensions = {
+                height: $element[0].clientHeight,
+                width: $element[0].clientWidth
+            };
         }]);
 
     module.directive('mdiDesktopViewport', ['$log', function($log) {
@@ -17,16 +33,6 @@
             controller: 'mdiDesktopViewportController',
             scope: {
                 windows: '='
-            },
-            compile: function() {
-                return {
-                    pre: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                        $scope.window = mdiDesktopCtrl;
-                    },
-                    post: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-
-                    }
-                };
             }
         };
     }]);
