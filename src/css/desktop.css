@@ -138,6 +138,112 @@
 
 }
 
+.resizable-nw {
+    position: absolute !important;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    left: 0;
+    top: 0;
+    z-index: 103;
+    cursor: nw-resize;
+    opacity: 0;
+}
+
+.resizable-ne {
+    position: absolute !important;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    right: 0;
+    top: 0;
+    z-index: 103;
+    cursor: ne-resize;
+    opacity: 0;
+}
+
+.resizable-sw {
+    position: absolute !important;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    left: 0;
+    bottom: 0;
+    z-index: 103;
+    cursor: sw-resize;
+    opacity: 0;
+}
+
+.resizable-se {
+    position: absolute !important;
+    overflow: hidden;
+    width: 15px;
+    height: 15px;
+    right: 0;
+    bottom: 0;
+    z-index: 103;
+    cursor: se-resize;
+    opacity: 0;
+}
+
+.resizable-n {
+    position: absolute !important;
+    top: 0;
+    left: 10px;
+    right: 10px;
+    overflow: hidden;
+    height: 5px;
+    top: 0;
+    z-index: 102;
+    cursor: s-resize;
+    opacity: 0;
+    margin-top: -5px;
+}
+
+.resizable-s {
+    position: absolute !important;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+    overflow: hidden;
+    height: 5px;
+    z-index: 102;
+    cursor: s-resize;
+    opacity: 0;
+    margin-bottom: -5px;
+}
+
+.resizable-w {
+    position: absolute !important;
+    top: 10px;
+    left: 0;
+    bottom: 10px;
+    overflow: hidden;
+    width: 5px;
+    z-index: 102;
+    cursor: w-resize;
+    opacity: 0;
+    margin-left: -5px;
+}
+
+.resizable-e {
+    position: absolute !important;
+    top: 10px;
+    right: 0;
+    bottom: 10px;
+    overflow: hidden;
+    width: 5px;
+    z-index: 102;
+    cursor: e-resize;
+    opacity: 0;
+    margin-right: -5px;
+}
+
+div.resizable-handle {
+    display: none !important;
+    visibility: hidden !important;
+}
+
 .active {
     outline: 0;
     box-shadow: 0 0 10px blue;

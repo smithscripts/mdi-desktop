@@ -37,9 +37,7 @@
                 angular.element(buttons[0]).triggerHandler('click');
                 expect(windows().length).toBe(0);
             });
-        });
 
-        describe('mdi-desktop-window', function() {
             it('should bring window to the front on mouse down', function() {
                 var menuItems = element.find('.menuItem');
                 expect(windows().length).toBe(0);
@@ -53,9 +51,7 @@
                 var window2ZIndex = $(windows()[1]).css('z-index');
                 expect(window1ZIndex).toBeGreaterThan(window2ZIndex);
             });
-        });
 
-        describe('mdi-desktop-window', function() {
             it('should make window active on mouse down', function() {
                 var menuItems = element.find('.menuItem');
                 expect(windows().length).toBe(0);
@@ -67,6 +63,63 @@
 
                 expect(angular.element(windows()[0]).hasClass('active')).toBeTruthy();
                 expect(angular.element(windows()[1]).hasClass('active')).toBeFalsy();
+            });
+
+            it('should maximize window when maximized is clicked', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(1);
+
+                angular.element(windows()[0]).css({
+                    top: '50px',
+                    left: '50px',
+                    height: '300px',
+                    width: '300px'
+                });
+
+                var maximize = element.find('.maximize')[0];
+                angular.element(maximize).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).css('top')).toBe('0px');
+                expect(angular.element(windows()[0]).css('left')).toBe('0px');
+                expect(angular.element(windows()[0]).css('right')).toBe('0px');
+                expect(angular.element(windows()[0]).css('bottom')).toBe('0px');
+                expect(angular.element(windows()[0]).css('height')).toBe('100%');
+                expect(angular.element(windows()[0]).css('width')).toBe('100%');
+            });
+
+            it('should restore a maximized window when restore is clicked', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(1);
+
+                angular.element(windows()[0]).css({
+                    top: '50px',
+                    left: '50px',
+                    height: '300px',
+                    width: '300px'
+                });
+
+                var maximize = element.find('.maximize')[0];
+                angular.element(maximize).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).css('top')).toBe('0px');
+                expect(angular.element(windows()[0]).css('left')).toBe('0px');
+                expect(angular.element(windows()[0]).css('right')).toBe('0px');
+                expect(angular.element(windows()[0]).css('bottom')).toBe('0px');
+                expect(angular.element(windows()[0]).css('height')).toBe('100%');
+                expect(angular.element(windows()[0]).css('width')).toBe('100%');
+
+                angular.element(maximize).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).css('top')).toBe('50px');
+                expect(angular.element(windows()[0]).css('left')).toBe('50px');
+                expect(angular.element(windows()[0]).css('right')).toBe('');
+                expect(angular.element(windows()[0]).css('bottom')).toBe('');
+                expect(angular.element(windows()[0]).css('height')).toBe('300px');
+                expect(angular.element(windows()[0]).css('width')).toBe('300px');
             });
         });
     });

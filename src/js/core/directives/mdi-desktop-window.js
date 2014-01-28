@@ -74,6 +74,7 @@
             }
 
             self.mouseMove = function(event) {
+                $element.css({ opacity: 0.5 });
                 self.x = event.screenX - self.startX
                 self.y = event.screenY - self.startY
                 $element.css({
@@ -83,6 +84,7 @@
             }
 
             self.mouseUp = function() {
+                $element.css({ opacity: 1.0 });
                 $document.unbind('mousemove', self.mouseMove);
                 $document.unbind('mouseup', self.mouseUp);
             }
