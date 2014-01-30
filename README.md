@@ -1,4 +1,4 @@
 mdi-desktop
 ===========
 
-An AngularJs Multi Document User Interface
+An AngularJS Multi Document User Interface
