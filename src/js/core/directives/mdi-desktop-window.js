@@ -18,6 +18,22 @@
             self.startX = 0,
             self.startY = 0;
 
+            self.mouseMove = function(event) {
+                $element.css({ opacity: 0.5 });
+                self.x = event.screenX - self.startX
+                self.y = event.screenY - self.startY
+                $element.css({
+                    top: self.y + 'px',
+                    left:  self.x + 'px'
+                });
+            }
+
+            self.mouseUp = function() {
+                $element.css({ opacity: 1.0 });
+                $document.unbind('mousemove', self.mouseMove);
+                $document.unbind('mouseup', self.mouseUp);
+            }
+
             $scope.maximized = false;
 
             $scope.close = function() {
@@ -70,23 +86,6 @@
                 self.startY = event.screenY - self.y
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
-
-            }
-
-            self.mouseMove = function(event) {
-                $element.css({ opacity: 0.5 });
-                self.x = event.screenX - self.startX
-                self.y = event.screenY - self.startY
-                $element.css({
-                    top: self.y + 'px',
-                    left:  self.x + 'px'
-                });
-            }
-
-            self.mouseUp = function() {
-                $element.css({ opacity: 1.0 });
-                $document.unbind('mousemove', self.mouseMove);
-                $document.unbind('mouseup', self.mouseUp);
             }
         }]);
 
@@ -104,31 +103,6 @@
             link: function(scope, element, attrs, ctrls) {
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
-
-//                var startX = 0, startY = 0, x = 0, y = 0;
-//
-//                element.on('mousedown', function(event) {
-//                    // Prevent default dragging of selected content
-//                    event.preventDefault();
-//                    startX = event.pageX - x;
-//                    startY = event.pageY - y;
-//                    $document.on('mousemove', mousemove);
-//                    $document.on('mouseup', mouseup);
-//                });
-//
-//                function mousemove(event) {
-//                    y = event.pageY - startY;
-//                    x = event.pageX - startX;
-//                    element.css({
-//                        top: y + 'px',
-//                        left:  x + 'px'
-//                    });
-//                }
-//
-//                function mouseup() {
-//                    $document.unbind('mousemove', mousemove);
-//                    $document.unbind('mouseup', mouseup);
-//                }
             }
         };
     }]);

@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var module = angular.module('mdi.desktop', ['ngAnimate', 'mdi.desktop.menubar', 'mdi.desktop.viewport', 'mdi.desktop.taskbar', 'mdi.desktop.window']);
+    var module = angular.module('mdi.desktop', ['ngAnimate', 'mdi.desktop.menubar', 'mdi.desktop.viewport', 'mdi.desktop.taskbar', 'mdi.desktop.window', 'resizable']);
 
     module.constant('mdiDesktopConstants', {
         // copied from http://www.lsauer.com/2011/08/javascript-keymap-keycodes-in-json.html
