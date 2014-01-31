@@ -1,0 +1,26 @@
+{
+    "name": "mdi-desktop",
+    "preferGlobal": true,
+    "version": "0.1.0",
+    "author": "Robert Smith <rob.smith@outlook.com>",
+    "description": "An AngularJS Multi Document User Interface",
+    "scripts": {
+        "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nodejitsu/http-server.git"
+    },
+    "keywords": [
+        "desktop",
+        "angularjs"
+    ],
+    "analyze": false,
+    "devDependencies": {
+        "karma": "~0.10"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.6"
+    }
+}
