@@ -3,8 +3,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document', '$timeout',
-        function ($scope, $element, $document, $timeout) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document',
+        function ($scope, $element, $document) {
             var self = this;
 
             self.top,

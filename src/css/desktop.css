@@ -251,16 +251,6 @@ div.resizable-handle {
     box-shadow: 0 0 10px blue;
 }
 
-.maximized {
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    border-radius: 0;
-}
-
 .navbar-nav > li > a {padding-top:5px !important; padding-bottom:5px !important;}
 .navbar {min-height:30px !important; border-radius: 0;}
 
