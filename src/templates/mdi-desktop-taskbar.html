@@ -1,1 +1,15 @@
-<div class="desktop-taskbar-container"></div>
+<div class="desktop-taskbar-container">
+    <div class="desktop-taskbar-mainmenu">
+
+    </div>
+    <div class="desktop-taskbar-list">
+        <ul>
+            <li data-ng-repeat="window in windows" class="am-fade-and-scale" data-ng-class="{'active': window.active}">
+                <a href="#"><span>{{window.title}}</span></a>
+            </li>
+        </ul>
+    </div>
+    <div class="desktop-taskbar-hide">
+
+    </div>
+</div>

@@ -9,7 +9,9 @@
             replace: true,
             templateUrl: 'src/templates/mdi-desktop-taskbar.html',
             require: '?^mdiDesktop',
-            scope: true,
+            scope: {
+                windows: '='
+            },
             compile: function() {
                 return {
                     pre: function($scope, $elm, $attrs) {

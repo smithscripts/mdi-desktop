@@ -43,6 +43,55 @@
     border: 1px solid #e7e7e7;
 }
 
+.desktop-taskbar-mainmenu {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    background: #f8f8f8;
+    border-right: 1px solid #e7e7e7;
+}
+
+.desktop-taskbar-list {
+    position: absolute !important;
+    top: 0;
+    left: 50px;
+    right: 16px;
+    bottom: 0;
+    background: #f8f8f8;
+}
+
+.desktop-taskbar-list ul {
+    padding: 3px;
+    margin: 0;
+}
+
+.desktop-taskbar-list ul > li {
+    display: inline-block;
+    list-style: none;
+    width: 150px;
+    background-clip: padding-box;
+    border-radius: 6px;
+    border: 1px solid #dfdfdf;
+    line-height: 30px;
+    margin-left: 7px;
+}
+
+.desktop-taskbar-list li a {
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.desktop-taskbar-hide {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 16px;
+    background: black;
+}
+
 .desktop-window-container {
     position: absolute !important;
     top: 30px;
