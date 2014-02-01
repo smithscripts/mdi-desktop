@@ -61,11 +61,11 @@
 
                 $(windows()[0]).mousedown();
 
-                expect(angular.element(windows()[0]).hasClass('active')).toBeTruthy();
-                expect(angular.element(windows()[1]).hasClass('active')).toBeFalsy();
+                expect(angular.element(windows()[0]).hasClass('active-window')).toBeTruthy();
+                expect(angular.element(windows()[1]).hasClass('active-window')).toBeFalsy();
             });
 
-            it('should maximize window when maximized is clicked', function() {
+            it('should expand window when maximized is clicked', function() {
                 var menuItems = element.find('.menuItem');
                 expect(windows().length).toBe(0);
                 angular.element(menuItems[0]).triggerHandler('click');
@@ -120,6 +120,19 @@
                 expect(angular.element(windows()[0]).css('bottom')).toBe('');
                 expect(angular.element(windows()[0]).css('height')).toBe('300px');
                 expect(angular.element(windows()[0]).css('width')).toBe('300px');
+            });
+
+            it('should hide window when minimized is clicked', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(1);
+                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
+
+                var minimize = element.find('.minimize')[0];
+                angular.element(minimize).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeTruthy();
             });
         });
     });

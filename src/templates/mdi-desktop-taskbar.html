@@ -4,7 +4,7 @@
     </div>
     <div class="desktop-taskbar-list">
         <ul>
-            <li data-ng-repeat="window in windows" class="am-fade-and-scale" data-ng-class="{'active': window.active}">
+            <li data-ng-repeat="window in windows" class="list-item am-fade-and-scale" data-ng-class="{'active-taskbar-list-item': window.active}" data-ng-click="updateWindowState(window)">
                 <a href="#"><span>{{window.title}}</span></a>
             </li>
         </ul>

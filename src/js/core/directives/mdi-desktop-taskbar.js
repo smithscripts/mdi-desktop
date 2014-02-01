@@ -1,24 +1,37 @@
 (function(){
     'use strict';
 
-    var app = angular.module('mdi.desktop.taskbar', []);
+    var module = angular.module('mdi.desktop.taskbar', []);
 
-    app.directive('mdiDesktopTaskbar', ['$log', function($log) {
+    module.controller('mdiDesktopTaskbarController', ['$scope', '$timeout',
+        function ($scope, $timeout) {
+            var self = this;
+
+            $scope.updateWindowState = function(window) {
+                if (window.active) {
+                    window.active = false;
+                    window.minimize = true;
+                } else {
+                    $scope.desktopCtrl.clearActive();
+                    window.active = true;
+                    window.minimize = false;
+                    window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
+                }
+            };
+        }]);
+
+    module.directive('mdiDesktopTaskbar', ['$log', function($log) {
         return {
             restrict: 'A',
             replace: true,
             templateUrl: 'src/templates/mdi-desktop-taskbar.html',
             require: '?^mdiDesktop',
+            controller: 'mdiDesktopTaskbarController',
             scope: {
                 windows: '='
             },
-            compile: function() {
-                return {
-                    pre: function($scope, $elm, $attrs) {
-                    },
-                    post: function($scope, $elm, $attrs, mdiDesktopCtrl) {
-                    }
-                };
+            link: function(scope, element, attrs, desktopCtrl) {
+                scope.desktopCtrl = desktopCtrl;
             }
         };
     }]);

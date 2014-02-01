@@ -36,14 +36,15 @@
 
             $scope.maximized = false;
 
-            $scope.close = function() {
-                $scope.desktopCtrl.getWindows().splice($scope.index, 1);
-            };
-
             $scope.activate = function() {
                 $scope.desktopCtrl.clearActive();
                 $scope.window.active =  true;
                 $scope.window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
+            };
+
+            $scope.minimize = function() {
+                $scope.window.active = false;
+                $scope.window.minimize = true;
             };
 
             $scope.maximize = function() {
@@ -77,6 +78,10 @@
 
                     $scope.maximized = true;
                 }
+            };
+
+            $scope.close = function() {
+                $scope.desktopCtrl.getWindows().splice($scope.index, 1);
             };
 
             $scope.setPosition = function(event) {

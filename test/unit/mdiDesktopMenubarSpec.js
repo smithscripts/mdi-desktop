@@ -42,7 +42,7 @@
                 angular.element(menuItems[0]).triggerHandler('click');
                 expect(windows().length).toBe(2);
 
-                var activeWindows = element.find('.active');
+                var activeWindows = element.find('.active-window');
                 expect(activeWindows.length).toBe(1);
             });
         });
