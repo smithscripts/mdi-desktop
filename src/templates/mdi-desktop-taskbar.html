@@ -1,10 +1,15 @@
 <div class="desktop-taskbar-container">
     <div class="desktop-taskbar-mainmenu">
-
+        <div class="desktop-taskbar-start-button">
+            <span class="icon-windows8"></span>
+        </div>
     </div>
     <div class="desktop-taskbar-list">
         <ul>
-            <li data-ng-repeat="window in windows" class="list-item am-fade-and-scale" data-ng-class="{'active-taskbar-list-item': window.active}" data-ng-click="updateWindowState(window)">
+            <li class="list-item am-fade-and-scale"
+                data-ng-repeat="window in windows"
+                data-ng-class="{'active-taskbar-list-item': window.active}"
+                data-ng-click="updateWindowState(window)">
                 <a href="#"><span>{{window.title}}</span></a>
             </li>
         </ul>

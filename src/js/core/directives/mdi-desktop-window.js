@@ -3,38 +3,16 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document',
-        function ($scope, $element, $document) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document', '$window',
+        function ($scope, $element, $document, $window) {
             var self = this;
 
             self.top,
-            self.left,
-            self.right,
-            self.bottom,
-            self.height,
-            self.width,
-            self.x = $element[0].offsetLeft,
-            self.y = $element[0].offsetTop,
-            self.startX = 0,
-            self.startY = 0;
-
-            self.mouseMove = function(event) {
-                $element.css({ opacity: 0.5 });
-                self.x = event.screenX - self.startX
-                self.y = event.screenY - self.startY
-                $element.css({
-                    top: self.y + 'px',
-                    left:  self.x + 'px'
-                });
-            }
-
-            self.mouseUp = function() {
-                $element.css({ opacity: 1.0 });
-                $document.unbind('mousemove', self.mouseMove);
-                $document.unbind('mouseup', self.mouseUp);
-            }
-
-            $scope.maximized = false;
+                self.left,
+                self.right,
+                self.bottom,
+                self.height,
+                self.width;
 
             $scope.activate = function() {
                 $scope.desktopCtrl.clearActive();
@@ -48,17 +26,17 @@
             };
 
             $scope.maximize = function() {
-                if ($scope.maximized) {
+                if ($scope.window.maximized) {
                     $element.css({
                         top: self.top,
                         left: self.left,
                         right: self.right,
                         bottom: self.bottom,
                         height: self.height,
-                        width: self.height
+                        width: self.width
                     });
 
-                    $scope.maximized = false;
+                    $scope.window.maximized = false;
                 } else {
                     self.top = $element.css('top');
                     self.left = $element.css('left');
@@ -76,7 +54,7 @@
                         width: '100%'
                     });
 
-                    $scope.maximized = true;
+                    $scope.window.maximized = true;
                 }
             };
 
@@ -84,13 +62,16 @@
                 $scope.desktopCtrl.getWindows().splice($scope.index, 1);
             };
 
-            $scope.setPosition = function(event) {
-                if ($scope.maximized) return;
-                event.preventDefault()
-                self.startX = event.screenX - self.x
-                self.startY = event.screenY - self.y
-                $document.on('mousemove', self.mouseMove);
-                $document.on('mouseup', self.mouseUp);
+            function isElementInViewport (el) {
+                var rect = el[0].getBoundingClientRect();
+
+                console.log(rect.top, 'TOP');
+                console.log(rect.left, ('LEFT'));
+
+                return (
+                    rect.top >= 0 &&
+                        rect.left >= 0
+                    );
             }
         }]);
 

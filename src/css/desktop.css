@@ -1,3 +1,8 @@
+body {
+    min-height: 200px;
+    min-width: 200px;
+}
+
 .desktop-wrapper {
     position: absolute !important;
     top: 0;
@@ -53,6 +58,24 @@
     border-right: 1px solid #e7e7e7;
 }
 
+.desktop-taskbar-start-button {
+    height: 35px;
+    width: 43px;
+    background-clip: padding-box;
+    border-radius: 6px;
+    border: 1px solid #dfdfdf;
+    margin: 2px;
+    padding-top: 1px;
+    padding-left: 5px;
+}
+
+.desktop-taskbar-start-button:active {
+    margin-top: 3px;
+    margin-left: 3px;
+    outline: 0;
+    box-shadow: 0 0 10px blue;
+}
+
 .desktop-taskbar-list {
     position: absolute !important;
     top: 0;
@@ -78,6 +101,11 @@
     margin-left: 7px;
 }
 
+.desktop-taskbar-list ul > li:active {
+    margin-top: 1px;
+    margin-left: 8px;
+}
+
 .desktop-taskbar-list li a {
     margin-left: 5px;
     text-decoration: none;
@@ -90,6 +118,24 @@
     bottom: 0;
     width: 16px;
     background: black;
+}
+
+.desktop-taskbar-hide-button {
+    height: 35px;
+    width: 43px;
+    background-clip: padding-box;
+    border-radius: 6px;
+    border: 1px solid #dfdfdf;
+    margin: 2px;
+    padding-top: 1px;
+    padding-left: 5px;
+}
+
+.desktop-taskbar-hide-button:active {
+    margin-top: 3px;
+    margin-left: 3px;
+    outline: 0;
+    box-shadow: 0 0 10px blue;
 }
 
 .desktop-window-container {
@@ -341,6 +387,7 @@ div.resizable-handle {
 }
 .icon-windows8:before {
     content: "\e60b";
+    font-size: 30px;
 }
 .icon-close:before {
     content: "\e60c";

@@ -1,14 +1,14 @@
 (function(){
     'use strict';
 
-    var module = angular.module('resizable', []);
+    var module = angular.module('mdi.resizable', []);
 
-    module.controller('resizableController', ['$scope',
+    module.controller('mdiResizableController', ['$scope',
         function ($scope) {
             var self = this;
         }]);
 
-    module.directive('resizable', ['$document', '$timeout', function($document, $timeout) {
+    module.directive('mdiResizable', ['$document', function($document) {
         return {
             restrict: 'A',
             replace: false,
@@ -39,7 +39,6 @@
                     event.preventDefault()
                     lastX = event.pageX;
                     lastY = event.pageY
-                    console.log(window)
                     currentHeight = window[0].offsetHeight;
                     currentWidth = window[0].offsetWidth;
                     currentTop = window[0].offsetTop;

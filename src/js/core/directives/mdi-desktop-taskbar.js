@@ -10,11 +10,11 @@
             $scope.updateWindowState = function(window) {
                 if (window.active) {
                     window.active = false;
-                    window.minimize = true;
+                    window.minimized = true;
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
-                    window.minimize = false;
+                    window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                 }
             };
