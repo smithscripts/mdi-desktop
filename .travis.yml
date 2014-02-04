@@ -6,7 +6,3 @@ before_script:
   - export DISPLAY=:99.0
   - npm install --quiet -g grunt-cli karma-cli
   - npm install
-  - grunt install
-
-after_success:
-  - grunt release
