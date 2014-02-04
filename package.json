@@ -1,31 +1,31 @@
 {
-    "name": "mdi-desktop",
-    "preferGlobal": true,
-    "version": "0.1.0",
-    "author": "Robert Smith <rob.smith@outlook.com>",
-    "description": "An AngularJS Multi Document User Interface",
-    "scripts": {
-        "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/robsmithers/mdi-desktop.git"
-    },
-    "keywords": [
-        "desktop",
-        "angularjs"
-    ],
-    "analyze": false,
-    "devDependencies": {
-        "karma": "~0.10",
-        "jshint": "2.1.3",
-        "grunt": "~0.4.2",
-        "grunt-contrib-jshint": "~0.6.3",
-        "grunt-contrib-nodeunit": "~0.2.0",
-        "grunt-contrib-uglify": "~0.2.2"
-    },
-    "license": "MIT",
-    "engines": {
-        "node": ">=0.6"
-    }
+  "name": "mdi-desktop",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "author": "Robert Smith <rob.smith@outlook.com>",
+  "description": "An AngularJS Multi Document User Interface",
+  "scripts": {
+    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robsmithers/mdi-desktop.git"
+  },
+  "keywords": [
+    "desktop",
+    "angularjs"
+  ],
+  "analyze": false,
+  "devDependencies": {
+    "karma": "~0.10",
+    "jshint": "2.1.3",
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-uglify": "~0.2.2"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
 }
