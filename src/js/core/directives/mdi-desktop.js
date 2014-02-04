@@ -80,6 +80,7 @@
         function ($scope, mdiDesktopConstants, desktopClassFactory) {
             var self = this;
 
+            self.allMinimized = false,
             self.desktop = desktopClassFactory.createDesktop();
 
             self.getWindows = function() {
@@ -99,6 +100,14 @@
             self.clearActive = function() {
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
+                });
+            }
+
+            self.hideShowAll = function() {
+                self.allMinimized = !self.allMinimized
+                angular.forEach($scope.windows, function(window){
+                    window.active = false;
+                    window.minimized = self.allMinimized;
                 });
             }
 

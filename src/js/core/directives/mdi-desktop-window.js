@@ -22,7 +22,7 @@
 
             $scope.minimize = function() {
                 $scope.window.active = false;
-                $scope.window.minimize = true;
+                $scope.window.minimized = true;
             };
 
             $scope.maximize = function() {

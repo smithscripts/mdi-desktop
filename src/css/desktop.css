@@ -117,18 +117,16 @@ body {
     right: 0;
     bottom: 0;
     width: 16px;
-    background: black;
+    background: #f8f8f8;
 }
 
 .desktop-taskbar-hide-button {
     height: 35px;
-    width: 43px;
+    width: 12px;
     background-clip: padding-box;
     border-radius: 6px;
     border: 1px solid #dfdfdf;
     margin: 2px;
-    padding-top: 1px;
-    padding-left: 5px;
 }
 
 .desktop-taskbar-hide-button:active {

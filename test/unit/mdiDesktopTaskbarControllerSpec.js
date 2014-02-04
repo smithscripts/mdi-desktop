@@ -75,6 +75,34 @@
                 var window2ZIndex = $(windows()[1]).css('z-index');
                 expect(window1ZIndex).toBeGreaterThan(window2ZIndex);
             });
+
+            it('should hide all windows when hide/show button is click the first time', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(2);
+
+                var windowToggleBtn = element.find('.desktop-taskbar-hide-button')[0];
+                angular.element(windowToggleBtn).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeTruthy();
+                expect(angular.element(windows()[1]).hasClass('ng-hide')).toBeTruthy();
+            });
+
+            it('should show all windows when hide/show button is click the second time', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(2);
+
+                var windowToggleBtn = element.find('.desktop-taskbar-hide-button')[0];
+                angular.element(windowToggleBtn).triggerHandler('click');
+
+                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
+                expect(angular.element(windows()[1]).hasClass('ng-hide')).toBeFalsy();
+            });
         });
     });
 

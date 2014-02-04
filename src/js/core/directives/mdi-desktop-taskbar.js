@@ -3,8 +3,8 @@
 
     var module = angular.module('mdi.desktop.taskbar', []);
 
-    module.controller('mdiDesktopTaskbarController', ['$scope', '$timeout',
-        function ($scope, $timeout) {
+    module.controller('mdiDesktopTaskbarController', ['$scope',
+        function ($scope) {
             var self = this;
 
             $scope.updateWindowState = function(window) {
@@ -18,6 +18,10 @@
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                 }
             };
+
+            $scope.hideShowAll = function() {
+                $scope.desktopCtrl.hideShowAll();
+            }
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {
