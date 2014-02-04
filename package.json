@@ -18,11 +18,18 @@
   "analyze": false,
   "devDependencies": {
     "karma": "~0.10",
-    "jshint": "2.1.3",
-    "grunt": "~0.4.2",
-    "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt-contrib-uglify": "~0.2.2"
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.7",
+    "grunt-jsdoc": "~0.2.4",
+    "grunt-karma": "~0.4.4",
+    "grunt-contrib-watch": "~0.3.1",
+    "grunt-contrib-concat": "~0.1.3",
+    "grunt-contrib-uglify": "~0.1.2",
+    "grunt-angular-templates": "~0.3.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-jasmine": "~0.3.3",
+    "grunt-contrib-less": "~0.5.1",
+    "grunt-contrib-jshint": "~0.5.4"
   },
   "license": "MIT",
   "engines": {
