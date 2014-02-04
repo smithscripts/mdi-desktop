@@ -99,6 +99,7 @@
 
                 var windowToggleBtn = element.find('.desktop-taskbar-hide-button')[0];
                 angular.element(windowToggleBtn).triggerHandler('click');
+                angular.element(windowToggleBtn).triggerHandler('click');
 
                 expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
                 expect(angular.element(windows()[1]).hasClass('ng-hide')).toBeFalsy();

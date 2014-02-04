@@ -9,6 +9,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular-animate.min.js"></script>
+    <!--<script src="/mdi-desktop/src/js/core/services/desktopClassFactory.js"></script>-->
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-menubar.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-viewport.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-taskbar.js"></script>
@@ -16,6 +17,8 @@
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop.js"></script>
     <script src="/mdi-desktop/src/js/utility/directives/mdi-resizable.js"></script>
     <script src="/mdi-desktop/src/js/utility/directives/mdi-draggable.js"></script>
+
+    <script src="/mdi-desktop/demo/demoController.js"></script>
 
     <script type="text/javascript">
         window.onload = function () { document.onselectstart = handleSelectAttempt; };
@@ -25,7 +28,7 @@
         }
     </script>
 </head>
-<body>
-    <div data-mdi-desktop></div>
+<body data-ng-controller="demoController">
+    <div data-mdi-desktop="desktopOptions"></div>
 </body>
 </html>

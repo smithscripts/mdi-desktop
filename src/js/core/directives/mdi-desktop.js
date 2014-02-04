@@ -44,18 +44,32 @@
         }
     });
 
-    module.service('desktopClassFactory', ['$log', 'mdiDesktopConstants',
-        function ($log, uiGridConstants) {
-            $log.debug('mdi-desktop factory');
+    module.service('desktopClassFactory',
+        function () {
+
             var service = {
+                /**
+                 * @ngdoc method
+                 * @name createDesktop
+                 * @methodOf mdi.desktop.service:desktopClassFactory
+                 * @description Creates a new desktop instance.
+                 * @returns {Desktop} desktop
+                 */
                 createDesktop : function() {
                     var desktop = new Desktop();
                     return desktop;
                 }
             }
-            var Desktop = function () {
 
-            }
+            /**
+             * @ngdoc function
+             * @name mdi.desktop.class:Desktop
+             * @description Desktop defines a logical desktop.  Any non-dom properties and elements needed by the desktop should
+             *              be defined in this class
+             */
+            var Desktop = function () {
+                this.options = new DesktopOptions();
+            };
 
             /**
              * @ngdoc function
@@ -63,18 +77,12 @@
              * @description Default DesktopOptions class.  DesktopOptions are defined by the application developer and overlaid
              * over this object.
              */
-            function GridOptions() {
-                this.defaultWindowHeight = 400;
-                this.defaultWindowWidth = 400;
-
-                this.menubarHeight = 30;
-                this.taskbarHeight = 40;
-
-                this.autoHideTaskbar = false;
+            function DesktopOptions() {
+                this.menus = 'both'
             }
 
             return service;
-        }]);
+        });
 
     module.controller('mdiDesktopController', ['$scope', 'mdiDesktopConstants', 'desktopClassFactory',
         function ($scope, mdiDesktopConstants, desktopClassFactory) {
@@ -120,7 +128,9 @@
                 return {
                     restrict: 'A',
                     templateUrl: 'src/templates/mdi-desktop.html',
-                    scope: {},
+                    scope: {
+                        mdiDesktop: '='
+                    },
                     replace: true,
                     controller: 'mdiDesktopController'
                 };

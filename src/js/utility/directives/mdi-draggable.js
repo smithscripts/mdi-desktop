@@ -9,7 +9,6 @@
 
             self.windowElement = $element.parent().parent();
 
-            console.log((self.windowElement));
             self.x = self.windowElement[0].offsetLeft,
                 self.y = self.windowElement[0].offsetTop,
                 self.lastX = 0,
