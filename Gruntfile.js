@@ -36,10 +36,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    //Default task
-    grunt.registerTask('devmode', ['karma:unit', 'watch']);
-    grunt.registerTask('test', ['karma:travis', 'watch']);
-
     grunt.registerTask('test', [
         'karma:unit'
     ]);
