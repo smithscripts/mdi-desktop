@@ -13,24 +13,20 @@ module.exports = function(grunt) {
                 dest: '<%= pkg.name %>.js'
             }
         },
+        // Test settings
         karma: {
-            unit: {
+            options: {
                 configFile: 'karma.conf.js',
-                options: {
-                    files: ['test/lib/**/*.js', 'src/js/**/*.js', 'test/unit/**/*.js']
-                },
-                background: true
-            },
-            travis: {
-                configFile: 'karma.conf.js',
-                singleRun: true,
                 browsers: ['PhantomJS']
-            }
-        },
-        watch: {
-            karma: {
-                files: ['test/lib/**/*.js', 'src/js/**/*.js', 'test/unit/**/*.js'],
-                tasks: ['karma:unit:run']
+            },
+            unit: {
+                singleRun: true,
+                options: {
+                    reporters: ['dots', 'coverage']
+                }
+            },
+            server: {
+                autoWatch: true
             }
         }
     });
@@ -43,5 +39,13 @@ module.exports = function(grunt) {
     //Default task
     grunt.registerTask('devmode', ['karma:unit', 'watch']);
     grunt.registerTask('test', ['karma:travis', 'watch']);
+
+    grunt.registerTask('test', [
+        'karma:unit'
+    ]);
+
+    grunt.registerTask('default', [
+        'test'
+    ]);
 
 }
