@@ -12,6 +12,18 @@ module.exports = function(grunt) {
                 // the location of the resulting JS file
                 dest: '<%= pkg.name %>.js'
             }
+        },
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js',
+                background: true
+            }
+        },
+        watch: {
+            karma: {
+                files: ['src/js/**/*.js', 'test/lib/**/*.js', 'test/unit/**/*.js'],
+                tasks: ['karma:unit:run']
+            }
         }
     });
 
@@ -22,7 +34,6 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.registerTask('test', ['jshint', 'karma:unit']);
 
     // Task for development; auto-build ng-grid.debug.js on source file changes, auto-test on ng-grid.debug.js or unit test changes
     grunt.registerTask('testwatch', ['jshint', 'karma:watch', 'watch']);
@@ -32,20 +43,12 @@ module.exports = function(grunt) {
     // Load the plugin that provides the "uglify" task.
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
-    //grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    // Old default task
-    grunt.registerTask('build', ['less', 'ngtemplates', 'concat', 'uglify', 'clean']);
+    //Default task
+    grunt.registerTask('devmode', ['concat', 'karma:unit', 'watch', 'jshint']);
 
-    // Default task(s).
-    grunt.registerTask('default', 'No default task', function() {
-        grunt.log.write('The old default task has been moved to "build" to prevent accidental triggering');
-    });
-
-    grunt.registerTask('debug', ['less', 'ngtemplates', 'concat:debug', 'clean']);
-    grunt.registerTask('prod', ['less', 'ngtemplates', 'concat:prod', 'uglify', 'clean']);
-    grunt.registerTask('version', ['ngtemplates', 'concat:version', 'uglify:version', 'clean']);
 }
