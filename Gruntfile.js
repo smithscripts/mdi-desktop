@@ -16,6 +16,9 @@ module.exports = function(grunt) {
         karma: {
             unit: {
                 configFile: 'karma.conf.js',
+                options: {
+                    files: ['test/lib/**/*.js', 'src/js/**/*.js', 'test/unit/**/*.js']
+                },
                 background: true
             },
             travis: {
