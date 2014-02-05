@@ -51,7 +51,9 @@ module.exports = function(config) {
 
         // enable / disable watching file and executing tests whenever any file changes
         // CLI --auto-watch --no-auto-watch
-        autoWatch: true,
+        autoWatch: false,
+
+        frameworks: ['jasmine'],
 
         // Start these browsers, currently available:
         // - Chrome
