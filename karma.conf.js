@@ -30,10 +30,10 @@ exclude: [
 
 ];
 
-preprocessors: {
-    // location of templates
-    'src/templates/**/*.html': ['html2js']
-};
+//preprocessors: [
+//    // location of templates
+//    'src/templates/**/*.html': ['html2js']
+//];
 
 // web server port
 // CLI --port 9876
