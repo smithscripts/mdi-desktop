@@ -5,13 +5,14 @@
   "author": "Robert Smith <rob.smith@outlook.com>",
   "description": "An AngularJS Multi Document User Interface",
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "grunt travis --verbose"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/robsmithers/mdi-desktop.git"
   },
   "keywords": [
+    "angular",
     "desktop",
     "angularjs"
   ],
