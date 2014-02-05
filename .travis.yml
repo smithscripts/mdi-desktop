@@ -7,4 +7,4 @@ before_script:
   - npm install --quiet -g grunt-cli karma-cli
   - npm install karma
   - npm install grunt-karma
-  - npm install grunt-contrib-concat
+  - npm install grunt-contrib-concat --save-dev
