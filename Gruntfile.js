@@ -17,6 +17,11 @@ module.exports = function(grunt) {
             unit: {
                 configFile: 'karma.conf.js',
                 background: true
+            },
+            travis: {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                browsers: ['PhantomJS']
             }
         },
         watch: {
@@ -27,28 +32,13 @@ module.exports = function(grunt) {
         }
     });
 
-    // Load grunt-karma task plugin
-    grunt.loadNpmTasks('grunt-karma');
-    // Load the grunt-contrib-watch plugin for doing file watches
     grunt.loadNpmTasks('grunt-contrib-watch');
-
+    grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-
-
-    // Task for development; auto-build ng-grid.debug.js on source file changes, auto-test on ng-grid.debug.js or unit test changes
-    grunt.registerTask('testwatch', ['jshint', 'karma:watch', 'watch']);
-
-    grunt.registerTask('test-ci', ['jshint', 'debug', 'karma:ci']);
-
-    // Load the plugin that provides the "uglify" task.
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-jsdoc');
-    grunt.loadNpmTasks('grunt-angular-templates');
-    grunt.loadNpmTasks('grunt-contrib-clean');
 
     //Default task
-    grunt.registerTask('devmode', ['concat', 'karma:unit', 'watch', 'jshint']);
+    grunt.registerTask('devmode', ['karma:unit', 'watch']);
+    grunt.registerTask('test', ['karma:travis', 'watch']);
 
 }
