@@ -23,7 +23,7 @@
     <script type="text/javascript">
         window.onload = function () { document.onselectstart = handleSelectAttempt; };
         function handleSelectAttempt(e) {
-            if (window.event) { event.preventDefault(); }
+            if (window.event) { e.preventDefault(); }
             return true;
         }
     </script>
