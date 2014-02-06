@@ -2,7 +2,10 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
-            'dist/all.js': ['src/js/**/*.js']
+            dist: {
+                src: ['src/js/**/*.js'],
+                dest: 'built.js'
+            }
         },
         // Test settings
         karma: {
