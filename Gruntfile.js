@@ -31,11 +31,13 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['build']);
-    grunt.registerTask('build', ['clean', 'concat']);
-    grunt.registerTask('test', ['karma:unit']);
-
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-karma');
+
+    grunt.registerTask('build', ['clean', 'concat']);
+
+    grunt.registerTask('test', ['karma:unit']);
+
+    grunt.registerTask('default', ['test']);
 }
