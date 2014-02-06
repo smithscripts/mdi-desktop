@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
 
     grunt.registerTask('test', [
-        'karma:unit'
+        'karma:unit', 'concat'
     ]);
 
     grunt.registerTask('default', [
