@@ -5,6 +5,7 @@
   "author": "Robert Smith <rob.smith@outlook.com>",
   "description": "An AngularJS Multi Document User Interface",
   "scripts": {
+    "build": "grunt build --verbose",
     "test": "grunt test --verbose"
   },
   "repository": {
