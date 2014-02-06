@@ -1,10 +1,16 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        clean: {
+            options: { force: true},
+            all: {
+                src: ['build/**/*.*']
+            }
+        },
         concat: {
             dist: {
                 src: ['src/js/**/*.js'],
-                dest: 'built.js'
+                dest: 'build/mdi-desktop.js'
             }
         },
         // Test settings
@@ -25,19 +31,13 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.registerTask('default', ['']);
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('test', [
         'karma:unit', 'concat'
     ]);
-
-    grunt.registerTask('default', [
-        'concat'
-    ]);
-
 }

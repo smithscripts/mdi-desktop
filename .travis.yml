@@ -5,7 +5,3 @@ node_js:
 before_script:
   - export DISPLAY=:99.0
   - npm install --quiet -g grunt-cli karma-cli
-  - npm install karma
-  - npm install grunt-karma
-  - npm install grunt-contrib-clean --save-dev
-  - npm install grunt-contrib-concat --save-dev
