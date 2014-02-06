@@ -33,7 +33,9 @@ module.exports = function(config) {
 
         preprocessors: {
             // location of templates
-            'src/templates/**/*.html': ['html2js']
+            'src/templates/**/*.html': ['html2js'],
+
+            'src/js/**/*.js' : 'coverage',
         },
 
         // web server port
@@ -82,7 +84,8 @@ module.exports = function(config) {
             'karma-firefox-launcher',
             'karma-html2js-preprocessor',
             'karma-phantomjs-launcher',
-            'karma-script-launcher'
+            'karma-script-launcher',
+            'karma-coverage'
         ]
     });
 };
