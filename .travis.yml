@@ -6,3 +6,6 @@ before_script:
   - export DISPLAY=:99.0
   - npm install --quiet -g grunt-cli karma-cli
   - npm install -g karma-coverage
+
+script:
+  - grunt build

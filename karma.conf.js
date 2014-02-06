@@ -17,7 +17,6 @@ module.exports = function(config) {
             // app code
             'src/js/core/directives/*.js',
             'src/js/core/services/*.js',
-            'src/js/utility/directives/*.js',
 
             // tests
             'test/**/*Spec.js',
@@ -34,9 +33,10 @@ module.exports = function(config) {
         preprocessors: {
             // location of templates
             'src/templates/**/*.html': ['html2js'],
-
-            'src/js/**/*.js' : 'coverage',
+            'src/js/**/*.js' : 'coverage'
         },
+
+        reporters: ['dots', 'coverage'],
 
         // web server port
         // CLI --port 9876
