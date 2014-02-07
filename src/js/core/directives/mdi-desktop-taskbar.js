@@ -36,6 +36,7 @@
             },
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
+                scope.options = desktopCtrl.getOptions();
             }
         };
     }]);

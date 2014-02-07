@@ -1,4 +1,4 @@
-<div class="desktop-viewport-container">
+<div class="desktop-viewport-container" data-ng-style="{'top': options.viewportTop + 'px'}">
     <span class="desktop-viewport-dimensions">{{dimensions.height}} x {{dimensions.width}}</span>
     <div data-ng-repeat="window in windows" class="am-fade-and-scale">
         <div data-mdi-desktop-window data-index="$index" data-window="window"></div>

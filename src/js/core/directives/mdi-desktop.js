@@ -78,7 +78,9 @@
              * over this object.
              */
             function DesktopOptions() {
-                this.menus = 'both'
+                this.showMenubar = true;
+                this.menubarHeight = 32;
+                this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
             }
 
             return service;
@@ -90,6 +92,13 @@
 
             self.allMinimized = false,
             self.desktop = desktopClassFactory.createDesktop();
+
+            $scope.options = self.desktop.options;
+            $scope.windows = [];
+
+            self.getOptions = function() {
+                return $scope.options;
+            }
 
             self.getWindows = function() {
                 return $scope.windows;
@@ -118,8 +127,6 @@
                     window.minimized = self.allMinimized;
                 });
             }
-
-            $scope.windows = [];
         }]);
 
     module.directive('mdiDesktop',

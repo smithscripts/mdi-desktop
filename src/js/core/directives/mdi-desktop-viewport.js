@@ -17,14 +17,9 @@
                     $scope.dimensions.width = $element[0].clientWidth;
                 });
             });
-
-            $scope.dimensions = {
-                height: $element[0].clientHeight,
-                width: $element[0].clientWidth
-            };
         }]);
 
-    module.directive('mdiDesktopViewport', ['$log', function($log) {
+    module.directive('mdiDesktopViewport', ['$timeout', '$window', function($timeout, $window) {
         return {
             restrict: 'A',
             replace: true,
@@ -33,6 +28,17 @@
             controller: 'mdiDesktopViewportController',
             scope: {
                 windows: '='
+            },
+            link: function(scope, element, attrs, desktopCtrl) {
+                scope.desktopCtrl = desktopCtrl;
+                scope.options = desktopCtrl.getOptions();
+
+                $timeout(function() {
+                    scope.dimensions = {
+                        height: element[0].clientHeight,
+                        width: element[0].clientWidth
+                    };
+                }, 100)
             }
         };
     }]);
