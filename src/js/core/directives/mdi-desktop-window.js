@@ -14,6 +14,8 @@
                 self.height,
                 self.width;
 
+            $scope.views = [];
+
             $scope.activate = function() {
                 $scope.desktopCtrl.clearActive();
                 $scope.window.active =  true;

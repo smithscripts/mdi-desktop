@@ -7,7 +7,7 @@
         function ($scope) {
             var self = this;
 
-            $scope.openWindow = function(title) {
+            $scope.openWindow = function(title, templateUrl) {
                 $scope.desktopCtrl.clearActive();
                 var zIndex = $scope.desktopCtrl.getNextMaxZIndex()
                 $scope.windows.push(
@@ -16,7 +16,13 @@
                         active: true,
                         minimized: false,
                         maximized: false,
-                        zIndex: zIndex
+                        zIndex: zIndex,
+                        views: [
+                            {
+                                templateUrl: templateUrl,
+                                active: true
+                            }
+                        ]
                     }
                 );
             }
