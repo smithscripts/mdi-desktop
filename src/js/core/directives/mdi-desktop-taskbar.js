@@ -19,7 +19,7 @@
                 }
             };
 
-            $scope.hideShowAll = function() {
+            $scope.hideShowAll = function() { 
                 $scope.desktopCtrl.hideShowAll();
             }
         }]);
