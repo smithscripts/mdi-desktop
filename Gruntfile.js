@@ -7,6 +7,14 @@ module.exports = function(grunt) {
                 src: ['build/**/*.*']
             }
         },
+        copy: {
+            build: {
+                cwd: 'src',
+                src: [ '**' ],
+                dest: 'build',
+                expand: true
+            },
+        },
         concat: {
             dist: {
                 src: ['src/js/**/*.js'],
@@ -36,7 +44,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('build', ['clean', 'concat', 'karma:unit']);
+    grunt.registerTask('build', ['clean', 'copy', 'concat', 'karma:unit']);
 
     grunt.registerTask('default', ['']);
 }
