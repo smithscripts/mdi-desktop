@@ -10,7 +10,8 @@ module.exports = function(grunt) {
         concat: {
             dist: {
                 src: ['src/js/**/*.js'],
-                dest: 'build/mdi-desktop.js'
+                dest: 'build/mdi-desktop.js',
+                nonull: true
             }
         },
         // Test settings
