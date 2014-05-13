@@ -3,12 +3,44 @@
 
     var module = angular.module('mdi.desktop.viewport', []);
 
-    module.controller('mdiDesktopViewportController', ['$scope', '$element', '$window',
-        function ($scope, $element, $window) {
+    module.controller('mdiDesktopViewportController', ['$scope', '$element', '$window', '$document',
+        function ($scope, $element, $window, $document) {
             var self = this;
 
             self.getViewportDimensions = function() {
               return $scope.dimensions;
+            };
+            
+            self.mouseMove = function(event) {
+                $scope.$apply(function() {
+                    if (event.pageX <= 0) {
+                        $scope.showLeftOutline = true;
+                    } else {
+                        $scope.showLeftOutline = false;
+                    };
+                    if (event.pageX >= $scope.dimensions.width - 1) {
+                        $scope.showRightOutline = true;
+                    } else {
+                        $scope.showRightOutline = false;
+                    };
+                });
+            }
+
+            self.mouseUp = function(event) {
+                $scope.$apply(function() {
+                    $scope.showLeftOutline = false;
+                    $scope.showRightOutline = false;
+                });
+                $document.unbind('mousemove', self.mouseMove);
+                $document.unbind('mouseup', self.mouseUp);
+            }
+
+            $scope.showLeftOutline = false;
+            $scope.showRightOutline = false;
+
+            $scope.viewportMouseDown = function (event) {
+                $document.on('mousemove', self.mouseMove);
+                $document.on('mouseup', self.mouseUp);
             };
 
             angular.element($window).bind('resize', function () {

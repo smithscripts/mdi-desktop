@@ -48,7 +48,7 @@ body {
     border: 1px solid #e7e7e7;
 }
 
-.desktop-taskbar-mainmenu {
+.desktop-taskbar-launch-menu {
     position: absolute !important;
     top: 0;
     left: 0;
@@ -58,7 +58,7 @@ body {
     border-right: 1px solid #e7e7e7;
 }
 
-.desktop-taskbar-start-button {
+.desktop-taskbar-launch-button {
     height: 35px;
     width: 43px;
     background-clip: padding-box;
@@ -69,7 +69,7 @@ body {
     padding-left: 5px;
 }
 
-.desktop-taskbar-start-button:active {
+.desktop-taskbar-launch-button:active {
     margin-top: 3px;
     margin-left: 3px;
     outline: 0;
@@ -79,10 +79,14 @@ body {
 .desktop-taskbar-list {
     position: absolute !important;
     top: 0;
-    left: 50px;
+    left: 0;
     right: 16px;
     bottom: 0;
     background: #f8f8f8;
+}
+
+.desktop-taskbar-list-offset {
+    left: 50px;
 }
 
 .desktop-taskbar-list ul {
@@ -93,7 +97,8 @@ body {
 .desktop-taskbar-list ul > li {
     display: inline-block;
     list-style: none;
-    width: 150px;
+    width: 165px;
+    height:33px;
     background-clip: padding-box;
     border-radius: 6px;
     border: 1px solid #dfdfdf;
@@ -106,9 +111,39 @@ body {
     margin-left: 8px;
 }
 
-.desktop-taskbar-list li a {
+.desktop-taskbar-list li span {
     margin-left: 5px;
-    text-decoration: none;
+    text-overflow:ellipsis;
+}
+
+.desktop-taskbar-list-item-recover {
+    background: red;
+    color: #ffffff
+}
+
+.desktop-taskbar-list-item-title {
+    width:145px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.desktop-taskbar-list-item-close {
+    position:absolute;
+    z-index:1;
+    top:11px;
+    right:5px;
+    font-size:9px;
+    color:gray
+}
+
+.desktop-taskbar-list-item-close:hover {
+    color:red;
+}
+
+.desktop-active-taskbar-list-item {
+    outline: 0;
+    box-shadow: 0 0 10px blue;
 }
 
 .desktop-taskbar-hide {
@@ -140,8 +175,6 @@ body {
     position: absolute !important;
     top: 30px;
     left: 30px;
-    height: 400px;
-    width: 400px;
     background-color: transparent;
     background-clip: padding-box;
     border-radius: 6px;
@@ -200,6 +233,12 @@ body {
     left: 6px;
 }
 
+.desktop-window-navigation-button-group-split {
+    position: absolute !important;
+    top: 2px;
+    right: 6px;
+}
+
 .desktop-window-title {
      position: absolute !important;
      top: 0;
@@ -230,8 +269,35 @@ body {
     right: 6px;
 }
 
-.desktop-window-close-button {
+.desktop-window-close-button-active {
+    background-color: maroon;
+    color: #ffffff;
+}
 
+.desktop-window-close-button-active:hover {
+    background-color: red;
+    color: #ffffff;
+}
+
+.desktop-viewport-left-split-outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    height: auto;
+    border: 1px dashed #000000;
+}
+
+.desktop-viewport-right-split-outline {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    height: auto;
+    border: 1px dashed #000000;
 }
 
 .resizable-nw {
@@ -345,9 +411,8 @@ div.resizable-handle {
      box-shadow: 0 0 10px blue;
  }
 
-.active-taskbar-list-item {
-    outline: 0;
-    box-shadow: 0 0 10px blue;
+.relative {
+    position: relative;
 }
 
 .navbar-nav > li > a {padding-top:5px !important; padding-bottom:5px !important;}
@@ -355,11 +420,11 @@ div.resizable-handle {
 
 @font-face {
     font-family: 'mdi-desktop';
-    src:url('fonts/mdi-desktop.eot');
-    src:url('fonts/mdi-desktop.eot?#iefix') format('embedded-opentype'),
-    url('fonts/mdi-desktop.woff') format('woff'),
-    url('fonts/mdi-desktop.ttf') format('truetype'),
-    url('fonts/mdi-desktop.svg#mdi-desktop') format('svg');
+    src:url('fonts/mdi-desktop.eot?5z341w');
+    src:url('fonts/mdi-desktop.eot?#iefix5z341w') format('embedded-opentype'),
+    url('fonts/mdi-desktop.woff?5z341w') format('woff'),
+    url('fonts/mdi-desktop.ttf?5z341w') format('truetype'),
+    url('fonts/mdi-desktop.svg?5z341w#mdi-desktop') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -386,7 +451,6 @@ div.resizable-handle {
 }
 .icon-windows8:before {
     content: "\e60b";
-    font-size: 30px;
 }
 .icon-close:before {
     content: "\e60c";
@@ -403,14 +467,20 @@ div.resizable-handle {
 .icon-contract:before {
     content: "\e610";
 }
+.icon-minus:before {
+    content: "\e611";
+}
 .icon-home:before {
     content: "\e612";
 }
 .icon-new-tab:before {
     content: "\e613";
 }
-.icon-minus:before {
-    content: "\e611";
+.icon-unlocked:before {
+    content: "\e600";
+}
+.icon-table:before {
+    content: "\e601";
 }
 
 

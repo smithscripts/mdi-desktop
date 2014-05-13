@@ -1,16 +1,22 @@
 <div class="desktop-taskbar-container">
-    <div class="desktop-taskbar-mainmenu">
-        <div class="desktop-taskbar-start-button">
+    <div class="desktop-taskbar-launch-menu" data-ng-if="options.showLaunchMenu">
+        <div class="desktop-taskbar-launch-button">
             <span class="icon-windows8"></span>
         </div>
     </div>
-    <div class="desktop-taskbar-list">
+    <div class="desktop-taskbar-list" data-ng-class="{'desktop-taskbar-list-offset': options.showLaunchMenu}">
         <ul>
             <li class="list-item am-fade-and-scale"
                 data-ng-repeat="window in windows"
-                data-ng-class="{'active-taskbar-list-item': window.active}"
+                data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}"
                 data-ng-click="updateWindowState(window)">
-                <a href="#"><span>{{window.title}}</span></a>
+                <div class="relative">
+                    <div class="desktop-taskbar-list-item-title">
+                        <span data-ng-show="!window.outOfBounds">{{window.title}}</span>
+                        <span data-ng-show="window.outOfBounds">Click to Recover</span>
+                    </div>
+                    <i class="icon-close desktop-taskbar-list-item-close" data-ng-click="close($event, $index)"></i>
+                </div>
             </li>
         </ul>
     </div>

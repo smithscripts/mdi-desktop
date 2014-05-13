@@ -6,26 +6,6 @@
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
             var self = this;
-
-            $scope.openWindow = function(title, templateUrl) {
-                $scope.desktopCtrl.clearActive();
-                var zIndex = $scope.desktopCtrl.getNextMaxZIndex()
-                $scope.windows.push(
-                    {
-                        title: title,
-                        active: true,
-                        minimized: false,
-                        maximized: false,
-                        zIndex: zIndex,
-                        views: [
-                            {
-                                templateUrl: templateUrl,
-                                active: true
-                            }
-                        ]
-                    }
-                );
-            }
         }]);
 
     module.directive('mdiDesktopMenubar', ['$log', function($log) {
@@ -35,9 +15,6 @@
             templateUrl: 'src/templates/mdi-desktop-menubar.html',
             require: '?^mdiDesktop',
             controller: 'mdiDesktopMenubarController',
-            scope: {
-                windows: '='
-            },
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();

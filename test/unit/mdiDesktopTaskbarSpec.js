@@ -76,6 +76,19 @@
                 expect(window1ZIndex).toBeGreaterThan(window2ZIndex);
             });
 
+            it('should close window when close button is clicked', function() {
+                var menuItems = element.find('.menuItem');
+                expect(windows().length).toBe(0);
+                angular.element(menuItems[0]).triggerHandler('click');
+                expect(windows().length).toBe(1);
+
+                var closeButton = element.find('.desktop-taskbar-list-item-close')[0];
+                console.log(closeButton);
+                angular.element(closeButton).triggerHandler('click');
+
+                expect(windows().length).toBe(0);
+            });
+
             it('should hide all windows when hide/show button is click the first time', function() {
                 var menuItems = element.find('.menuItem');
                 expect(windows().length).toBe(0);

@@ -8,6 +8,12 @@
             var self = this;
 
             $scope.updateWindowState = function(window) {
+                if (window.outOfBounds) {
+                    $scope.desktopCtrl.cascadeWindow(window);
+                    window.active = true;
+                    window.outOfBounds = false;
+                    return;
+                }
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
@@ -19,9 +25,16 @@
                 }
             };
 
-            $scope.hideShowAll = function() {
+            $scope.hideShowAll = function(event) {
                 $scope.desktopCtrl.hideShowAll();
             }
+
+            $scope.close = function(event, index) {
+                $scope.desktopCtrl.getWindows().splice(index, 1);
+
+                event.stopPropagation();
+                event.preventDefault();
+            };
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {

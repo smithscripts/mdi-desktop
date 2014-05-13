@@ -1,49 +1,59 @@
-<div class="desktop-window-container" data-ng-class="{'active-window': window.active}" data-ng-style="{'z-index': window.zIndex}" data-ng-mousedown="activate()" data-ng-hide="window.minimized">
+<div class="desktop-window-container"
+     data-ng-class="{'active-window': window.active}"
+     data-ng-style="{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width}"
+     data-ng-mousedown="activate($event)"
+     data-ng-hide="window.minimized">
     <div class="desktop-window-header">
         <div class="desktop-window-navigation">
             <div class="btn-group btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="btn btn-default" title="previous">
+                <button type="button" class="btn btn-default" title="previous" tabindex="-1">
                     <span class="icon-arrow-left2"></span>
                 </button>
-                <button type="button" class="btn btn-default" title="next">
+                <button type="button" class="btn btn-default" title="next" tabindex="-1">
                     <span class="icon-arrow-right2"></span>
                 </button>
             </div>
         </div>
-        <div class="desktop-window-title" data-ng-dblclick="maximize()" data-mdi-draggable window="window">
+        <div class="desktop-window-title" data-ng-dblclick="maximize()" data-ng-mousedown="windowTitleMouseDown($event)">
             <div class="desktop-window-title-container">
                 <div>{{window.title}}</div>
             </div>
         </div>
         <div class="desktop-window-action">
-            <div class="btn-group btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="btn btn-default minimize" title="Minimize" data-ng-click="minimize()">
+            <div class="btn-group btn-group-xs desktop-window-navigation-button-group" data-ng-show="!split">
+                <button type="button" class="btn btn-default minimize" title="Minimize" data-ng-click="minimize()" tabindex="-1">
                     <span class="icon-minus"></span>
                 </button>
-                <button type="button" class="btn btn-default maximize" title="" data-ng-click="maximize()">
+                <button type="button" class="btn btn-default maximize" title="" data-ng-click="maximize()" tabindex="-1">
                     <span data-ng-class="{'icon-expand': !window.maximized, 'icon-contract': window.maximized}"></span>
                 </button>
-                <button type="button" class="btn btn-default desktop-window-close-button" title="Close" data-ng-click="close()">
+                <button type="button" class="btn btn-default" data-ng-class="{'desktop-window-close-button-active': window.active}" title="Close" data-ng-click="close()" tabindex="-1">
                     <span class="icon-close"></span>
+                </button>
+            </div>
+            <div class="btn-group btn-group-xs desktop-window-navigation-button-group-split" data-ng-show="split">
+                <button type="button" class="btn btn-default" title="Un-Lock" data-ng-click="unlock()" tabindex="-1">
+                    <span class="icon-unlocked"></span>
                 </button>
             </div>
         </div>
     </div>
-    <div class="desktop-window-content">
-        <div data-ng-repeat="view in window.views">
-            <!--<div data-mdi-desktop-view data-ng-show="view.active" data-template-Url="{{view.templateUrl}}"></div>-->
+    <fieldset data-ng-disabled="!window.active">
+        <div class="desktop-window-content">
+            <div data-ng-repeat="view in window.views">
+                <!--<div data-mdi-desktop-view data-ng-show="view.active" data-template-Url="{{view.templateUrl}}"></div>-->
+            </div>
         </div>
-    </div>
+    </fieldset>
     <div class="desktop-window-statusbar">
 
     </div>
-
-    <span class="resizable-handle resizable-nw" data-maximized="maximized" data-direction="nw" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-ne" data-maximized="maximized" data-direction="ne" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-sw" data-maximized="maximized" data-direction="sw" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-se" data-maximized="maximized" data-direction="se" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-n" data-maximized="maximized" data-direction="n" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-s" data-maximized="maximized" data-direction="s" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-w" data-maximized="maximized" data-direction="w" data-mdi-resizable></span>
-    <span class="resizable-handle resizable-e" data-maximized="maximized" data-direction="e" data-mdi-resizable></span>
+    <!--<span class="resizable-handle resizable-nw" data-maximized="maximized" data-direction="nw" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-ne" data-maximized="maximized" data-direction="ne" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-sw" data-maximized="maximized" data-direction="sw" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-se" data-maximized="maximized" data-direction="se" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-n" data-maximized="maximized" data-direction="n" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-s" data-maximized="maximized" data-direction="s" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-w" data-maximized="maximized" data-direction="w" data-mdi-resizable></span>-->
+    <!--<span class="resizable-handle resizable-e" data-maximized="maximized" data-direction="e" data-mdi-resizable></span>-->
 </div>

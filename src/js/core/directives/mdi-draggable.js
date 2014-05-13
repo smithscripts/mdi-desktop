@@ -7,7 +7,7 @@
         function ($scope, $element, $document, $window) {
             var self = this;
 
-            self.windowElement = $element.parent().parent();
+            self.windowElement = $element.parent().parent().parent();
 
             self.x = self.windowElement[0].offsetLeft,
                 self.y = self.windowElement[0].offsetTop,
@@ -34,6 +34,8 @@
                     top: self.y + 'px',
                     left:  self.x + 'px'
                 });
+
+                console.log('Test');
             }
 
             self.mouseUp = function() {

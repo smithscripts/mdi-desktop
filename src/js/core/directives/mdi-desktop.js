@@ -87,6 +87,7 @@
              * over this object.
              */
             function DesktopOptions() {
+                this.showLaunchMenu = false;
                 this.showMenubar = true;
                 this.menubarHeight = 32;
                 this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
@@ -101,9 +102,6 @@
 
             self.allMinimized = false,
             self.desktop = desktopClassFactory.createDesktop();
-
-            $scope.options = self.desktop.options;
-            $scope.windows = [];
 
             self.getOptions = function() {
                 return $scope.options;
@@ -135,6 +133,55 @@
                     window.active = false;
                     window.minimized = self.allMinimized;
                 });
+            }
+
+            /**
+             * Moves a window to the next cascade position.
+             */
+            self.cascadeWindow = function (window) {
+                lastWindowCascadePosition.top += 10;
+                lastWindowCascadePosition.left += 10;
+                if (lastWindowCascadePosition.top > maxWindowCascadePosition)
+                    lastWindowCascadePosition.top = minWindowCascadePosition;
+                if (lastWindowCascadePosition.left > maxWindowCascadePosition)
+                    lastWindowCascadePosition.left = minWindowCascadePosition;
+
+                window.top = lastWindowCascadePosition.top + 'px';
+                window.left = lastWindowCascadePosition.left + 'px';
+            }
+            var minWindowCascadePosition = 40;
+            var maxWindowCascadePosition = 100;
+            var lastWindowCascadePosition = { top: minWindowCascadePosition, left: minWindowCascadePosition };
+
+            $scope.options = self.desktop.options;
+            $scope.windows = [];
+
+            $scope.openWindow = function(title, templateUrl) {
+                self.clearActive();
+                var zIndex = self.getNextMaxZIndex()
+                $scope.windows.push(
+                    {
+                        title: title,
+                        active: true,
+                        minimized: false,
+                        maximized: false,
+                        outOfBounds: false,
+                        split: null,
+                        top: 0,
+                        left: 0,
+                        right: 'auto',
+                        bottom: 'auto',
+                        height: '400px',
+                        width: '400px',
+                        zIndex: zIndex,
+                        views: [
+                            {
+                                templateUrl: templateUrl,
+                                active: true
+                            }
+                        ]
+                    }
+                );
             }
         }]);
 
