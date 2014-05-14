@@ -68,7 +68,6 @@
                     newHeight = newSize.height;
                     newWidth = newSize.width;
 
-                    console.log(newHeight - currentHeight, 'Top')
                     switch(scope.direction)
                     {
                         case 'nw':
