@@ -7,19 +7,20 @@ module.exports = function(grunt) {
                 src: ['build/**/*.*']
             }
         },
-        copy: {
-            build: {
-                cwd: 'src',
-                src: [ '**' ],
-                dest: 'build',
-                expand: true
-            },
-        },
         concat: {
             dist: {
-                src: ['src/js/**/*.js'],
+                src: ['src/js/**/*.js', '<%= ngtemplates.app.dest %>'],
                 dest: 'build/mdi-desktop.js',
                 nonull: true
+            }
+        },
+        ngtemplates:  {
+            app:        {
+                src:      'src/**/*.html',
+                dest:     'build/templates.js',
+                options:  {
+                    url:    function(url) { return url.replace('.html', ''); }
+                }
             }
         },
         // Test settings
@@ -43,7 +44,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-angular-templates');
     //grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('build', ['clean', 'copy', 'concat']);
+    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat']);
 }
