@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 (function(){
     'use strict';
 
@@ -1178,4 +1176,3 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     );
 
 }]);
->>>>>>> 9f959c40bd4031f25ae6a01e407a38ec6207687e
