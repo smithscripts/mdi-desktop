@@ -935,7 +935,7 @@
 angular.module('app').run(['$templateCache', function($templateCache) {
   'use strict';
 
-  $templateCache.put('src/templates/mdi-desktop-menubar',
+  $templateCache.put('src/templates/mdi-desktop-menubar.html',
     "<div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
     "\n" +
     "    <nav class=\"navbar navbar-default\">\r" +
@@ -952,7 +952,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('src/templates/mdi-desktop-taskbar',
+  $templateCache.put('src/templates/mdi-desktop-taskbar.html',
     "<div class=\"desktop-taskbar-container\">\r" +
     "\n" +
     "    <div class=\"desktop-taskbar-launch-menu\" data-ng-if=\"options.showLaunchMenu\">\r" +
@@ -1011,7 +1011,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('src/templates/mdi-desktop-viewport',
+  $templateCache.put('src/templates/mdi-desktop-viewport.html',
     "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
     "    <span class=\"desktop-viewport-dimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
@@ -1030,7 +1030,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('src/templates/mdi-desktop-window',
+  $templateCache.put('src/templates/mdi-desktop-window.html',
     "<div class=\"desktop-window-container\"\r" +
     "\n" +
     "     data-ng-class=\"{'active-window': window.active}\"\r" +
@@ -1151,7 +1151,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('src/templates/mdi-desktop',
+  $templateCache.put('src/templates/mdi-desktop.html',
     "<div class=\"desktop-wrapper\">\r" +
     "\n" +
     "    <style>\r" +

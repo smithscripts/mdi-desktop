@@ -17,10 +17,7 @@ module.exports = function(grunt) {
         ngtemplates:  {
             app:        {
                 src:      'src/**/*.html',
-                dest:     'build/templates.js',
-                options:  {
-                    url:    function(url) { return url.replace('.html', ''); }
-                }
+                dest:     'build/templates.js'
             }
         },
         // Test settings
