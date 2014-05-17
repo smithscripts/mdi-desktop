@@ -173,16 +173,12 @@ body {
 
 .desktop-window-container {
     position: absolute !important;
-    top: 30px;
-    left: 30px;
     background-color: transparent;
     background-clip: padding-box;
     border-radius: 6px;
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     border: 1px solid #e7e7e7;
-    min-height: 200px;
-    min-width: 200px;
 }
 
 .desktop-window-header {

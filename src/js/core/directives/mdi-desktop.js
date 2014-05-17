@@ -173,6 +173,8 @@
                         bottom: 'auto',
                         height: '400px',
                         width: '400px',
+                        minHeight: '200px',
+                        minWidth: '200px',
                         zIndex: zIndex,
                         views: [
                             {

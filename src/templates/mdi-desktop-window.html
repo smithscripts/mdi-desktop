@@ -1,6 +1,6 @@
 <div class="desktop-window-container"
      data-ng-class="{'active-window': window.active}"
-     data-ng-style="{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width}"
+     data-ng-style="{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}"
      data-ng-mousedown="activate($event)"
      data-ng-hide="window.minimized">
     <div class="desktop-window-header">
@@ -48,12 +48,12 @@
     <div class="desktop-window-statusbar">
 
     </div>
-    <!--<span class="resizable-handle resizable-nw" data-maximized="maximized" data-direction="nw" data-mdi-resizable></span>-->
-    <!--<span class="resizable-handle resizable-ne" data-maximized="maximized" data-direction="ne" data-mdi-resizable></span>-->
-    <!--<span class="resizable-handle resizable-sw" data-maximized="maximized" data-direction="sw" data-mdi-resizable></span>-->
-    <span class="resizable-handle resizable-se" data-maximized="maximized" data-direction="se" data-mdi-resizable></span>
-    <!--<span class="resizable-handle resizable-n" data-maximized="maximized" data-direction="n" data-mdi-resizable></span>-->
-    <!--<span class="resizable-handle resizable-s" data-maximized="maximized" data-direction="s" data-mdi-resizable></span>-->
-    <!--<span class="resizable-handle resizable-w" data-maximized="maximized" data-direction="w" data-mdi-resizable></span>-->
-    <!--<span class="resizable-handle resizable-e" data-maximized="maximized" data-direction="e" data-mdi-resizable></span>-->
+    <span class="resizable-handle resizable-nw" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="nw"></span>
+    <span class="resizable-handle resizable-ne" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="ne"></span>
+    <span class="resizable-handle resizable-sw" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="sw"></span>
+    <span class="resizable-handle resizable-se" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="se"></span>
+    <span class="resizable-handle resizable-n" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="n"></span>
+    <span class="resizable-handle resizable-s" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="s"></span>
+    <span class="resizable-handle resizable-w" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="w"></span>
+    <span class="resizable-handle resizable-e" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="e"></span>
 </div>

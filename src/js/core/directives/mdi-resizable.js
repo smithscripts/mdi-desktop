@@ -13,185 +13,80 @@
             restrict: 'A',
             replace: false,
             scope: {
+                window: '=',
                 maximized: '=',
                 direction: '@'
             },
             link: function(scope, element, attrs) {
+
                 var window = angular.element(element.parent());
 
-                var x,
-                    y,
-                    lastX,
-                    lastY,
-                    lastTop,
-                    lastLeft,
-                    currentHeight,
+                var currentHeight,
                     currentWidth,
                     currentTop,
                     currentLeft,
-                    newTop,
-                    newLeft,
-                    newHeight,
-                    newWidth;
+                    currentRight,
+                    currentBottom,
+                    currentMinHeight,
+                    currentMinWidth,
+                    mouseOffsetX = 0,
+                    mouseOffsetY = 0,
+                    lastMouseX = 0,
+                    lastMouseY = 0;
 
                 element.bind('mousedown', function(event) {
                     if (scope.maximized) return;
-                    event.preventDefault()
-                    lastX = event.pageX;
-                    lastY = event.pageY
-                    currentHeight = window[0].offsetHeight;
-                    currentWidth = window[0].offsetWidth;
-                    currentTop = window[0].offsetTop;
-                    currentLeft = window[0].offsetLeft;
+                    event.preventDefault();
+                    mouseOffsetY = event.clientY;
+                    mouseOffsetX = event.clientX;
                     $document.on('mousemove', mouseMove);
                     $document.on('mouseup', mouseUp);
-
                 });
 
                 var mouseMove = function(event) {
-                    newHeight = currentHeight + (event.pageY - lastY);
-                    newWidth = currentWidth + (event.pageX - lastX);
-                    newTop = currentTop + ((event.pageY - lastY) * 0.9);
-                    newLeft = currentLeft + ((event.pageX - lastX) * 0.9);
+                    scope.$apply(function() {
+                        var mouseY = event.pageY - mouseOffsetY;
+                        var mouseX = event.pageX - mouseOffsetX;
+                        var diffY = mouseY - lastMouseY;
+                        var diffX = mouseX - lastMouseX;
+                        lastMouseY = mouseY;
+                        lastMouseX = mouseX;
 
-                    var newSize = calculateNewSize({
-                        direction: scope.direction,
-                        currHeight: currentHeight,
-                        currWidth: currentWidth,
-                        newHeight: newHeight,
-                        newWidth: newWidth,
-                        offsetX: (event.pageX - lastX),
-                        offsetY: (event.pageY - lastY),
-                        factor: 0.9
+                        currentHeight = parseInt(scope.window.height, 10);
+                        currentWidth = parseInt(scope.window.width, 10);
+                        currentTop = parseInt(scope.window.top, 10);
+                        currentLeft = parseInt(scope.window.left, 10);
+                        currentRight = parseInt(scope.window.right, 10);
+                        currentBottom = parseInt(scope.window.bottom, 10);
+                        currentMinHeight = parseInt(scope.window.minHeight, 10);
+                        currentMinWidth = parseInt(scope.window.minWidth, 10);
+
+                        if (scope.direction.indexOf("w") > -1) {
+                            if (currentWidth - diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentWidth - currentMinWidth));
+                            scope.window.left = (currentLeft + diffX) + 'px';
+                            scope.window.width = (currentWidth - diffX) + 'px';
+                        }
+                        if (scope.direction.indexOf("n") > -1) {
+                            if (currentHeight - diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentHeight - currentMinHeight));
+                            scope.window.top = (currentTop + diffY) + 'px';
+                            scope.window.height = (currentHeight - diffY) + 'px';
+                        }
+                        if (scope.direction.indexOf("e") > -1) {
+                            if (currentWidth + diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentMinWidth - currentWidth));
+                            scope.window.width = (currentWidth + diffX) + 'px';
+                        }
+                        if (scope.direction.indexOf("s") > -1) {
+                            if (currentHeight + diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentMinHeight- currentHeight));
+                            scope.window.height = (currentHeight + diffY) + 'px';
+                        }
                     });
-
-                    newHeight = newSize.height;
-                    newWidth = newSize.width;
-
-                    switch(scope.direction)
-                    {
-                        case 'nw':
-                            window.css({
-                                height: newHeight + 'px',
-                                width: newWidth + 'px',
-                                left: newLeft + 'px'
-                            });
-                            break;
-                        case 'ne':
-                            window.css({
-                                height: newHeight + 'px',
-                                width: newWidth + 'px',
-                                top: newTop + 'px'
-                            });
-                            break;
-                        case 'sw':
-                            window.css({
-                                height: newHeight + 'px',
-                                width: newWidth + 'px',
-                                left: newLeft + 'px'
-                            });
-                            break;
-                        case 'se':
-                            window.css({
-                                height: newHeight + 'px',
-                                width: newWidth + 'px'
-                            });
-                            break;
-                        case 'w':
-                            window.css({
-                                width: newWidth + 'px',
-                                left: newLeft + 'px'
-                            });
-                            break;
-                        case 'n':
-                            window.css({
-                                height: newHeight + 'px',
-                                top: newTop + 'px'
-                            });
-                            break;
-                        case 's':
-                            window.css({
-                                height: newHeight + 'px'
-                            });
-                            break;
-                        case 'e':
-                            window.css({
-                                width: newWidth + 'px'
-                            });
-                            break;
-                        default:
-
-                    }
-
-                    currentHeight = newSize.height;
-                    currentWidth = newSize.width;
-                    lastX = event.pageX;
-                    lastY = event.pageY
-                    currentTop = newTop;
-                    currentLeft = newLeft;
-                }
-
-                var calculateNewSize = function(size) {
-                    var newWidth;
-                    var newHeight;
-
-                    if (size.direction === 's' || size.direction === 'e' || size.direction === 'se') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth + (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight + (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    } else if (size.direction === 'n') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth - (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight - (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    } else if (size.direction === 'ne') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth + (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight - (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    } else if (size.direction === 'nw') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth - (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight - (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    } else if (size.direction === 'w') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth - (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight - (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    } else if (size.direction === 'sw') {
-                        if (Math.abs(size.offsetX) > Math.abs(size.offsetY)) {
-                            newWidth = size.currWidth - (size.offsetX * size.factor);
-                            newHeight = newWidth * (size.currHeight / size.currWidth);
-                        } else {
-                            newHeight = size.currHeight + (size.offsetY * size.factor);
-                            newWidth = newHeight * (size.currWidth / size.currHeight);
-                        }
-                    }
-
-                    return {
-                        "height": newHeight,
-                        "width": newWidth
-                    };
                 }
 
                 var mouseUp = function() {
+                    mouseOffsetX = 0;
+                    mouseOffsetY = 0;
+                    lastMouseX = 0;
+                    lastMouseY = 0;
                     $document.unbind('mousemove', mouseMove);
                     $document.unbind('mouseup', mouseUp);
                 }
