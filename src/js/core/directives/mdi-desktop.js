@@ -96,8 +96,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$scope', 'mdiDesktopConstants', 'desktopClassFactory',
-        function ($scope, mdiDesktopConstants, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$scope', '$window', 'mdiDesktopConstants', 'desktopClassFactory',
+        function ($scope, $window, mdiDesktopConstants, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false,
@@ -184,6 +184,12 @@
                         ]
                     }
                 );
+            }
+
+            document.onselectstart = handleSelectAttempt;
+            function handleSelectAttempt(e) {
+                if (window.event) { e.preventDefault(); }
+                return true;
             }
         }]);
 

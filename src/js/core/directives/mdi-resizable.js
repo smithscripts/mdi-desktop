@@ -19,8 +19,6 @@
             },
             link: function(scope, element, attrs) {
 
-                var window = angular.element(element.parent());
-
                 var currentHeight,
                     currentWidth,
                     currentTop,
@@ -68,6 +66,7 @@
                         }
                         if (scope.direction.indexOf("n") > -1) {
                             if (currentHeight - diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentHeight - currentMinHeight));
+                            if (currentTop + diffY < 0) mouseOffsetY = mouseOffsetY - (diffY - (diffY = 0 - currentTop));
                             scope.window.top = (currentTop + diffY) + 'px';
                             scope.window.height = (currentHeight - diffY) + 'px';
                         }

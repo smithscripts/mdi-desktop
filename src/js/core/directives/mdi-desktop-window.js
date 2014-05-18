@@ -35,7 +35,9 @@
             self.mouseMove = function(event) {
                 $scope.$apply(function() {
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
-                    if (event.pageX <= 0 || event.pageX >= self.viewportDimensions.width || $scope.split) return false;
+                    if (event.pageX <= 0 ||
+                        event.pageX >= self.viewportDimensions.width ||
+                        $scope.split) return false;
 
                     $element.css({ opacity: 0.5 });
                     self.x = event.screenX - self.startX

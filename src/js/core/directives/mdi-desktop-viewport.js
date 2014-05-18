@@ -35,6 +35,7 @@
                 $document.unbind('mouseup', self.mouseUp);
             }
 
+            $scope.dimensions = {};
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
 
