@@ -1,0 +1,73 @@
+@font-face {
+    font-family: 'mdi-desktop';
+    src:url('fonts/mdi-desktop.eot?-i8shgb');
+    src:url('fonts/mdi-desktop.eot?#iefix-i8shgb') format('embedded-opentype'),
+    url('fonts/mdi-desktop.woff?-i8shgb') format('woff'),
+    url('fonts/mdi-desktop.ttf?-i8shgb') format('truetype'),
+    url('fonts/mdi-desktop.svg?-i8shgb#mdi-desktop') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'mdi-desktop';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow-left2:before {
+    content: "\e606";
+}
+.icon-arrow-right2:before {
+    content: "\e607";
+}
+.icon-windows8:before {
+    content: "\e60b";
+}
+.icon-close:before {
+    content: "\e60c";
+}
+.icon-arrow-left:before {
+    content: "\e60d";
+}
+.icon-arrow-right:before {
+    content: "\e60e";
+}
+.icon-expand:before {
+    content: "\e60f";
+}
+.icon-contract:before {
+    content: "\e610";
+}
+.icon-minus:before {
+    content: "\e611";
+}
+.icon-home:before {
+    content: "\e612";
+}
+.icon-new-tab:before {
+    content: "\e613";
+}
+.icon-screen:before {
+    content: "\e602";
+}
+.icon-unlocked:before {
+    content: "\e600";
+}
+.icon-cloud-download:before {
+    content: "\e603";
+}
+.icon-table:before {
+    content: "\e601";
+}
+.icon-github:before {
+    content: "\e604";
+}
