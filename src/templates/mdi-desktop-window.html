@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="desktop-window-action">
-            <div class="btn-group btn-group-xs desktop-window-navigation-button-group" data-ng-show="!split">
+            <div class="btn-group btn-group-xs desktop-window-navigation-button-group">
                 <button type="button" class="btn btn-default minimize" title="Minimize" data-ng-click="minimize()" tabindex="-1">
                     <span class="icon-minus"></span>
                 </button>
@@ -29,11 +29,6 @@
                 </button>
                 <button type="button" class="btn btn-default" data-ng-class="{'desktop-window-close-button-active': window.active}" title="Close" data-ng-click="close()" tabindex="-1">
                     <span class="icon-close"></span>
-                </button>
-            </div>
-            <div class="btn-group btn-group-xs desktop-window-navigation-button-group-split" data-ng-show="split">
-                <button type="button" class="btn btn-default" title="Un-Lock" data-ng-click="unlock()" tabindex="-1">
-                    <span class="icon-unlocked"></span>
                 </button>
             </div>
         </div>
