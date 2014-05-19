@@ -1,13 +1,16 @@
-function siteController($scope, $window) {
-    $scope.goToDemo = function() {
-        $window.location.href = 'desktopDemo.html';
-    }
+var module = angular.module('site', ['hljs']);
 
-    $scope.download = function() {
-        $window.location.href = 'https://github.com/smithscripts/mdi-desktop/archive/master.zip';
-    }
+module.controller('siteController', ['$scope', '$window',
+    function ($scope, $window) {
+        $scope.goToDemo = function() {
+            $window.location.href = 'desktopDemo.html';
+        }
 
-    $scope.goToGithub = function() {
-        $window.location.href = 'https://github.com/smithscripts/mdi-desktop';
-    }
-}
+        $scope.download = function() {
+            $window.location.href = 'https://github.com/smithscripts/mdi-desktop/archive/master.zip';
+        }
+
+        $scope.goToGithub = function() {
+            $window.location.href = 'https://github.com/smithscripts/mdi-desktop';
+        }
+    }]);

@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" data-ng-app>
+<html lang="en" data-ng-app="site">
 <head>
     <meta charset="utf-8">
     <title>MDI-Desktop by smithscripts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/default.min.css">
     <link rel="stylesheet" href="/mdi-desktop/src/css/bootstrap.css">
     <link rel="stylesheet" href="/mdi-desktop/src/css/bootstrap-watch.css">
+    <link rel="stylesheet" href="/mdi-desktop/src/css/rainbow.css">
     <link rel="stylesheet" href="/mdi-desktop/src/css/site.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.js"></script>
+    <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script src="http://pc035860.github.io/angular-highlightjs/angular-highlightjs.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="/mdi-desktop/src/js/bootstrap.js"></script>
     <script src="/mdi-desktop/src/js/bootstrap-watch.js"></script>
@@ -54,7 +58,7 @@
 
 <div class="container">
 
-<div class="page-header" id="banner">
+<div class="page-header" id="banner" style="margin-bottom:0;border-bottom:0">
     <div class="row">
         <div class="col-lg-6">
             <h1>MDI-Desktop</h1>
@@ -72,28 +76,56 @@
     </div>
 </div>
 
-<!-- Typography
-================================================== -->
+
 <div class="bs-docs-section">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="page-header">
-                <h2 id="type">About the project</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-12">
-            <p>MDI-Desktop is a set of native angular directives that provide a desktop windowing environment.</p>
-        </div>
-    </div>
-
     <div class="row">
         <div class="col-lg-12">
             <div class="page-header">
                 <h2 id="type">Getting Started</h2>
             </div>
+
+            <div class="bs-callout bs-callout-info">
+                <h4>About The Project</h4>
+                <p>MDI-Desktop is a set of native angular directives that provide a simulated desktop windowing environment.</p>
+                <p>This project is still in an initial development phase and needs additional work.</p>
+            </div>
+
+            <h4>Dependencies</h4>
+            <p>The source contains a set of <b>native angular directives</b>. There are no dependencies on jQuery or Bootstraps Javascript. The <b>only required dependencies</b> are:</p>
+            <ul>
+                <li>
+                    <a href="https://angularjs.org/">AngularJS</a>
+                </li>
+                <li>
+                    <a href="http://getbootstrap.com/css/">Bootstrap CSS</a>
+                </li>
+                <li>
+                    MDI-Desktop CSS
+                </li>
+            </ul>
+            <h4>Installation</h4>
+            <p>Once the files are included in your project you just need to reference the MDI-Desktop directive in the body of your start page.</p>
+            <p><b>HTML:</b></p>
+            <div hljs>
+<div ng-controller="myController">
+    <mdi-desktop></mdi-desktop>
+</div>
+            </div>
+
+            <h4>Installation - With Options</h4>
+            <p><b>HTML:</b></p>
+            <div hljs>
+<div ng-controller="myController">
+    <div mdi-desktop="desktopOptions"></div>
+</div>
+            </div>
+            <p><b>Controller:</b></p>
+            <div hljs>
+<div ng-controller="myController">
+    <div mdi-desktop="desktopOptions"></div>
+</div>
+            </div>
+
         </div>
     </div>
 
