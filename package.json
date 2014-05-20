@@ -26,7 +26,7 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-concat": "~0.4.0",
     "grunt-angular-templates": "~0.5.5",
-    "grunt-karma": "~0.7.1",
+    "grunt-karma": "0.7.1",
     "grunt-cli": "~0.1.13",
     "karma-coverage": "~0.2.1"
   },
