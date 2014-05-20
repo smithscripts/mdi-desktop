@@ -8,4 +8,4 @@ before_script:
   - npm install -g karma-coverage
 
 script:
-  - grunt build
+  - grunt default
