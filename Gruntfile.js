@@ -43,5 +43,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat', 'karma']);
+    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat', 'karma:unit']);
 }
