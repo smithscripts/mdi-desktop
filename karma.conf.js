@@ -40,7 +40,7 @@ module.exports = function(config) {
 
         // web server port
         // CLI --port 9876
-        port: 9876,
+        port: 9020,
 
         // enable / disable colors in the output (reporters and logs)
         // CLI --colors --no-colors
@@ -64,7 +64,7 @@ module.exports = function(config) {
         // - PhantomJS
         // - IE (only Windows)
         // CLI --browsers Chrome,Firefox,Safari
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
         // If browser does not capture in given timeout [ms], kill it
         // CLI --capture-timeout 5000

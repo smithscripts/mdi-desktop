@@ -101,7 +101,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "\n" +
     "     data-ng-class=\"{'active-window': window.active}\"\r" +
     "\n" +
-    "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width}\"\r" +
+    "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}\"\r" +
     "\n" +
     "     data-ng-mousedown=\"activate($event)\"\r" +
     "\n" +
@@ -141,7 +141,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-action\">\r" +
     "\n" +
-    "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\" data-ng-show=\"!split\">\r" +
+    "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
     "                <button type=\"button\" class=\"btn btn-default minimize\" title=\"Minimize\" data-ng-click=\"minimize()\" tabindex=\"-1\">\r" +
     "\n" +
@@ -158,16 +158,6 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <button type=\"button\" class=\"btn btn-default\" data-ng-class=\"{'desktop-window-close-button-active': window.active}\" title=\"Close\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
     "\n" +
     "                    <span class=\"icon-close\"></span>\r" +
-    "\n" +
-    "                </button>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group-split\" data-ng-show=\"split\">\r" +
-    "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"Un-Lock\" data-ng-click=\"unlock()\" tabindex=\"-1\">\r" +
-    "\n" +
-    "                    <span class=\"icon-unlocked\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
@@ -197,21 +187,21 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-nw\" data-maximized=\"maximized\" data-direction=\"nw\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-nw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"nw\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-ne\" data-maximized=\"maximized\" data-direction=\"ne\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-ne\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"ne\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-sw\" data-maximized=\"maximized\" data-direction=\"sw\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-sw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"sw\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-se\" data-maximized=\"maximized\" data-direction=\"se\" data-mdi-resizable></span>\r" +
+    "    <span class=\"resizable-handle resizable-se\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"se\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-n\" data-maximized=\"maximized\" data-direction=\"n\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-n\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"n\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-s\" data-maximized=\"maximized\" data-direction=\"s\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-s\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"s\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-w\" data-maximized=\"maximized\" data-direction=\"w\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-w\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"w\"></span>\r" +
     "\n" +
-    "    <!--<span class=\"resizable-handle resizable-e\" data-maximized=\"maximized\" data-direction=\"e\" data-mdi-resizable></span>-->\r" +
+    "    <span class=\"resizable-handle resizable-e\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"e\"></span>\r" +
     "\n" +
     "</div>"
   );

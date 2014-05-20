@@ -83,7 +83,6 @@
                 expect(windows().length).toBe(1);
 
                 var closeButton = element.find('.desktop-taskbar-list-item-close')[0];
-                console.log(closeButton);
                 angular.element(closeButton).triggerHandler('click');
 
                 expect(windows().length).toBe(0);
