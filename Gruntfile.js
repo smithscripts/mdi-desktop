@@ -15,9 +15,12 @@ module.exports = function(grunt) {
             }
         },
         ngtemplates:  {
-            app:        {
-                src:      'src/**/*.html',
-                dest:     'build/templates.js'
+            app: {
+                src: 'src/**/*.html',
+                dest: 'build/templates.js',
+                options: {
+                    module: 'mdi.desktop'
+                }
             }
         },
         // Test settings
