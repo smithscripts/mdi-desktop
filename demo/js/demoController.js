@@ -1,7 +1,7 @@
 function demoController($scope) {
 
     $scope.desktopOptions = {
-        menus: 'mainmenu'
+        showLaunchMenu: false
     };
 }
 

@@ -205,8 +205,8 @@
                 self.width = width;
             };
 
-            self.x = $element[0].offsetLeft,
-                self.y = $element[0].offsetTop,
+            self.x = 0,
+                self.y = 0,
                 self.lastX = 0,
                 self.lastY = 0,
                 self.startX = 0,
@@ -298,7 +298,12 @@
                 })
             }
 
-            $scope.views = [];
+            angular.element($window).bind('resize', function () {
+                self.isElementInViewport()
+            });
+
+            $scope.disablePrevious = true;
+            $scope.disableNext = true;
             $scope.split = false;
 
             $scope.activate = function(event) {
@@ -353,12 +358,12 @@
 
             $scope.windowTitleMouseDown = function (event) {
                 if ($scope.window.maximized || $scope.window.outOfBounds) return;
-                event.preventDefault()
+                event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
                 self.y = $element[0].offsetTop;
-                self.startX = event.screenX - self.x
-                self.startY = event.screenY - self.y
+                self.startX = event.screenX - self.x;
+                self.startY = event.screenY - self.y;
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
             };
@@ -367,11 +372,47 @@
                 $scope.split = false;
                 $scope.resetWindowValues();
                 $scope.desktopCtrl.cascadeWindow($scope.window);
-            }
+            };
 
-            angular.element($window).bind('resize', function () {
-                self.isElementInViewport()
-            });
+            $scope.updateNavigationState = function() {
+                var length = $scope.window.views.length;
+                if ($scope.window.views[0].active || length === 1) {
+                    $scope.disablePrevious = true;
+                } else {
+                    $scope.disablePrevious = false;
+                }
+                if ($scope.window.views[length - 1].active || length === 1) {
+                    $scope.disableNext = true;
+                } else {
+                    $scope.disableNext = false;
+                }
+            };
+
+            $scope.previousView = function() {
+                for (var i = 0; i < $scope.window.views.length; i++) {
+                    var view = $scope.window.views[i];
+                    if (view.active)
+                    {
+                        view.active = false;
+                        $scope.window.views[i - 1].active = true;
+                        break;
+                    }
+                }
+                $scope.updateNavigationState();
+            };
+
+            $scope.nextView = function() {
+                for (var i = 0; i < $scope.window.views.length - 1; i++) {
+                    var view = $scope.window.views[i];
+                    if (view.active)
+                    {
+                        view.active = false;
+                        $scope.window.views[i + 1].active = true;
+                        break;
+                    }
+                }
+                $scope.updateNavigationState();
+            };
         }]);
 
     module.directive('mdiDesktopWindow', ['$log', '$document', '$animate', function($log, $document, $animate) {
@@ -952,13 +993,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"previous\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"btn btn-default\" title=\"previous\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
     "                    <span class=\"icon-arrow-left2\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"next\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"btn btn-default\" title=\"next\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
     "                    <span class=\"icon-arrow-right2\"></span>\r" +
     "\n" +

@@ -7,126 +7,104 @@
             return element.find('div.desktop-window-container');
         }
 
-        beforeEach(module('mdi.desktop'));
+        function getElement(type, index) {
+            return element.find(type)[index];
+        };
 
-        beforeEach(inject(function ($rootScope, $templateCache, $compile) {
-            $templateCache.put('src/templates/mdi-desktop.html', __html__['src/templates/mdi-desktop.html']);
-            $templateCache.put('src/templates/mdi-desktop-menubar.html', __html__['src/templates/mdi-desktop-menubar.html']);
-            $templateCache.put('src/templates/mdi-desktop-taskbar.html', __html__['src/templates/mdi-desktop-taskbar.html']);
-            $templateCache.put('src/templates/mdi-desktop-viewport.html', __html__['src/templates/mdi-desktop-viewport.html']);
+        beforeEach(module('mdi.desktop.window'));
+
+        beforeEach(inject(function ($rootScope, $templateCache, $compile, $controller, $document, $window) {
             $templateCache.put('src/templates/mdi-desktop-window.html', __html__['src/templates/mdi-desktop-window.html']);
-
             scope = $rootScope.$new();
             compile = $compile;
-
-            var elm = angular.element('<div mdi-desktop></div>');
+            var elm = $templateCache.get('src/templates/mdi-desktop-window.html')
             element = compile(elm)(scope);
+            ctrl = $controller('mdiDesktopWindowController', {'$scope': scope, '$element': element, '$document': $document, '$window': $window});
             scope.$digest();
-            ctrl = element.controller('mdiDesktopWindow');
         }));
 
         describe('mdi-desktop-window', function() {
-            it('should close window on click', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(1);
-
-                var buttons = element.find('.desktop-window-close-button-active');
-
-                angular.element(buttons[0]).triggerHandler('click');
-                expect(windows().length).toBe(0);
+            it('previous and next buttons should be disabled when no views are loaded', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
+                expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
             });
 
-            it('should bring window to the front on mouse down', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(2);
+            it('previous and next buttons should be disabled when one view is loaded', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
 
-                $(windows()[0]).mousedown();
+                scope.window = { views: [{ active: true }] };
+                scope.updateNavigationState();
+                scope.$digest();
 
-                var window1ZIndex = $(windows()[0]).css('z-index');
-                var window2ZIndex = $(windows()[1]).css('z-index');
-                expect(window1ZIndex).toBeGreaterThan(window2ZIndex);
+                expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
             });
 
-            it('should make window active on mouse down', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(2);
+            it('previous button should be disabled and next should be enabled when two view are loaded and the first window is active', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
 
-                $(windows()[0]).mousedown();
+                scope.window = { views: [{ active: true },  { active: false }] };
+                scope.updateNavigationState();
+                scope.$digest();
 
-                expect(angular.element(windows()[0]).hasClass('active-window')).toBeTruthy();
-                expect(angular.element(windows()[1]).hasClass('active-window')).toBeFalsy();
+                expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
             });
 
-            it('should expand window when maximized is clicked', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(1);
+            it('previous button should be enabled and next should be disabled when two view are loaded and the second window is active', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
 
-                angular.element(windows()[0]).css({
-                    top: '50px',
-                    left: '50px',
-                    height: '300px',
-                    width: '300px'
-                });
+                scope.window = { views: [{ active: false },  { active: true }] };
+                scope.updateNavigationState();
+                scope.$digest();
 
-                var maximize = element.find('.maximize')[0];
-                angular.element(maximize).triggerHandler('click');
-
-                expect(angular.element(windows()[0]).css('top')).toBe('0px');
-                expect(angular.element(windows()[0]).css('left')).toBe('0px');
-                expect(angular.element(windows()[0]).css('right')).toBe('0px');
-                expect(angular.element(windows()[0]).css('bottom')).toBe('0px');
-                expect(angular.element(windows()[0]).css('height')).toBe('100%');
-                expect(angular.element(windows()[0]).css('width')).toBe('100%');
+                expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
             });
 
-            it('should restore a maximized window when restore is clicked', function() {
-                var isoScope = element.isolateScope();
-                expect(windows().length).toBe(0);
-                isoScope.openWindow('title', 'test');
-                isoScope.$digest();
-                expect(windows().length).toBe(1);
+            it('when view one is active and next button is clicked view two should become active', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
 
-                var maximize = element.find('.maximize')[0];
-                angular.element(maximize).triggerHandler('click');
+                scope.window = { views: [{ active: true },  { active: false }] };
+                scope.updateNavigationState();
+                scope.$digest();
 
-                expect(angular.element(windows()[0]).css('top')).toBe('0px');
-                expect(angular.element(windows()[0]).css('left')).toBe('0px');
-                expect(angular.element(windows()[0]).css('right')).toBe('0px');
-                expect(angular.element(windows()[0]).css('bottom')).toBe('0px');
-                expect(angular.element(windows()[0]).css('height')).toBe('100%');
-                expect(angular.element(windows()[0]).css('width')).toBe('100%');
+                expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
 
-                angular.element(maximize).triggerHandler('click');
+                nextButton.triggerHandler('click');
 
-                expect(angular.element(windows()[0]).css('top')).toBe('50px');
-                expect(angular.element(windows()[0]).css('left')).toBe('50px');
-                expect(angular.element(windows()[0]).css('right')).toBe('auto');
-                expect(angular.element(windows()[0]).css('bottom')).toBe('auto');
-                expect(angular.element(windows()[0]).css('height')).toBe('400px');
-                expect(angular.element(windows()[0]).css('width')).toBe('400px');
+                expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
             });
 
-            it('should hide window when minimized is clicked', function() {
-                var menuItems = element.find('.menuItem');
-                expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                expect(windows().length).toBe(1);
-                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
+            it('when view two is active and previous button is clicked view one should become active', function() {
+                element.appendTo(document.body);
+                var previousButton =  angular.element(getElement('button', 0));
+                var nextButton =  angular.element(getElement('button', 1));
 
-                var minimize = element.find('.minimize')[0];
-                angular.element(minimize).triggerHandler('click');
+                scope.window = { views: [{ active: false },  { active: true }] };
+                scope.updateNavigationState();
+                scope.$digest();
 
-                expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeTruthy();
+                expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
+
+                previousButton.triggerHandler('click');
+
+                expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
+                expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
             });
         });
     });

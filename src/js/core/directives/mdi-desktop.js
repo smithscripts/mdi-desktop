@@ -100,16 +100,16 @@
         function ($scope, $window, mdiDesktopConstants, desktopClassFactory) {
             var self = this;
 
-            self.allMinimized = false,
+            self.allMinimized = false;
             self.desktop = desktopClassFactory.createDesktop();
 
             self.getOptions = function() {
                 return $scope.options;
-            }
+            };
 
             self.getWindows = function() {
                 return $scope.windows;
-            }
+            };
 
             self.getNextMaxZIndex = function() {
                 var max = 0;
@@ -119,21 +119,21 @@
                     if (tmp > max) max = tmp;
                 }
                 return max + 1;
-            }
+            };
 
             self.clearActive = function() {
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
                 });
-            }
+            };
 
             self.hideShowAll = function() {
-                self.allMinimized = !self.allMinimized
+                self.allMinimized = !self.allMinimized;
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
                     window.minimized = self.allMinimized;
                 });
-            }
+            };
 
             /**
              * Moves a window to the next cascade position.
@@ -148,17 +148,19 @@
 
                 window.top = lastWindowCascadePosition.top + 'px';
                 window.left = lastWindowCascadePosition.left + 'px';
-            }
+            };
             var minWindowCascadePosition = 40;
             var maxWindowCascadePosition = 100;
             var lastWindowCascadePosition = { top: minWindowCascadePosition, left: minWindowCascadePosition };
 
+            angular.extend(self.desktop.options, $scope.mdiDesktop);
             $scope.options = self.desktop.options;
+
             $scope.windows = [];
 
             $scope.openWindow = function(title, templateUrl) {
                 self.clearActive();
-                var zIndex = self.getNextMaxZIndex()
+                var zIndex = self.getNextMaxZIndex();
                 $scope.windows.push(
                     {
                         title: title,
@@ -180,11 +182,15 @@
                             {
                                 templateUrl: templateUrl,
                                 active: true
+                            },
+                            {
+                                templateUrl: templateUrl,
+                                active: false
                             }
                         ]
                     }
                 );
-            }
+            };
 
             document.onselectstart = handleSelectAttempt;
             function handleSelectAttempt(e) {

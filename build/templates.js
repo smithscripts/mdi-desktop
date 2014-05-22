@@ -113,13 +113,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"previous\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"btn btn-default\" title=\"previous\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
     "                    <span class=\"icon-arrow-left2\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"next\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"btn btn-default\" title=\"next\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
     "                    <span class=\"icon-arrow-right2\"></span>\r" +
     "\n" +
