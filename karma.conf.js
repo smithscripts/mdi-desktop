@@ -10,10 +10,10 @@ module.exports = function(config) {
             // 3rd-party code
             'test/lib/jquery/jquery.js',
             'test/lib/jquery/jasmine-jquery.js',
-            'test/lib/angular/1.2.9/angular.js',
-            'test/lib/angular/1.2.9/angular-animate.js',
-            'test/lib/angular/1.2.9/angular-mocks.js',
-            'test/lib/angular/1.2.9/browserTrigger.js',
+            'test/lib/angular/1.2.16/angular.js',
+            'test/lib/angular/1.2.16/angular-animate.js',
+            'test/lib/angular/1.2.16/angular-mocks.js',
+            'test/lib/angular/1.2.16/browserTrigger.js',
 
             // app code
             'src/js/core/directives/*.js',
