@@ -19,6 +19,9 @@
             compile = $compile;
             var elm = $templateCache.get('src/templates/mdi-desktop-window.html')
             element = compile(elm)(scope);
+
+            scope.window = { views: [{ active: true }] };
+
             ctrl = $controller('mdiDesktopWindowController', {'$scope': scope, '$element': element, '$document': $document, '$window': $window});
             scope.$digest();
         }));
@@ -37,7 +40,6 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.window = { views: [{ active: true }] };
                 scope.updateNavigationState();
                 scope.$digest();
 
@@ -47,10 +49,12 @@
 
             it('previous button should be disabled and next should be enabled when two view are loaded and the first window is active', function() {
                 element.appendTo(document.body);
+
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
                 scope.window = { views: [{ active: true },  { active: false }] };
+
                 scope.updateNavigationState();
                 scope.$digest();
 

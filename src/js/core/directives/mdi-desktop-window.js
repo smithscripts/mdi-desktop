@@ -193,6 +193,7 @@
             };
 
             $scope.updateNavigationState = function() {
+                if ($scope.window.views === undefined) return;
                 var length = $scope.window.views.length;
                 if ($scope.window.views[0].active || length === 1) {
                     $scope.disablePrevious = true;
