@@ -218,7 +218,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "    <div data-mdi-desktop-menubar windows=\"windows\" data-ng-if=\"options.showMenubar\"></div>\r" +
+    "    <div data-mdi-desktop-menubar windows=\"windows\" data-template-url=\"{{options.menubarTemplateUrl}}\" data-ng-if=\"options.menubarTemplateUrl != undefined\"></div>\r" +
     "\n" +
     "\r" +
     "\n" +

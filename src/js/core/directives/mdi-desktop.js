@@ -88,7 +88,7 @@
             function DesktopOptions() {
                 this.showLaunchMenu = false;
                 this.showMenubar = true;
-                this.menubarTemplateUrl = 'blah';
+                this.menubarTemplateUrl = undefined;
                 this.menubarHeight = 32;
                 this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
             }
@@ -135,6 +135,38 @@
                 });
             };
 
+            $scope.windowConfig = {
+                title: '',
+                active: true,
+                minimized: false,
+                maximized: false,
+                outOfBounds: false,
+                split: null,
+                top: 0,
+                left: 0,
+                right: 'auto',
+                bottom: 'auto',
+                height: '400px',
+                width: '400px',
+                minHeight: '200px',
+                minWidth: '200px',
+                zIndex: -1,
+                views: [
+                    {
+
+                    }
+                ]
+            };
+
+            self.openWindow = function(overrides) {
+                self.clearActive();
+                var zIndex = self.getNextMaxZIndex();
+                $scope.windowConfig.zIndex = zIndex;
+                var combined = angular.extend($scope.windowConfig, overrides);
+                var instance = angular.copy(combined);
+                $scope.windows.push(instance);
+            };
+
             /**
              * Moves a window to the next cascade position.
              */
@@ -155,42 +187,7 @@
 
             angular.extend(self.desktop.options, $scope.mdiDesktop);
             $scope.options = self.desktop.options;
-
             $scope.windows = [];
-
-            $scope.openWindow = function(title, templateUrl) {
-                self.clearActive();
-                var zIndex = self.getNextMaxZIndex();
-                $scope.windows.push(
-                    {
-                        title: title,
-                        active: true,
-                        minimized: false,
-                        maximized: false,
-                        outOfBounds: false,
-                        split: null,
-                        top: 0,
-                        left: 0,
-                        right: 'auto',
-                        bottom: 'auto',
-                        height: '400px',
-                        width: '400px',
-                        minHeight: '200px',
-                        minWidth: '200px',
-                        zIndex: zIndex,
-                        views: [
-                            {
-                                templateUrl: templateUrl,
-                                active: true
-                            },
-                            {
-                                templateUrl: templateUrl,
-                                active: false
-                            }
-                        ]
-                    }
-                );
-            };
 
             document.onselectstart = handleSelectAttempt;
             function handleSelectAttempt(e) {

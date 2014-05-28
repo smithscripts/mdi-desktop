@@ -6,6 +6,10 @@
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
             var self = this;
+
+            $scope.openWindow = function(title, templateUrl) {
+              $scope.desktopCtrl.openWindow(title, templateUrl);
+            };
         }]);
 
     module.directive('mdiDesktopMenubar', ['$compile', '$http', function($compile, $http) {
@@ -13,6 +17,7 @@
             restrict: 'A',
             replace: true,
             require: '?^mdiDesktop',
+            scope: {},
             controller: 'mdiDesktopMenubarController',
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
