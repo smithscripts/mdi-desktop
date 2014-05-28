@@ -1,7 +1,8 @@
 function demoController($scope) {
 
     $scope.desktopOptions = {
-        showLaunchMenu: false
+        showLaunchMenu: false,
+        menubarTemplateUrl: 'src/templates/mdi-desktop-menubar.html'
     };
 }
 

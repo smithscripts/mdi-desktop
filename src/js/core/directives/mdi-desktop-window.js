@@ -14,13 +14,13 @@
                 self.height,
                 self.width;
 
-            self.storeWindowValues = function(top, left, right, bottom, height, width) {
-                self.top = top;
-                self.left = left;
-                self.right = right;
-                self.bottom = bottom;
-                self.height = height;
-                self.width = width;
+            self.storeWindowValues = function() {
+                self.top = $scope.window.top;
+                self.left = $scope.window.left;
+                self.right = $scope.window.right;
+                self.bottom = $scope.window.bottom;
+                self.height = $scope.window.height;
+                self.width = $scope.window.width;
             };
 
             self.x = 0,
@@ -29,8 +29,8 @@
                 self.lastY = 0,
                 self.startX = 0,
                 self.startY = 0,
-                self.titleBar = undefined;
-            self.viewportDimensions = undefined;
+                self.titleBar = undefined,
+                self.viewportDimensions = undefined;
 
             self.mouseMove = function(event) {
                 $scope.$apply(function() {
@@ -40,8 +40,8 @@
                         $scope.split) return false;
 
                     $element.css({ opacity: 0.5 });
-                    self.x = event.screenX - self.startX
-                    self.y = event.screenY - self.startY
+                    self.x = event.screenX - self.startX;
+                    self.y = event.screenY - self.startY;
 
                     //Top Containment
                     self.y = self.y >= 0 ? self.y : 0;
@@ -62,15 +62,6 @@
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
                         $scope.split = true;
-
-                        self.storeWindowValues(
-                            $scope.window.top,
-                            $scope.window.left,
-                            $scope.window.right,
-                            $scope.window.bottom,
-                            $scope.window.height,
-                            $scope.window.width);
-
                         $scope.window.top = 0;
                         $scope.window.left = 0;
                         $scope.window.bottom = 0;
@@ -80,15 +71,6 @@
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
                         $scope.split = true;
-
-                        self.storeWindowValues(
-                            $scope.window.top,
-                            $scope.window.left,
-                            $scope.window.right,
-                            $scope.window.bottom,
-                            $scope.window.height,
-                            $scope.window.width);
-
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
@@ -146,19 +128,14 @@
             };
 
             $scope.maximize = function() {
-                if ($scope.split) return;
-                if ($scope.window.maximized) {
+                if ($scope.split) {
+                    $scope.split = false;
+                    $scope.resetWindowValues();
+                } else if ($scope.window.maximized) {
                     $scope.resetWindowValues();
                     $scope.window.maximized = false;
                 } else {
-                    self.storeWindowValues(
-                        $scope.window.top,
-                        $scope.window.left,
-                        $scope.window.right,
-                        $scope.window.bottom,
-                        $scope.window.height,
-                        $scope.window.width);
-
+                    self.storeWindowValues();
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
@@ -175,13 +152,16 @@
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.split || $scope.window.outOfBounds) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
                 self.y = $element[0].offsetTop;
                 self.startX = event.screenX - self.x;
                 self.startY = event.screenY - self.y;
+
+                self.storeWindowValues();
+
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
             };

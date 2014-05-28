@@ -8,16 +8,22 @@
             var self = this;
         }]);
 
-    module.directive('mdiDesktopMenubar', ['$log', function($log) {
+    module.directive('mdiDesktopMenubar', ['$compile', '$http', function($compile, $http) {
         return {
             restrict: 'A',
             replace: true,
-            templateUrl: 'src/templates/mdi-desktop-menubar.html',
             require: '?^mdiDesktop',
             controller: 'mdiDesktopMenubarController',
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+
+                attrs.$observe('templateUrl', function (url) {
+                    $http.get(url).then(function (response) {
+                        var tpl = $compile(response.data)(scope);
+                        element.append(tpl);
+                    });
+                });
             }
         };
     }]);

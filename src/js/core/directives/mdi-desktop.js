@@ -8,7 +8,6 @@
         'mdi.desktop.taskbar',
         'mdi.desktop.window',
         'mdi.desktop.view',
-        'mdi.draggable',
         'mdi.resizable'
     ]);
 
@@ -89,6 +88,7 @@
             function DesktopOptions() {
                 this.showLaunchMenu = false;
                 this.showMenubar = true;
+                this.menubarTemplateUrl = 'blah';
                 this.menubarHeight = 32;
                 this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
             }
