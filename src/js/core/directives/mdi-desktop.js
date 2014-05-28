@@ -86,11 +86,10 @@
              * over this object.
              */
             function DesktopOptions() {
-                this.showLaunchMenu = false;
-                this.showMenubar = true;
-                this.menubarTemplateUrl = undefined;
+                this.enableWindowCascading = true;
                 this.menubarHeight = 32;
-                this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
+                this.menubarTemplateUrl = undefined;
+                this.showLaunchMenu = false;
             }
 
             return service;
@@ -171,6 +170,7 @@
              * Moves a window to the next cascade position.
              */
             self.cascadeWindow = function (window) {
+                if (!$scope.options.enableWindowCascading) return;
                 lastWindowCascadePosition.top += 10;
                 lastWindowCascadePosition.left += 10;
                 if (lastWindowCascadePosition.top > maxWindowCascadePosition)
@@ -187,6 +187,8 @@
 
             angular.extend(self.desktop.options, $scope.mdiDesktop);
             $scope.options = self.desktop.options;
+            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
+
             $scope.windows = [];
 
             document.onselectstart = handleSelectAttempt;
