@@ -145,11 +145,17 @@ function ($scope) {
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="danger">
-                    <td>dataService</td>
-                    <td>undefined</td>
-                    <td>object</td>
-                    <td>Sets a dataservice that the window can use for validation purposes.</td>
+                <tr>
+                    <td>allowDirtyClose</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>Allows a window to close when its in a dirty state.</td>
+                </tr>
+                <tr>
+                    <td>allowInvalidClose</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>Allows a window to close when its in a invalid state.</td>
                 </tr>
                 <tr>
                     <td>enableWindowCascading</td>
@@ -157,17 +163,17 @@ function ($scope) {
                     <td>boolean</td>
                     <td>Each newly open window positions itself offset of the previously open window.</td>
                 </tr>
-                <tr class="danger">
-                    <td>isDirtyFn</td>
-                    <td>undefined</td>
-                    <td>function</td>
-                    <td>Check for unsaved data before closing a window.</td>
-                </tr>
                 <tr>
                     <td>menubarHeight</td>
                     <td>0</td>
                     <td>numeric</td>
                     <td>Sets the height of the menubar placeholder.</td>
+                </tr>
+                <tr>
+                    <td>menubarTemplateUrl</td>
+                    <td>undefined</td>
+                    <td>string</td>
+                    <td>The location of the html menubar file.</td>
                 </tr>
                 <tr>
                     <td>showMenubar</td>
@@ -218,6 +224,18 @@ function ($scope) {
                     <td>400px</td>
                     <td>string</td>
                     <td>Sets the height of the window.</td>
+                </tr>
+                <tr>
+                    <td>isDirty</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>isInvalid</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
                 </tr>
                 <tr>
                     <td>left</td>
@@ -325,7 +343,13 @@ function ($scope) {
                 </tr>
                 <tr>
                     <td>isDirty</td>
-                    <td>true</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>isInvalid</td>
+                    <td>false</td>
                     <td>boolean</td>
                     <td>...</td>
                 </tr>
@@ -334,6 +358,28 @@ function ($scope) {
                     <td>undefined</td>
                     <td>string</td>
                     <td>...</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="bs-docs-section">
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>Default Key Events</h4>
+            <table class="table table-striped table-hover ">
+                <thead>
+                <tr>
+                    <th>Keys</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Ctrl + C</td>
+                    <td>Closes Window</td>
                 </tr>
                 </tbody>
             </table>
