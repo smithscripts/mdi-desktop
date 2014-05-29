@@ -1,5 +1,5 @@
 <div class="desktop-window-container"
-     data-ng-class="{'active-window': window.active}"
+     data-ng-class="{'active-window': window.active, 'dirty-window': window.isDirty}"
      data-ng-style="{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}"
      data-ng-mousedown="activate($event)"
      data-ng-hide="window.minimized">
@@ -36,12 +36,15 @@
     <fieldset data-ng-disabled="!window.active">
         <div class="desktop-window-content">
             <div data-ng-repeat="view in window.views">
-                <!--<div data-mdi-desktop-view="view" data-ng-show="view.active" data-template-Url="{{view.templateUrl}}"></div>-->
+                <div data-mdi-desktop-view="view" data-ng-show="view.active" data-template-Url="{{view.templateUrl}}"></div>
             </div>
         </div>
     </fieldset>
     <div class="desktop-window-statusbar">
-
+        <div style="position:absolute;top:1px;left:2px">
+            <span class="icon-info" data-ng-class="{'is-dirty-icon': window.isDirty, 'no-display': !window.isDirty}"></span>
+            <span class="icon-spam" data-ng-class="{'is-invalid-icon': window.isInvalid, 'no-display': !window.isInvalid}"></span>
+        </div>
     </div>
     <span class="resizable-handle resizable-nw" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="nw"></span>
     <span class="resizable-handle resizable-ne" data-mdi-resizable data-window="window" data-maximized="maximized" data-direction="ne"></span>

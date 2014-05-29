@@ -43,24 +43,7 @@
 
     </div>
     <div class="view-content">
-        <form action="#" method="post">
-            <ul id="contactform">
-                <li>
-                    <label for="name">Your Name*</label>
-                    <span class="fieldbox"><input type="text" name="name" id="name" value=""/></span>
-                </li>
-                <li>
-                    <label for="email">Email*</label>
-                    <span class="fieldbox"><input type="text" name="email" id="email" value=""/></span>
-                </li>
-                <li>
-                    <label for="msg">Message</label>
-                    <span class="msgbox"><textarea class="area" id="msg" name="msg" rows="8" cols="30"></textarea></span>
-                </li>
-            </ul>
-
-            <p>required field*</p>
-            <input type="submit" value="Send" id="sendbutton" name="sendbutton"/>
-        </form>
+        <button data-ng-click="toggleDirtyState()" style="margin:10px;">{{$parent.view.isDirty === true ? 'Clean' : 'Make Dirty'}}</button>
+        <button data-ng-click="toggleValidState()" style="margin:10px;">{{$parent.view.isInvalid === true ? 'Clean' : 'Make Invalid'}}</button>
     </div>
 </div>

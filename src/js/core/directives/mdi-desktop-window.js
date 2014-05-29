@@ -106,6 +106,24 @@
             $scope.disableNext = true;
             $scope.split = false;
 
+            $scope.$watch('window.views', function(newValue, oldValue) {
+                if (newValue === oldValue) return;
+                $scope.window.isDirty = false;
+                $scope.window.isInvalid = false;
+                for (var i = 0; i <= $scope.window.views.length - 1; i++) {
+                    if ($scope.window.views[i].isDirty === true) {
+                        $scope.window.isDirty = true;
+                        break;
+                    }
+                }
+                for (var i = 0; i <= $scope.window.views.length - 1; i++) {
+                    if ($scope.window.views[i].isInvalid === true) {
+                        $scope.window.isInvalid = true;
+                        break;
+                    }
+                }
+            }, true);
+
             $scope.activate = function(event) {
                 if ($scope.window.maximized || $scope.window.outOfBounds) return;
                 $scope.desktopCtrl.clearActive();
@@ -148,7 +166,8 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.getWindows().splice($scope.index, 1);
+                $scope.desktopCtrl.closeWindow($scope.window);
+                //$scope.desktopCtrl.getWindows().splice($scope.index, 1);
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -164,12 +183,6 @@
 
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
-            };
-
-            $scope.unlock = function() {
-                $scope.split = false;
-                $scope.resetWindowValues();
-                $scope.desktopCtrl.cascadeWindow($scope.window);
             };
 
             $scope.updateNavigationState = function() {

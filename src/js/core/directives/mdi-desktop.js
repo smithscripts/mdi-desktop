@@ -86,6 +86,8 @@
              * over this object.
              */
             function DesktopOptions() {
+                this.allowDirtyClose = false;
+                this.allowInvalidClose = false;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
@@ -101,6 +103,7 @@
 
             self.allMinimized = false;
             self.desktop = desktopClassFactory.createDesktop();
+            self.options = undefined;
 
             self.getOptions = function() {
                 return $scope.options;
@@ -150,9 +153,14 @@
                 minHeight: '200px',
                 minWidth: '200px',
                 zIndex: -1,
+                isDirty: false,
+                isInvalid: false,
                 views: [
                     {
-
+                        active: true,
+                        isDirty: false,
+                        isInvalid: false,
+                        templateUrl: 'demo/templates/demoView1.html'
                     }
                 ]
             };
@@ -164,6 +172,19 @@
                 var combined = angular.extend($scope.windowConfig, overrides);
                 var instance = angular.copy(combined);
                 $scope.windows.push(instance);
+            };
+
+            self.closeWindow = function(window) {
+                if (!self.options.allowDirtyClose && window.isDirty) {
+                    alert("Unsaved Changes. Save changes before closing window.");
+                    return;
+                }
+
+                if (!self.options.allowInvalidClose && window.isInvalid) {
+                    alert("Data is invalid. Correct Invalid data before closing window.");
+                    return;
+                }
+                $scope.windows.splice($scope.windows.indexOf(window), 1);
             };
 
             /**
@@ -185,8 +206,8 @@
             var maxWindowCascadePosition = 100;
             var lastWindowCascadePosition = { top: minWindowCascadePosition, left: minWindowCascadePosition };
 
-            angular.extend(self.desktop.options, $scope.mdiDesktop);
-            $scope.options = self.desktop.options;
+            self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+            $scope.options = self.options;
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
 
             $scope.windows = [];
