@@ -96,7 +96,63 @@
                         $scope.window.outOfBounds = false;
                     };
                 })
-            }
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getWindow
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Gets the window object.
+             *
+             * @returns {object} window object.
+             */
+            self.getWindow = function() {
+                return $scope.window;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.setWindowTitle
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Sets the window title.
+             *
+             * @param {string} value to display in the window title bar.
+             */
+            self.setWindowTitle = function(value) {
+                $scope.window.title = value;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getActiveView
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Gets the active view.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveView = function () {
+                var activeView = null;
+                angular.forEach($scope.window.views, function (view) {
+                    if (view.active === true) {
+                        activeView = view;
+                    }
+                });
+                return activeView;
+            };
+
+            self.addView = function(view) {
+                $scope.window.views.push(view);
+                $scope.updateNavigationState();
+            };
 
             angular.element($window).bind('resize', function () {
                 self.isElementInViewport()
@@ -105,24 +161,6 @@
             $scope.disablePrevious = true;
             $scope.disableNext = true;
             $scope.split = false;
-
-            $scope.$watch('window.views', function(newValue, oldValue) {
-                if (newValue === oldValue) return;
-                $scope.window.isDirty = false;
-                $scope.window.isInvalid = false;
-                for (var i = 0; i <= $scope.window.views.length - 1; i++) {
-                    if ($scope.window.views[i].isDirty === true) {
-                        $scope.window.isDirty = true;
-                        break;
-                    }
-                }
-                for (var i = 0; i <= $scope.window.views.length - 1; i++) {
-                    if ($scope.window.views[i].isInvalid === true) {
-                        $scope.window.isInvalid = true;
-                        break;
-                    }
-                }
-            }, true);
 
             $scope.activate = function(event) {
                 if ($scope.window.maximized || $scope.window.outOfBounds) return;
@@ -167,7 +205,6 @@
 
             $scope.close = function() {
                 $scope.desktopCtrl.closeWindow($scope.window);
-                //$scope.desktopCtrl.getWindows().splice($scope.index, 1);
             };
 
             $scope.windowTitleMouseDown = function (event) {

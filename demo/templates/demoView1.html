@@ -1,49 +1,10 @@
-<style>
-    .view-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-
-    .view-menubar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 20px;
-        background-color: #efefef;
-    }
-
-    .view-content {
-        position: absolute;
-        top: 20px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: auto;
-    }
-
-    label {
-        display:block;
-        padding-bottom:5px;
-        margin-top:20px;
-    }
-
-    #contactform li {
-        list-style:none;
-        padding-bottom:20px;
-    }
-</style>
-
-
-<div class="view-container" data-ng-controller="demoViewController">
+<div class="view-container">
     <div class="view-menubar">
 
     </div>
     <div class="view-content">
-        <button data-ng-click="toggleDirtyState()" style="margin:10px;">{{$parent.view.isDirty === true ? 'Clean' : 'Make Dirty'}}</button>
-        <button data-ng-click="toggleValidState()" style="margin:10px;">{{$parent.view.isInvalid === true ? 'Clean' : 'Make Invalid'}}</button>
+        <button data-ng-click="toggleDirtyState()" style="margin:10px;width:100px">{{$parent.view.isDirty === true ? 'Clean' : 'Make Dirty'}}</button>
+        <button data-ng-click="toggleValidState()" style="margin:10px;width:100px">{{$parent.view.isInvalid === true ? 'Clean' : 'Make Invalid'}}</button>
+        <button data-ng-click="addAView()" style="margin:10px;width:100px">Add A View</button>
     </div>
 </div>

@@ -3,7 +3,9 @@
 
     </style>
 
-    <div data-mdi-desktop-menubar windows="windows" data-template-url="{{options.menubarTemplateUrl}}" data-ng-if="options.menubarTemplateUrl != undefined"></div>
+    <div class="desktop-menubar-container" data-ng-style="{'height': options.menubarHeight + 'px'}">
+        <div data-mdi-desktop-menubar windows="windows" data-template-url="{{options.menubarTemplateUrl}}" data-ng-if="options.menubarTemplateUrl != undefined"></div>
+    </div>
 
     <div data-mdi-desktop-viewport windows="windows"></div>
 

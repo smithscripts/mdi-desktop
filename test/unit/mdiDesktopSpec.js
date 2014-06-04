@@ -46,9 +46,10 @@
             });
 
             it('should close window on click', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
 
                 var buttons = element.find('.desktop-window-close-button-active');
@@ -58,10 +59,11 @@
             });
 
             it('should bring window to the front on mouse down', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(2);
 
                 $(windows()[0]).mousedown();
@@ -72,10 +74,11 @@
             });
 
             it('should make window active on mouse down', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(2);
 
                 $(windows()[0]).mousedown();
@@ -85,17 +88,11 @@
             });
 
             it('should expand window when maximized is clicked', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
-
-                angular.element(windows()[0]).css({
-                    top: '50px',
-                    left: '50px',
-                    height: '300px',
-                    width: '300px'
-                });
 
                 var maximize = element.find('.maximize')[0];
                 angular.element(maximize).triggerHandler('click');
@@ -111,7 +108,7 @@
             it('should restore a maximized window when restore is clicked', function() {
                 var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                isoScope.openWindow('title', 'test');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
                 isoScope.$digest();
                 expect(windows().length).toBe(1);
 
@@ -136,9 +133,10 @@
             });
 
             it('should hide window when minimized is clicked', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                ctrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
                 expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
 

@@ -1,7 +1,7 @@
 (function() {
     "use strict";
     describe('mdi-desktop-taskbar-controller', function() {
-        var compile, scope, element, ctrl;
+        var compile, scope, element, desktopCtrl, taskbarCtrl;
 
         function windows() {
             return element.find('div.desktop-window-container');
@@ -22,15 +22,17 @@
             var elm = angular.element('<div mdi-desktop></div>');
             element = compile(elm)(scope);
             scope.$digest();
-            ctrl = element.controller('mdiDesktopTaskbar');
+            desktopCtrl = element.controller('mdiDesktop');
+            taskbarCtrl = element.controller('mdiDesktopTaskbar');
         }));
 
         describe('mdi-desktop-taskbar', function() {
 
             it('should show window when window is hidden', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
                 expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
 
@@ -45,9 +47,10 @@
             });
 
             it('should hide window when window is active', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
                 expect(angular.element(windows()[0]).hasClass('ng-hide')).toBeFalsy();
 
@@ -58,10 +61,11 @@
             });
 
             it('should bring window to the front if shown and not active', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(2);
 
                 var window1ZIndex = $(windows()[0]).css('z-index');
@@ -77,9 +81,10 @@
             });
 
             it('should close window when close button is clicked', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(1);
 
                 var closeButton = element.find('.desktop-taskbar-list-item-close')[0];
@@ -89,10 +94,11 @@
             });
 
             it('should hide all windows when hide/show button is click the first time', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(2);
 
                 var windowToggleBtn = element.find('.desktop-taskbar-hide-button')[0];
@@ -103,10 +109,11 @@
             });
 
             it('should show all windows when hide/show button is click the second time', function() {
-                var menuItems = element.find('.menuItem');
+                var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
-                angular.element(menuItems[0]).triggerHandler('click');
-                angular.element(menuItems[0]).triggerHandler('click');
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});
+                isoScope.$digest();
                 expect(windows().length).toBe(2);
 
                 var windowToggleBtn = element.find('.desktop-taskbar-hide-button')[0];

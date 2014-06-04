@@ -6,6 +6,10 @@
     module.controller('mdiDesktopMenubarController', ['$scope',
         function ($scope) {
             var self = this;
+
+            $scope.openWindow = function(event, windowOverrides) {
+              $scope.desktopCtrl.openWindow(windowOverrides);
+            };
         }]);
 
     module.directive('mdiDesktopMenubar', ['$compile', '$http', function($compile, $http) {
@@ -13,6 +17,7 @@
             restrict: 'A',
             replace: true,
             require: '?^mdiDesktop',
+            scope: {},
             controller: 'mdiDesktopMenubarController',
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
@@ -95,13 +100,13 @@
         return {
             restrict: 'A',
             replace: true,
+            scope: {
+                view: '='
+            },
             link: function(scope, element, attrs) {
-                attrs.$observe('templateUrl', function (url) {
-                    $http.get(url).then(function (response) {
-                        var tpl = $compile(response.data)(scope);
-                        element.append(tpl);
-                    });
-                });
+                if (!scope.view.directiveName) return;
+                var tpl = $compile('<div ' + scope.view.directiveName + '></div>')(scope);
+                element.append(tpl);
             }
         };
     }]);
@@ -284,7 +289,20 @@
                         $scope.window.outOfBounds = false;
                     };
                 })
-            }
+            };
+
+            self.getWindow = function() {
+                return $scope.window;
+            };
+
+            self.setWindowTitle = function(value) {
+                $scope.window.title = value;
+            };
+
+            self.addView = function(view) {
+                $scope.window.views.push(view);
+                $scope.updateNavigationState();
+            };
 
             angular.element($window).bind('resize', function () {
                 self.isElementInViewport()
@@ -336,7 +354,7 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.getWindows().splice($scope.index, 1);
+                $scope.desktopCtrl.closeWindow($scope.window);
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -352,12 +370,6 @@
 
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
-            };
-
-            $scope.unlock = function() {
-                $scope.split = false;
-                $scope.resetWindowValues();
-                $scope.desktopCtrl.cascadeWindow($scope.window);
             };
 
             $scope.updateNavigationState = function() {
@@ -437,50 +449,30 @@
         'mdi.resizable'
     ]);
 
-    module.constant('mdiDesktopConstants', {
-        // copied from http://www.lsauer.com/2011/08/javascript-keymap-keycodes-in-json.html
-        keymap: {
-            TAB: 9,
-            STRG: 17,
-            CTRL: 17,
-            CTRLRIGHT: 18,
-            CTRLR: 18,
-            SHIFT: 16,
-            RETURN: 13,
-            ENTER: 13,
-            BACKSPACE: 8,
-            BCKSP: 8,
-            ALT: 18,
-            ALTR: 17,
-            ALTRIGHT: 17,
-            SPACE: 32,
-            WIN: 91,
-            MAC: 91,
-            FN: null,
-            UP: 38,
-            DOWN: 40,
-            LEFT: 37,
-            RIGHT: 39,
-            ESC: 27,
-            DEL: 46,
-            F1: 112,
-            F2: 113,
-            F3: 114,
-            F4: 115,
-            F5: 116,
-            F6: 117,
-            F7: 118,
-            F8: 119,
-            F9: 120,
-            F10: 121,
-            F11: 122,
-            F12: 123
-        }
+    module.service('WindowService', function() {
+    var wc = undefined;
+
+    var setWindowConfig = function(windowConfig) {
+        wc = windowConfig
+    };
+
+    var updateDirtyState = function(value) {
+        wc.isDirty = value;
+    };
+
+    var updateValidState = function(value) {
+        wc.isInvalid = value;
+    };
+
+    return {
+        setWindowConfig: setWindowConfig,
+        updateDirtyState: updateDirtyState,
+        updateValidState: updateValidState
+    }
     });
 
     module.service('desktopClassFactory',
         function () {
-
             var service = {
                 /**
                  * @ngdoc method
@@ -512,22 +504,24 @@
              * over this object.
              */
             function DesktopOptions() {
-                this.showLaunchMenu = false;
-                this.showMenubar = true;
-                this.menubarTemplateUrl = undefined;
+                this.allowDirtyClose = false;
+                this.allowInvalidClose = false;
+                this.enableWindowCascading = true;
                 this.menubarHeight = 32;
-                this.viewportTop = this.showMenubar ? this.menubarHeight : 0;
+                this.menubarTemplateUrl = undefined;
+                this.showLaunchMenu = false;
             }
 
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$scope', '$window', 'mdiDesktopConstants', 'desktopClassFactory',
-        function ($scope, $window, mdiDesktopConstants, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$scope', '$window', 'desktopClassFactory',
+        function ($scope, $window, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
             self.desktop = desktopClassFactory.createDesktop();
+            self.options = undefined;
 
             self.getOptions = function() {
                 return $scope.options;
@@ -561,10 +555,54 @@
                 });
             };
 
+            $scope.windowConfig = {
+                title: '',
+                active: true,
+                minimized: false,
+                maximized: false,
+                outOfBounds: false,
+                split: null,
+                top: 0,
+                left: 0,
+                right: 'auto',
+                bottom: 'auto',
+                height: '400px',
+                width: '400px',
+                minHeight: '200px',
+                minWidth: '200px',
+                zIndex: -1,
+                isDirty: false,
+                isInvalid: false,
+                views: []
+            };
+
+            self.openWindow = function(overrides) {
+                self.clearActive();
+                var zIndex = self.getNextMaxZIndex();
+                $scope.windowConfig.zIndex = zIndex;
+                var combined = angular.extend($scope.windowConfig, overrides);
+                var instance = angular.copy(combined);
+                $scope.windows.push(instance);
+            };
+
+            self.closeWindow = function(window) {
+                if (!self.options.allowDirtyClose && window.isDirty) {
+                    alert("Unsaved Changes. Save changes before closing window.");
+                    return;
+                }
+
+                if (!self.options.allowInvalidClose && window.isInvalid) {
+                    alert("Data is invalid. Correct Invalid data before closing window.");
+                    return;
+                }
+                $scope.windows.splice($scope.windows.indexOf(window), 1);
+            };
+
             /**
              * Moves a window to the next cascade position.
              */
             self.cascadeWindow = function (window) {
+                if (!$scope.options.enableWindowCascading) return;
                 lastWindowCascadePosition.top += 10;
                 lastWindowCascadePosition.left += 10;
                 if (lastWindowCascadePosition.top > maxWindowCascadePosition)
@@ -579,44 +617,11 @@
             var maxWindowCascadePosition = 100;
             var lastWindowCascadePosition = { top: minWindowCascadePosition, left: minWindowCascadePosition };
 
-            angular.extend(self.desktop.options, $scope.mdiDesktop);
-            $scope.options = self.desktop.options;
+            self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+            $scope.options = self.options;
+            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
 
             $scope.windows = [];
-
-            $scope.openWindow = function(title, templateUrl) {
-                self.clearActive();
-                var zIndex = self.getNextMaxZIndex();
-                $scope.windows.push(
-                    {
-                        title: title,
-                        active: true,
-                        minimized: false,
-                        maximized: false,
-                        outOfBounds: false,
-                        split: null,
-                        top: 0,
-                        left: 0,
-                        right: 'auto',
-                        bottom: 'auto',
-                        height: '400px',
-                        width: '400px',
-                        minHeight: '200px',
-                        minWidth: '200px',
-                        zIndex: zIndex,
-                        views: [
-                            {
-                                templateUrl: templateUrl,
-                                active: true
-                            },
-                            {
-                                templateUrl: templateUrl,
-                                active: false
-                            }
-                        ]
-                    }
-                );
-            };
 
             document.onselectstart = handleSelectAttempt;
             function handleSelectAttempt(e) {
@@ -788,15 +793,19 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-menubar.html',
     "<div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
     "\n" +
-    "    <nav class=\"navbar navbar-default\">\r" +
+    "    <div data-ng-controller=\"demoMenubarController\">\r" +
     "\n" +
-    "        <ul class=\"nav navbar-nav\">\r" +
+    "        <nav class=\"navbar navbar-default\">\r" +
     "\n" +
-    "            <li><a href=\"#\" class=\"menuItem\" data-ng-click=\"openWindow('Issue', 'demo/templates/demoView1.html')\">Item1</a></li>\r" +
+    "            <ul class=\"nav navbar-nav\">\r" +
     "\n" +
-    "        </ul>\r" +
+    "                <li><a href=\"#\" class=\"menuItem\" data-ng-click=\"openWindow($event, 'view1')\">Item1</a></li>\r" +
     "\n" +
-    "    </nav>\r" +
+    "            </ul>\r" +
+    "\n" +
+    "        </nav>\r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "</div>"
   );
@@ -883,7 +892,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-window.html',
     "<div class=\"desktop-window-container\"\r" +
     "\n" +
-    "     data-ng-class=\"{'active-window': window.active}\"\r" +
+    "     data-ng-class=\"{'active-window': window.active, 'dirty-window': window.isDirty}\"\r" +
     "\n" +
     "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}\"\r" +
     "\n" +
@@ -957,7 +966,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div data-ng-repeat=\"view in window.views\">\r" +
     "\n" +
-    "                <!--<div data-mdi-desktop-view=\"view\" data-ng-show=\"view.active\" data-template-Url=\"{{view.templateUrl}}\"></div>-->\r" +
+    "                <div data-mdi-desktop-view view=\"view\" data-ng-show=\"view.active\"></div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -967,7 +976,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-window-statusbar\">\r" +
     "\n" +
-    "\r" +
+    "        <div class=\"desktop-window-statusbar-container\">\r" +
+    "\n" +
+    "            <span class=\"icon-info\" data-ng-class=\"{'is-dirty-icon': window.isDirty, 'no-display': !window.isDirty}\"></span>\r" +
+    "\n" +
+    "            <span class=\"icon-spam\" data-ng-class=\"{'is-invalid-icon': window.isInvalid, 'no-display': !window.isInvalid}\"></span>\r" +
+    "\n" +
+    "        </div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
@@ -1002,7 +1017,11 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "    <div data-mdi-desktop-menubar windows=\"windows\" data-template-url=\"{{options.menubarTemplateUrl}}\" data-ng-if=\"options.menubarTemplateUrl != undefined\"></div>\r" +
+    "    <div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
+    "\n" +
+    "        <div data-mdi-desktop-menubar windows=\"windows\" data-template-url=\"{{options.menubarTemplateUrl}}\" data-ng-if=\"options.menubarTemplateUrl != undefined\"></div>\r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "\r" +
     "\n" +

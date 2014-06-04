@@ -4,15 +4,19 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-menubar.html',
     "<div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
     "\n" +
-    "    <nav class=\"navbar navbar-default\">\r" +
+    "    <div data-ng-controller=\"demoMenubarController\">\r" +
     "\n" +
-    "        <ul class=\"nav navbar-nav\">\r" +
+    "        <nav class=\"navbar navbar-default\">\r" +
     "\n" +
-    "            <li><a href=\"#\" class=\"menuItem\" data-ng-click=\"openWindow('Issue', 'demo/templates/demoView1.html')\">Item1</a></li>\r" +
+    "            <ul class=\"nav navbar-nav\">\r" +
     "\n" +
-    "        </ul>\r" +
+    "                <li><a href=\"#\" class=\"menuItem\" data-ng-click=\"openWindow($event, 'view1')\">Item1</a></li>\r" +
     "\n" +
-    "    </nav>\r" +
+    "            </ul>\r" +
+    "\n" +
+    "        </nav>\r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "</div>"
   );
@@ -99,7 +103,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-window.html',
     "<div class=\"desktop-window-container\"\r" +
     "\n" +
-    "     data-ng-class=\"{'active-window': window.active}\"\r" +
+    "     data-ng-class=\"{'active-window': window.active, 'dirty-window': window.isDirty}\"\r" +
     "\n" +
     "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}\"\r" +
     "\n" +
@@ -173,7 +177,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div data-ng-repeat=\"view in window.views\">\r" +
     "\n" +
-    "                <!--<div data-mdi-desktop-view=\"view\" data-ng-show=\"view.active\" data-template-Url=\"{{view.templateUrl}}\"></div>-->\r" +
+    "                <div data-mdi-desktop-view view=\"view\" data-ng-show=\"view.active\"></div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -183,7 +187,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-window-statusbar\">\r" +
     "\n" +
-    "\r" +
+    "        <div class=\"desktop-window-statusbar-container\">\r" +
+    "\n" +
+    "            <span class=\"icon-info\" data-ng-class=\"{'is-dirty-icon': window.isDirty, 'no-display': !window.isDirty}\"></span>\r" +
+    "\n" +
+    "            <span class=\"icon-spam\" data-ng-class=\"{'is-invalid-icon': window.isInvalid, 'no-display': !window.isInvalid}\"></span>\r" +
+    "\n" +
+    "        </div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
@@ -218,7 +228,11 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "    <div data-mdi-desktop-menubar windows=\"windows\" data-template-url=\"{{options.menubarTemplateUrl}}\" data-ng-if=\"options.menubarTemplateUrl != undefined\"></div>\r" +
+    "    <div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
+    "\n" +
+    "        <div data-mdi-desktop-menubar windows=\"windows\" data-template-url=\"{{options.menubarTemplateUrl}}\" data-ng-if=\"options.menubarTemplateUrl != undefined\"></div>\r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "\r" +
     "\n" +

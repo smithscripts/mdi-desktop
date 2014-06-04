@@ -7,13 +7,13 @@
         return {
             restrict: 'A',
             replace: true,
+            scope: {
+                view: '='
+            },
             link: function(scope, element, attrs) {
-                attrs.$observe('templateUrl', function (url) {
-                    $http.get(url).then(function (response) {
-                        var tpl = $compile(response.data)(scope);
-                        element.append(tpl);
-                    });
-                });
+                if (!scope.view.directiveName) return;
+                var tpl = $compile('<div ' + scope.view.directiveName + '></div>')(scope);
+                element.append(tpl);
             }
         };
     }]);

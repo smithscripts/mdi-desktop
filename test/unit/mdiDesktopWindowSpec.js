@@ -110,6 +110,18 @@
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
             });
+
+            it('getActiveWindow returns the active window', function() {
+                element.appendTo(document.body);
+
+                scope.window = { views: [{ active: false },  { active: true }] };
+                scope.updateNavigationState();
+                scope.$digest();
+
+                var activeView = ctrl.getActiveView();
+
+                expect(scope.window.views.indexOf(activeView)).toBe(1);
+            });
         });
     });
 

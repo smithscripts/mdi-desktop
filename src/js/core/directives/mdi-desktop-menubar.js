@@ -7,8 +7,8 @@
         function ($scope) {
             var self = this;
 
-            $scope.openWindow = function(title, templateUrl) {
-              $scope.desktopCtrl.openWindow(title, templateUrl);
+            $scope.openWindow = function(event, windowOverrides) {
+              $scope.desktopCtrl.openWindow(windowOverrides);
             };
         }]);
 
