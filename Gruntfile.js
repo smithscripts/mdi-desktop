@@ -33,10 +33,14 @@ module.exports = function(grunt) {
         'gh-pages': {
             options: {
                 base: 'build',
-                add:true
+                add:true,
+                user: {
+                    name: 'smithscripts',
+                    email: 'rob.smith@outlook.com'
+                }
             },
             src: '**/*'
-            
+
         },
         // Test settings
         karma: {
