@@ -30,6 +30,14 @@ module.exports = function(grunt) {
                 }
             }
         },
+        'gh-pages': {
+            options: {
+                base: 'build',
+                add:true
+            },
+            src: '**/*'
+            
+        },
         // Test settings
         karma: {
             options: {
@@ -52,8 +60,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-karma');
 
 
-    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat', 'uglify', 'karma:unit']);
+    grunt.registerTask('default', [
+        'clean',
+        'ngtemplates',
+        'concat',
+        'uglify',
+        'gh-pages',
+        'karma:unit']);
 }

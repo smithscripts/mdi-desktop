@@ -1,4 +1,26 @@
-var module = angular.module('viewDirectives', []);
+var module = angular.module('demo', []);
+
+module.controller('demoController', function($scope) {
+    $scope.desktopOptions = {
+        showLaunchMenu: false,
+        menubarTemplateUrl: 'src/templates/mdi-desktop-menubar.html'
+    };
+});
+
+module.controller('demoMenubarController', function($scope) {
+    $scope.openWindow = function($event, viewName) {
+        $scope.windowConfig = {
+            views: [
+                {
+                    active: true,
+                    viewName: viewName
+                }
+            ]
+        };
+
+        $scope.$parent.desktopCtrl.openWindow($scope.windowConfig);
+    };
+});
 
 module.controller('view1Controller', ['$scope',
     function ($scope) {

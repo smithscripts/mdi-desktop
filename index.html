@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="mdi.desktop">
+<html>
 <head>
     <title>mdi-desktop</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
@@ -8,12 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-animate.min.js"></script>
 
-    <script src="/mdi-desktop/demo/js/controllers/demoController.js"></script>
-    <script src="/mdi-desktop/demo/js/controllers/demoMenubarController.js"></script>
-    <script src="/mdi-desktop/demo/js/controllers/demoViewController.js"></script>
-    <script src="/mdi-desktop/demo/js/directives/views.js"></script>
-
-
+    <!--Source-->
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-menubar.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-viewport.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-taskbar.js"></script>
@@ -21,8 +16,17 @@
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop-view.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-desktop.js"></script>
     <script src="/mdi-desktop/src/js/core/directives/mdi-resizable.js"></script>
+
+    <!--Demo-->
+    <script src="/mdi-desktop/demo/js/demo.js"></script>
+
+    <!--Bootstrap-->
+    <script src="/mdi-desktop/demo/js/app.js"></script>
 </head>
-<body data-ng-controller="demoController">
+<body >
+<div data-ng-controller="demoController">
     <div data-mdi-desktop="desktopOptions"></div>
+</div>
+
 </body>
 </html>

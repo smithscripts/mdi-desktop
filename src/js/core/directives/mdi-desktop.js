@@ -8,8 +8,7 @@
         'mdi.desktop.taskbar',
         'mdi.desktop.window',
         'mdi.desktop.view',
-        'mdi.resizable',
-        //'viewDirectives'
+        'mdi.resizable'
     ]);
 
     module.service('desktopClassFactory',
