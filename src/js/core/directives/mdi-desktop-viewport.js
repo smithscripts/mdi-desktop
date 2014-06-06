@@ -44,10 +44,44 @@
                 $document.on('mouseup', self.mouseUp);
             };
 
+            /**
+             * @mdi.doc $watch function
+             * @name mdiDesktopViewportController.visibilityWatch
+             * @module mdi.desktop.viewport
+             * @function
+             *
+             * @description
+             * Monitors for visibility changes. This method is responsible for updating the viewport
+             * dimensions in situations where the viewport is initially hidden.
+             *
+             */
+            $scope.$watch(function () {
+                //Emulates jQuery's $(element).is(':visible')
+                return $element[0].offsetWidth > 0 && $element[0].offsetHeight > 0;
+            }, function (newValue, oldValue) {
+                $scope.dimensions = {
+                    height: $element[0].clientHeight,
+                    width: $element[0].clientWidth
+                };
+            });
+
+            /**
+             * @mdi.doc window.resize
+             * @name mdiDesktopViewportController.resize
+             * @module mdi.desktop.viewport
+             * @function
+             *
+             * @description
+             * This method is responsible for updating the viewport dimensions when the
+             * browser window has been re-sized.
+             *
+             */
             angular.element($window).bind('resize', function () {
-                $scope.$apply(function() {
-                    $scope.dimensions.height = $element[0].clientHeight;
-                    $scope.dimensions.width = $element[0].clientWidth;
+                $scope.$apply(function () {
+                    $scope.dimensions = {
+                        height: $element[0].clientHeight,
+                        width: $element[0].clientWidth
+                    };
                 });
             });
         }]);
@@ -65,13 +99,6 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
-
-                $timeout(function() {
-                    scope.dimensions = {
-                        height: element[0].clientHeight,
-                        width: element[0].clientWidth
-                    };
-                }, 100)
             }
         };
     }]);

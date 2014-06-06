@@ -99,13 +99,13 @@
     module.directive('mdiDesktopView', ['$compile', '$http', function($compile, $http) {
         return {
             restrict: 'A',
-            replace: true,
+            replace: false,
             scope: {
                 view: '='
             },
             link: function(scope, element, attrs) {
-                if (!scope.view.directiveName) return;
-                var tpl = $compile('<div ' + scope.view.directiveName + '></div>')(scope);
+                if (!scope.view.viewName) return;
+                var tpl = $compile('<div ' + scope.view.viewName + '></div>')(scope);
                 element.append(tpl);
             }
         };
@@ -158,10 +158,44 @@
                 $document.on('mouseup', self.mouseUp);
             };
 
+            /**
+             * @mdi.doc $watch function
+             * @name mdiDesktopViewportController.visibilityWatch
+             * @module mdi.desktop.viewport
+             * @function
+             *
+             * @description
+             * Monitors for visibility changes. This method is responsible for updating the viewport
+             * dimensions in situations where the viewport is initially hidden.
+             *
+             */
+            $scope.$watch(function () {
+                //Emulates jQuery's $(element).is(':visible')
+                return $element[0].offsetWidth > 0 && $element[0].offsetHeight > 0;
+            }, function (newValue, oldValue) {
+                $scope.dimensions = {
+                    height: $element[0].clientHeight,
+                    width: $element[0].clientWidth
+                };
+            });
+
+            /**
+             * @mdi.doc window.resize
+             * @name mdiDesktopViewportController.resize
+             * @module mdi.desktop.viewport
+             * @function
+             *
+             * @description
+             * This method is responsible for updating the viewport dimensions when the
+             * browser window has been re-sized.
+             *
+             */
             angular.element($window).bind('resize', function () {
-                $scope.$apply(function() {
-                    $scope.dimensions.height = $element[0].clientHeight;
-                    $scope.dimensions.width = $element[0].clientWidth;
+                $scope.$apply(function () {
+                    $scope.dimensions = {
+                        height: $element[0].clientHeight,
+                        width: $element[0].clientWidth
+                    };
                 });
             });
         }]);
@@ -179,13 +213,6 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
-
-                $timeout(function() {
-                    scope.dimensions = {
-                        height: element[0].clientHeight,
-                        width: element[0].clientWidth
-                    };
-                }, 100)
             }
         };
     }]);
@@ -275,9 +302,44 @@
                 $element.css({ opacity: 1.0 });
                 $document.unbind('mousemove', self.mouseMove);
                 $document.unbind('mouseup', self.mouseUp);
-            }
+            };
 
-            self.isElementInViewport = function() {
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.updateNavigationState
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Updates window navigation buttons based location of the active view in the views array.
+             *
+             */
+            self.updateNavigationState = function() {
+                if ($scope.window.views === undefined) return;
+                var length = $scope.window.views.length;
+                if ($scope.window.views[0].active || length === 1) {
+                    $scope.disablePrevious = true;
+                } else {
+                    $scope.disablePrevious = false;
+                }
+                if ($scope.window.views[length - 1].active || length === 1) {
+                    $scope.disableNext = true;
+                } else {
+                    $scope.disableNext = false;
+                }
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.isWindowInViewport
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Determines if the window is within the viewport boundaries.
+             *
+             */
+            self.isWindowInViewport = function() {
                 $scope.$apply(function() {
                     var windowTop = $element[0].offsetTop;
                     var windowLeft = $element[0].offsetLeft;
@@ -291,21 +353,105 @@
                 })
             };
 
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getWindow
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Gets the window object.
+             *
+             * @returns {object} window object.
+             */
             self.getWindow = function() {
                 return $scope.window;
             };
 
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.setWindowTitle
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Sets the window title.
+             *
+             * @param {string} value to display in the window title bar.
+             */
             self.setWindowTitle = function(value) {
                 $scope.window.title = value;
             };
 
-            self.addView = function(view) {
-                $scope.window.views.push(view);
-                $scope.updateNavigationState();
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getActiveView
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Gets the active view.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveView = function () {
+                var activeView = null;
+                angular.forEach($scope.window.views, function (view) {
+                    if (view.active === true) {
+                        activeView = view;
+                    }
+                });
+                return activeView;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.removeForwardViews
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Removes all view(s) forward of the active view.
+             *
+             */
+            self.removeForwardViews = function () {
+                var activeView = self.getActiveView();
+                var activeViewIndex = $scope.window.views.indexOf(activeView);
+                for (var i =  $scope.window.views.length; i > activeViewIndex; i--) {
+                    $scope.window.views.splice(i, 1);
+                }
+                self.updateNavigationState();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.addView
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * Removes all inactive view(s) following the active view and inserts a new view.
+             *
+             */
+            self.addView = function(viewConfigOverlay) {
+                self.removeForwardViews();
+                var activeView = self.getActiveView();
+                activeView.active = false;
+                var viewConfig = {
+                    active: true,
+                    data: undefined,
+                    isDirty: false,
+                    isInvalid: false,
+                    viewName: undefined
+                };
+                var extended = angular.extend(viewConfig, viewConfigOverlay);
+                var copy = angular.copy(extended);
+                $scope.window.views.push(copy);
+                self.updateNavigationState();
             };
 
             angular.element($window).bind('resize', function () {
-                self.isElementInViewport()
+                self.isWindowInViewport()
             });
 
             $scope.disablePrevious = true;
@@ -372,21 +518,6 @@
                 $document.on('mouseup', self.mouseUp);
             };
 
-            $scope.updateNavigationState = function() {
-                if ($scope.window.views === undefined) return;
-                var length = $scope.window.views.length;
-                if ($scope.window.views[0].active || length === 1) {
-                    $scope.disablePrevious = true;
-                } else {
-                    $scope.disablePrevious = false;
-                }
-                if ($scope.window.views[length - 1].active || length === 1) {
-                    $scope.disableNext = true;
-                } else {
-                    $scope.disableNext = false;
-                }
-            };
-
             $scope.previousView = function() {
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
@@ -397,7 +528,7 @@
                         break;
                     }
                 }
-                $scope.updateNavigationState();
+                self.updateNavigationState();
             };
 
             $scope.nextView = function() {
@@ -410,13 +541,13 @@
                         break;
                     }
                 }
-                $scope.updateNavigationState();
+                self.updateNavigationState();
             };
 
-            $scope.updateNavigationState();
+            self.updateNavigationState();
         }]);
 
-    module.directive('mdiDesktopWindow', ['$log', '$document', '$animate', function($log, $document, $animate) {
+    module.directive('mdiDesktopWindow', [function() {
         return {
             restrict: 'A',
             replace: true,
@@ -446,30 +577,9 @@
         'mdi.desktop.taskbar',
         'mdi.desktop.window',
         'mdi.desktop.view',
-        'mdi.resizable'
+        'mdi.resizable',
+        //'viewDirectives'
     ]);
-
-    module.service('WindowService', function() {
-    var wc = undefined;
-
-    var setWindowConfig = function(windowConfig) {
-        wc = windowConfig
-    };
-
-    var updateDirtyState = function(value) {
-        wc.isDirty = value;
-    };
-
-    var updateValidState = function(value) {
-        wc.isInvalid = value;
-    };
-
-    return {
-        setWindowConfig: setWindowConfig,
-        updateDirtyState: updateDirtyState,
-        updateValidState: updateValidState
-    }
-    });
 
     module.service('desktopClassFactory',
         function () {
@@ -573,16 +683,22 @@
                 zIndex: -1,
                 isDirty: false,
                 isInvalid: false,
-                views: []
+                views: [
+                    {
+                        active: true,
+                        data: undefined,
+                        isDirty: false,
+                        isInvalid: false,
+                        viewName: undefined
+                    }
+                ]
             };
 
             self.openWindow = function(overrides) {
                 self.clearActive();
-                var zIndex = self.getNextMaxZIndex();
-                $scope.windowConfig.zIndex = zIndex;
+                $scope.windowConfig.zIndex = self.getNextMaxZIndex();
                 var combined = angular.extend($scope.windowConfig, overrides);
-                var instance = angular.copy(combined);
-                $scope.windows.push(instance);
+                $scope.windows.push(angular.copy(combined));
             };
 
             self.closeWindow = function(window) {

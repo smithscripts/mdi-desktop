@@ -23,6 +23,13 @@ module.exports = function(grunt) {
                 }
             }
         },
+        uglify: {
+            my_target: {
+                files: {
+                    'build/mdi-desktop.min.js': ['build/mdi-desktop.js']
+                }
+            }
+        },
         // Test settings
         karma: {
             options: {
@@ -44,7 +51,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat', 'karma:unit']);
+
+    grunt.registerTask('default', ['clean', 'ngtemplates', 'concat', 'uglify', 'karma:unit']);
 }

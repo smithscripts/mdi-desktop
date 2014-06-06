@@ -8,30 +8,9 @@
         'mdi.desktop.taskbar',
         'mdi.desktop.window',
         'mdi.desktop.view',
-        'mdi.resizable'
+        'mdi.resizable',
+        //'viewDirectives'
     ]);
-
-    module.service('WindowService', function() {
-    var wc = undefined;
-
-    var setWindowConfig = function(windowConfig) {
-        wc = windowConfig
-    };
-
-    var updateDirtyState = function(value) {
-        wc.isDirty = value;
-    };
-
-    var updateValidState = function(value) {
-        wc.isInvalid = value;
-    };
-
-    return {
-        setWindowConfig: setWindowConfig,
-        updateDirtyState: updateDirtyState,
-        updateValidState: updateValidState
-    }
-    });
 
     module.service('desktopClassFactory',
         function () {
@@ -135,16 +114,22 @@
                 zIndex: -1,
                 isDirty: false,
                 isInvalid: false,
-                views: []
+                views: [
+                    {
+                        active: true,
+                        data: undefined,
+                        isDirty: false,
+                        isInvalid: false,
+                        viewName: undefined
+                    }
+                ]
             };
 
             self.openWindow = function(overrides) {
                 self.clearActive();
-                var zIndex = self.getNextMaxZIndex();
-                $scope.windowConfig.zIndex = zIndex;
+                $scope.windowConfig.zIndex = self.getNextMaxZIndex();
                 var combined = angular.extend($scope.windowConfig, overrides);
-                var instance = angular.copy(combined);
-                $scope.windows.push(instance);
+                $scope.windows.push(angular.copy(combined));
             };
 
             self.closeWindow = function(window) {

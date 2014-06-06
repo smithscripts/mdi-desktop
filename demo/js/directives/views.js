@@ -16,7 +16,7 @@ module.controller('view1Controller', ['$scope',
         };
 
         $scope.addAView = function() {
-            $scope.windowCtrl.addView({active: false, directiveName: 'view2'});
+            $scope.windowCtrl.addView({viewName: 'view2'});
         };
 
         $scope.init = function() {

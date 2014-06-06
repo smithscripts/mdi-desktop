@@ -6,13 +6,13 @@
     module.directive('mdiDesktopView', ['$compile', '$http', function($compile, $http) {
         return {
             restrict: 'A',
-            replace: true,
+            replace: false,
             scope: {
                 view: '='
             },
             link: function(scope, element, attrs) {
-                if (!scope.view.directiveName) return;
-                var tpl = $compile('<div ' + scope.view.directiveName + '></div>')(scope);
+                if (!scope.view.viewName) return;
+                var tpl = $compile('<div ' + scope.view.viewName + '></div>')(scope);
                 element.append(tpl);
             }
         };

@@ -40,7 +40,7 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
@@ -55,7 +55,7 @@
 
                 scope.window = { views: [{ active: true },  { active: false }] };
 
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
@@ -68,7 +68,7 @@
                 var nextButton =  angular.element(getElement('button', 1));
 
                 scope.window = { views: [{ active: false },  { active: true }] };
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
@@ -81,7 +81,7 @@
                 var nextButton =  angular.element(getElement('button', 1));
 
                 scope.window = { views: [{ active: true },  { active: false }] };
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
@@ -99,7 +99,7 @@
                 var nextButton =  angular.element(getElement('button', 1));
 
                 scope.window = { views: [{ active: false },  { active: true }] };
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
@@ -115,12 +115,171 @@
                 element.appendTo(document.body);
 
                 scope.window = { views: [{ active: false },  { active: true }] };
-                scope.updateNavigationState();
+                ctrl.updateNavigationState();
                 scope.$digest();
 
                 var activeView = ctrl.getActiveView();
 
                 expect(scope.window.views.indexOf(activeView)).toBe(1);
+            });
+
+            it('outOfBounds should be true when window leaves the viewport boundaries', function() {
+                element.appendTo(document.body);
+
+                scope.window = {
+                    title: '',
+                    active: true,
+                    minimized: false,
+                    maximized: false,
+                    outOfBounds: false,
+                    split: null,
+                    top: 0,
+                    left: 0,
+                    right: 'auto',
+                    bottom: 'auto',
+                    height: '400px',
+                    width: '400px',
+                    minHeight: '200px',
+                    minWidth: '200px',
+                    zIndex: -1,
+                    isDirty: false,
+                    isInvalid: false,
+                    views: [{ active: false },  { active: true }]
+                };
+
+                scope.viewportCtrl = {
+                    getViewportDimensions: function() { return { height: 100, width: 100 }}
+                };
+                ctrl.isWindowInViewport();
+                expect(scope.window.outOfBounds).toBeTruthy();
+                expect(scope.window.active).toBeFalsy();
+            });
+
+            it('outOfBounds should be false when window enters the viewport boundaries', function() {
+                element.appendTo(document.body);
+
+                scope.window = {
+                    title: '',
+                    active: true,
+                    minimized: false,
+                    maximized: false,
+                    outOfBounds: false,
+                    split: null,
+                    top: 0,
+                    left: 0,
+                    right: 'auto',
+                    bottom: 'auto',
+                    height: '400px',
+                    width: '400px',
+                    minHeight: '200px',
+                    minWidth: '200px',
+                    zIndex: -1,
+                    isDirty: false,
+                    isInvalid: false,
+                    views: [{ active: false },  { active: true }]
+                };
+
+                scope.viewportCtrl = {
+                    getViewportDimensions: function() { return { height: 100, width: 100 }}
+                };
+                ctrl.isWindowInViewport();
+                expect(scope.window.outOfBounds).toBeTruthy();
+
+                scope.viewportCtrl = {
+                    getViewportDimensions: function() { return { height: 1000, width: 1000 }}
+                };
+                ctrl.isWindowInViewport();
+                expect(scope.window.outOfBounds).toBeFalsy();
+            });
+
+            describe('removeForwardViews', function() {
+
+                it('should remove all view after the first active window', function() {
+                    element.appendTo(document.body);
+
+                    scope.window = {
+                        title: '',
+                        active: true,
+                        minimized: false,
+                        maximized: false,
+                        outOfBounds: false,
+                        split: null,
+                        top: 0,
+                        left: 0,
+                        right: 'auto',
+                        bottom: 'auto',
+                        height: '400px',
+                        width: '400px',
+                        minHeight: '200px',
+                        minWidth: '200px',
+                        zIndex: -1,
+                        isDirty: false,
+                        isInvalid: false,
+                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                    };
+                    ctrl.removeForwardViews();
+                    expect(scope.window.views.length).toBe(2);
+                });
+
+            });
+
+            describe('addView', function() {
+
+                iit('deactivates currently active view', function() {
+                    element.appendTo(document.body);
+
+                    scope.window = {
+                        title: '',
+                        active: true,
+                        minimized: false,
+                        maximized: false,
+                        outOfBounds: false,
+                        split: null,
+                        top: 0,
+                        left: 0,
+                        right: 'auto',
+                        bottom: 'auto',
+                        height: '400px',
+                        width: '400px',
+                        minHeight: '200px',
+                        minWidth: '200px',
+                        zIndex: -1,
+                        isDirty: false,
+                        isInvalid: false,
+                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                    };
+                    ctrl.addView({});
+                    expect(scope.window.views[1].active).toBeFalsy();
+                });
+
+                iit('inserts a new active view at the end of the array', function() {
+                    element.appendTo(document.body);
+
+                    scope.window = {
+                        title: '',
+                        active: true,
+                        minimized: false,
+                        maximized: false,
+                        outOfBounds: false,
+                        split: null,
+                        top: 0,
+                        left: 0,
+                        right: 'auto',
+                        bottom: 'auto',
+                        height: '400px',
+                        width: '400px',
+                        minHeight: '200px',
+                        minWidth: '200px',
+                        zIndex: -1,
+                        isDirty: false,
+                        isInvalid: false,
+                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                    };
+                    ctrl.addView({});
+                    expect(scope.window.views.length).toBe(3);
+                    expect(scope.window.views[2].active).toBeTruthy(3);
+                });
+
             });
         });
     });

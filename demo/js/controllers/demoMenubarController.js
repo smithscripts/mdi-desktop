@@ -1,11 +1,11 @@
 function demoMenubarController($scope) {
-    $scope.openWindow = function($event, directiveName) {
+    $scope.openWindow = function($event, viewName) {
 
         $scope.windowConfig = {
             views: [
                 {
                     active: true,
-                    directiveName: directiveName
+                    viewName: viewName
                 }
             ]
         }
