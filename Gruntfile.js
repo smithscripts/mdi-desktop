@@ -10,14 +10,14 @@ module.exports = function(grunt) {
         concat: {
             dist: {
                 src: ['src/js/**/*.js', '<%= ngtemplates.app.dest %>'],
-                dest: 'build/mdi-desktop.js',
+                dest: 'build/dist/mdi-desktop.js',
                 nonull: true
             }
         },
         ngtemplates:  {
             app: {
                 src: 'src/**/*.html',
-                dest: 'build/templates.js',
+                dest: 'build/dist/templates.js',
                 options: {
                     module: 'mdi.desktop'
                 }
@@ -26,8 +26,18 @@ module.exports = function(grunt) {
         uglify: {
             my_target: {
                 files: {
-                    'build/mdi-desktop.min.js': ['build/mdi-desktop.js']
+                    'build/dist/mdi-desktop.min.js': ['build/dist/mdi-desktop.js']
                 }
+            }
+        },
+        copy: {
+            main: {
+                expand: true,
+                cwd: 'build/',
+                src: '**',
+                dest: 'dist/',
+                flatten: true,
+                filter: 'isFile'
             }
         },
         'gh-pages': {
@@ -64,6 +74,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-karma');
 
@@ -74,5 +85,7 @@ module.exports = function(grunt) {
         'concat',
         'uglify',
         'gh-pages',
+        'copy',
+        'clean',
         'karma:unit']);
 }
