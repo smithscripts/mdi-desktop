@@ -578,7 +578,7 @@
         'mdi.desktop.window',
         'mdi.desktop.view',
         'mdi.resizable'
-    ]);
+    ]); //test
 
     module.service('desktopClassFactory',
         function () {

@@ -1,6 +1,7 @@
 .git/
 .idea/
 .grunt/
+.build/
 coverage/
 node_modules/
 stylesheets/

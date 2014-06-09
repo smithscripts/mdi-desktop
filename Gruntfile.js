@@ -3,6 +3,9 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         clean: {
             options: { force: true},
+            templates: {
+                src: ['build/dist/templates.js']
+            },
             all: {
                 src: ['build/**/*.*']
             }
@@ -84,6 +87,7 @@ module.exports = function(grunt) {
         'ngtemplates',
         'concat',
         'uglify',
+        'clean:templates',
         'gh-pages',
         'copy',
         'clean',
