@@ -961,27 +961,6 @@
 angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   'use strict';
 
-  $templateCache.put('src/templates/mdi-desktop-menubar.html',
-    "<div class=\"desktop-menubar-container\" data-ng-style=\"{'height': options.menubarHeight + 'px'}\">\r" +
-    "\n" +
-    "    <div data-ng-controller=\"demoMenubarController\">\r" +
-    "\n" +
-    "        <nav class=\"navbar navbar-default\">\r" +
-    "\n" +
-    "            <ul class=\"nav navbar-nav\">\r" +
-    "\n" +
-    "                <li><a href=\"#\" class=\"menuItem\" data-ng-click=\"openWindow($event, 'view1')\">Item1</a></li>\r" +
-    "\n" +
-    "            </ul>\r" +
-    "\n" +
-    "        </nav>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "</div>"
-  );
-
-
   $templateCache.put('src/templates/mdi-desktop-taskbar.html',
     "<div class=\"desktop-taskbar-container\">\r" +
     "\n" +
@@ -989,7 +968,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-taskbar-launch-button\">\r" +
     "\n" +
-    "            <span class=\"icon-windows8\"></span>\r" +
+    "            <span class=\"desktop-icon-windows8\"></span>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
@@ -999,7 +978,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <ul>\r" +
     "\n" +
-    "            <li class=\"list-item am-fade-and-scale\"\r" +
+    "            <li class=\"am-fade-and-scale\"\r" +
     "\n" +
     "                data-ng-repeat=\"window in windows\"\r" +
     "\n" +
@@ -1007,17 +986,15 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                data-ng-click=\"updateWindowState(window)\">\r" +
     "\n" +
-    "                <div class=\"relative\">\r" +
+    "                <div class=\"desktop-relative\">\r" +
     "\n" +
     "                    <div class=\"desktop-taskbar-list-item-title\">\r" +
     "\n" +
     "                        <span data-ng-show=\"!window.outOfBounds\">{{window.title}}</span>\r" +
     "\n" +
-    "                        <span data-ng-show=\"window.outOfBounds\">Click to Recover</span>\r" +
-    "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <i class=\"icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, $index)\"></i>\r" +
+    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, $index)\"></i>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1063,7 +1040,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-window.html',
     "<div class=\"desktop-window-container\"\r" +
     "\n" +
-    "     data-ng-class=\"{'active-window': window.active, 'dirty-window': window.isDirty}\"\r" +
+    "     data-ng-class=\"{'desktop-window-active': window.active}\"\r" +
     "\n" +
     "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}\"\r" +
     "\n" +
@@ -1075,17 +1052,17 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-navigation\">\r" +
     "\n" +
-    "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\">\r" +
+    "            <div class=\"desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"previous\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"previous\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
-    "                    <span class=\"icn-arrow-left2\"></span>\r" +
+    "                    <span class=\"desktop-icon-arrow-left2\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" title=\"next\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"next\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
-    "                    <span class=\"icn-arrow-right2\"></span>\r" +
+    "                    <span class=\"desktop-icon-arrow-right2\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
@@ -1105,23 +1082,23 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-action\">\r" +
     "\n" +
-    "            <div class=\"btn-group btn-group-xs desktop-window-navigation-button-group\">\r" +
+    "            <div class=\"desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default minimize\" title=\"Minimize\" data-ng-click=\"minimize()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default minimize\" title=\"Minimize\" data-ng-click=\"minimize()\" tabindex=\"-1\">\r" +
     "\n" +
-    "                    <span class=\"icn-minus\"></span>\r" +
-    "\n" +
-    "                </button>\r" +
-    "\n" +
-    "                <button type=\"button\" class=\"btn btn-default maximize\" title=\"\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
-    "\n" +
-    "                    <span data-ng-class=\"{'icn-expand': !window.maximized, 'icn-contract': window.maximized}\"></span>\r" +
+    "                    <span class=\"desktop-icon-minus\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"btn btn-default\" data-ng-class=\"{'desktop-window-close-button-active': window.active}\" title=\"Close\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default maximize\" title=\"\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
     "\n" +
-    "                    <span class=\"icn-close\"></span>\r" +
+    "                    <span data-ng-class=\"{'desktop-icon-expand': !window.maximized, 'desktop-icon-contract': window.maximized}\"></span>\r" +
+    "\n" +
+    "                </button>\r" +
+    "\n" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" data-ng-class=\"{'desktop-window-close-button': window.active}\" title=\"Close\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
+    "\n" +
+    "                    <span class=\"desktop-icon-close\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
@@ -1131,7 +1108,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <fieldset data-ng-disabled=\"!window.active\">\r" +
+    "    <fieldset data-ng-disabled=\"!window.active\" class=\"desktop-window-fieldset\">\r" +
     "\n" +
     "        <div class=\"desktop-window-content\">\r" +
     "\n" +
@@ -1149,29 +1126,29 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-statusbar-container\">\r" +
     "\n" +
-    "            <span class=\"icn-info\" data-ng-class=\"{'is-dirty-icn': window.isDirty, 'no-display': !window.isDirty}\"></span>\r" +
+    "            <span class=\"desktop-icon-info\" data-ng-class=\"{'is-dirty-icn': window.isDirty, 'desktop-display-none': !window.isDirty}\"></span>\r" +
     "\n" +
-    "            <span class=\"icn-spam\" data-ng-class=\"{'is-invalid-icn': window.isInvalid, 'no-display': !window.isInvalid}\"></span>\r" +
+    "            <span class=\"desktop-icon-spam\" data-ng-class=\"{'is-invalid-icn': window.isInvalid, 'desktop-display-none': !window.isInvalid}\"></span>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-nw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"nw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-nw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"nw\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-ne\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"ne\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-ne\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"ne\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-sw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"sw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-sw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"sw\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-se\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"se\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-se\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"se\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-n\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"n\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-n\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"n\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-s\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"s\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-s\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"s\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-w\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"w\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-w\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"w\"></span>\r" +
     "\n" +
-    "    <span class=\"resizable-handle resizable-e\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"e\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-e\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"e\"></span>\r" +
     "\n" +
     "</div>"
   );
