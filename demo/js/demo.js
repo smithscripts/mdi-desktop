@@ -3,7 +3,7 @@ var module = angular.module('demo', []);
 module.controller('demoController', function($scope) {
     $scope.desktopOptions = {
         showLaunchMenu: false,
-        menubarTemplateUrl: 'src/templates/mdi-desktop-menubar.html'
+        menubarTemplateUrl: 'demo/templates/menu.html'
     };
 });
 

@@ -34,26 +34,27 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            main: {
+            cssToBuild: {
                 expand: true,
-                cwd: 'build/',
+                cwd: 'src/css',
+                src: '**',
+                dest: 'build/dist',
+                flatten: false
+            },
+            srcToDist: {
+                expand: true,
+                cwd: 'build/dist',
                 src: '**',
                 dest: 'dist/',
-                flatten: true,
-                filter: 'isFile'
+                flatten: false
             }
         },
         'gh-pages': {
             options: {
                 base: 'build',
-                add:true,
-                user: {
-                    name: 'smithscripts',
-                    email: 'rob.smith@outlook.com'
-                }
+                add:true
             },
             src: '**/*'
-
         },
         // Test settings
         karma: {
@@ -81,15 +82,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-karma');
 
-
     grunt.registerTask('default', [
         'clean',
         'ngtemplates',
         'concat',
         'uglify',
         'clean:templates',
+        'copy:cssToBuild',
         'gh-pages',
-        'copy',
+        'copy:srcToDist',
         'clean',
         'karma:unit']);
 }
