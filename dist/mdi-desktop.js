@@ -17,8 +17,8 @@
             restrict: 'A',
             replace: true,
             require: '?^mdiDesktop',
-            scope: {},
-            controller: 'mdiDesktopMenubarController',
+            //scope: {},
+            //controller: 'mdiDesktopMenubarController',
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
@@ -450,6 +450,20 @@
                 self.updateNavigationState();
             };
 
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getGlobals
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * returns the global values.
+             *
+             */
+            self.getGlobals = function() {
+                return $scope.window.globals;
+            };
+
             angular.element($window).bind('resize', function () {
                 self.isWindowInViewport()
             });
@@ -633,8 +647,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$scope', '$window', 'desktopClassFactory',
-        function ($scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -740,6 +754,7 @@
             self.openWindow = function(overrides) {
                 self.clearActive();
                 $scope.windowConfig.zIndex = self.getNextMaxZIndex();
+                $scope.windowConfig.global = angular.copy($rootScope.$eval($scope.options.globals));
                 var combined = angular.extend($scope.windowConfig, overrides);
                 $scope.windows.push(angular.copy(combined));
             };
@@ -820,6 +835,7 @@
             $scope.windowConfig = {
                 title: '',
                 active: true,
+                globals: undefined,
                 minimized: false,
                 maximized: false,
                 outOfBounds: false,
