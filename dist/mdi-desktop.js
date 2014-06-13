@@ -754,7 +754,7 @@
             self.openWindow = function(overrides) {
                 self.clearActive();
                 $scope.windowConfig.zIndex = self.getNextMaxZIndex();
-                $scope.windowConfig.global = angular.copy($rootScope.$eval($scope.options.globals));
+                $scope.windowConfig.globals = angular.copy($rootScope.$eval($scope.options.globals));
                 var combined = angular.extend($scope.windowConfig, overrides);
                 $scope.windows.push(angular.copy(combined));
             };
