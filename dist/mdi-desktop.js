@@ -754,29 +754,12 @@
             self.openWindow = function(overrides) {
                 self.clearActive();
                 $scope.windowConfig.zIndex = self.getNextMaxZIndex();
-                $scope.windowConfig.globals = self.shallowCopy($rootScope.$eval($scope.options.globals));
                 var combined = angular.extend($scope.windowConfig, overrides);
-                $scope.windows.push(angular.copy(combined));
+                var copy = angular.copy(combined)
+                //FIX: Deep copy of global variables causes a stackoverflow.
+                copy.globals = $rootScope.$eval($scope.options.globals);
+                $scope.windows.push(copy);
             };
-
-            /**
-             * @mdi.doc function
-             * @name mdiDesktopController.shallowCopy
-             * @module mdi.desktop
-             *
-             * @description
-             * Creates a shallow copy of an object.
-             *
-             * @param {object}
-             * @returns {object}
-             */
-            self.shallowCopy = function(obj)
-            {
-                var newObj= {};
-                for (var i in obj)
-                    newObj[i] = obj[i];
-                return newObj;
-            }
 
             /**
              * @mdi.doc function
