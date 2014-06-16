@@ -234,15 +234,6 @@
                 self.height,
                 self.width;
 
-            self.storeWindowValues = function() {
-                self.top = $scope.window.top;
-                self.left = $scope.window.left;
-                self.right = $scope.window.right;
-                self.bottom = $scope.window.bottom;
-                self.height = $scope.window.height;
-                self.width = $scope.window.width;
-            };
-
             self.x = 0,
                 self.y = 0,
                 self.lastX = 0,
@@ -251,6 +242,24 @@
                 self.startY = 0,
                 self.titleBar = undefined,
                 self.viewportDimensions = undefined;
+
+            self.viewConfig = {
+                active: true,
+                entity: undefined,
+                entityIndex: 0,
+                isDirty: false,
+                isInvalid: false,
+                viewName: undefined
+            };
+
+            self.storeWindowValues = function() {
+                self.top = $scope.window.top;
+                self.left = $scope.window.left;
+                self.right = $scope.window.right;
+                self.bottom = $scope.window.bottom;
+                self.height = $scope.window.height;
+                self.width = $scope.window.width;
+            };
 
             self.mouseMove = function(event) {
                 $scope.$apply(function() {
@@ -437,17 +446,24 @@
                 self.removeForwardViews();
                 var activeView = self.getActiveView();
                 activeView.active = false;
-                var viewConfig = {
-                    active: true,
-                    data: undefined,
-                    isDirty: false,
-                    isInvalid: false,
-                    viewName: undefined
-                };
-                var extended = angular.extend(viewConfig, viewConfigOverlay);
-                var copy = angular.copy(extended);
-                $scope.window.views.push(copy);
+                var viewConfigInstance = Object.create(self.viewConfig);
+                var extended = angular.extend(viewConfigInstance, viewConfigOverlay);
+                $scope.window.views.push(extended);
                 self.updateNavigationState();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.getGlobals
+             * @module mdi.desktop.window
+             * @function
+             *
+             * @description
+             * returns the global values.
+             *
+             */
+            self.getGlobals = function() {
+                return $scope.window.globals;
             };
 
             angular.element($window).bind('resize', function () {
@@ -633,8 +649,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$scope', '$window', 'desktopClassFactory',
-        function ($scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -739,9 +755,11 @@
              */
             self.openWindow = function(overrides) {
                 self.clearActive();
-                $scope.windowConfig.zIndex = self.getNextMaxZIndex();
-                var combined = angular.extend($scope.windowConfig, overrides);
-                $scope.windows.push(angular.copy(combined));
+                var windowConfigInstance = Object.create(self.windowConfig);
+                windowConfigInstance.zIndex = self.getNextMaxZIndex();
+                windowConfigInstance.globals = $rootScope.$eval($scope.options.globals);
+                var combined = angular.extend(windowConfigInstance, overrides);
+                $scope.windows.push(combined);
             };
 
             /**
@@ -817,9 +835,10 @@
              * over this object.
              *
              */
-            $scope.windowConfig = {
+            self.windowConfig = {
                 title: '',
                 active: true,
+                globals: undefined,
                 minimized: false,
                 maximized: false,
                 outOfBounds: false,

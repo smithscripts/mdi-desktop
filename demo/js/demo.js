@@ -1,8 +1,10 @@
 var module = angular.module('demo', []);
 
-module.controller('demoController', function($scope) {
+module.controller('demoController', function($rootScope, $scope) {
+    $rootScope.globals = { issueRef: 1 };
     $scope.desktopOptions = {
         showLaunchMenu: false,
+        globals: 'globals',
         menubarTemplateUrl: 'demo/templates/menu.html'
     };
 });

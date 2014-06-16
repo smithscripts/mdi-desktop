@@ -64,8 +64,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$scope', '$window', 'desktopClassFactory',
-        function ($scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -170,9 +170,11 @@
              */
             self.openWindow = function(overrides) {
                 self.clearActive();
-                $scope.windowConfig.zIndex = self.getNextMaxZIndex();
-                var combined = angular.extend($scope.windowConfig, overrides);
-                $scope.windows.push(angular.copy(combined));
+                var windowConfigInstance = Object.create(self.windowConfig);
+                windowConfigInstance.zIndex = self.getNextMaxZIndex();
+                windowConfigInstance.globals = $rootScope.$eval($scope.options.globals);
+                var combined = angular.extend(windowConfigInstance, overrides);
+                $scope.windows.push(combined);
             };
 
             /**
@@ -248,9 +250,10 @@
              * over this object.
              *
              */
-            $scope.windowConfig = {
+            self.windowConfig = {
                 title: '',
                 active: true,
+                globals: undefined,
                 minimized: false,
                 maximized: false,
                 outOfBounds: false,
