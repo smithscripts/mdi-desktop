@@ -104,8 +104,8 @@
                 view: '='
             },
             link: function(scope, element, attrs) {
-                if (!scope.view.viewName) return;
-                var tpl = $compile('<div ' + scope.view.viewName + '></div>')(scope);
+                if (!scope.view.viewDirective) return;
+                var tpl = $compile('<div ' + scope.view.viewDirective + '></div>')(scope);
                 element.append(tpl);
             }
         };
@@ -245,7 +245,7 @@
 
             self.viewConfig = {
                 active: true,
-                entity: undefined,
+                entities: undefined,
                 entityIndex: 0,
                 isDirty: false,
                 isInvalid: false,
@@ -857,10 +857,11 @@
                 views: [
                     {
                         active: true,
-                        data: undefined,
+                        entities: undefined,
+                        entityIndex: 0,
                         isDirty: false,
                         isInvalid: false,
-                        viewName: undefined
+                        viewDirective: undefined
                     }
                 ]
             };
