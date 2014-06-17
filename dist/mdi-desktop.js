@@ -757,9 +757,9 @@
                 self.clearActive();
                 var windowConfigInstance = Object.create(self.windowConfig);
                 windowConfigInstance.zIndex = self.getNextMaxZIndex();
-                windowConfigInstance.globals = $rootScope.$eval($scope.options.globals);
-                var combined = angular.extend(windowConfigInstance, overrides);
-                $scope.windows.push(combined);
+                windowConfigInstance.globals = angular.extend({}, $rootScope.$eval($scope.options.globals));
+                var extended = angular.extend(windowConfigInstance, overrides);
+                $scope.windows.push(extended);
             };
 
             /**
