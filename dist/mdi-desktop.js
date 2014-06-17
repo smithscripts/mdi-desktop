@@ -249,7 +249,7 @@
                 entityIndex: 0,
                 isDirty: false,
                 isInvalid: false,
-                viewName: undefined
+                viewDirective: undefined
             };
 
             self.storeWindowValues = function() {
