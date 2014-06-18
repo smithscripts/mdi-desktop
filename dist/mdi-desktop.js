@@ -105,7 +105,7 @@
             },
             link: function(scope, element, attrs) {
                 if (!scope.view.viewDirective) return;
-                var tpl = $compile('<div ' + scope.view.viewDirective + '></div>')(scope);
+                var tpl = $compile('<div ' + scope.view.viewDirective + ' view="view"></div>')(scope);
                 element.append(tpl);
             }
         };
