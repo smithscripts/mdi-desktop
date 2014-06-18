@@ -998,7 +998,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <ul>\r" +
     "\n" +
-    "            <li class=\"am-fade-and-scale\"\r" +
+    "            <li class=\"am-fade-and-scale desktop-text\"\r" +
     "\n" +
     "                data-ng-repeat=\"window in windows\"\r" +
     "\n" +
@@ -1041,7 +1041,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
     "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
-    "    <span class=\"desktop-viewport-dimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
+    "    <span class=\"desktop-viewport-dimensions desktop-text\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
     "    <div data-ng-repeat=\"window in windows\" class=\"am-fade-and-scale\">\r" +
     "\n" +
@@ -1094,7 +1094,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"desktop-window-title-container\">\r" +
     "\n" +
-    "                <div>{{window.title}}</div>\r" +
+    "                <div class=\"desktop-text\">{{window.title}}</div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
