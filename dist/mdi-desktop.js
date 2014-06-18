@@ -707,7 +707,7 @@
                     tmp = $scope.windows[i].zIndex;
                     if (tmp > max) max = tmp;
                 }
-                return max++;
+                return ++max;
             };
 
             /**
