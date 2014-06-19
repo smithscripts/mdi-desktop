@@ -169,7 +169,7 @@
     margin-top: 3px;
     margin-left: 3px;
     outline: 0;
-    box-shadow: 0 0 10px blue;
+    box-shadow: 0 0 10px #0057FF;
 }
 
 .desktop-taskbar-list {
@@ -239,7 +239,7 @@
 
 .desktop-active-taskbar-list-item {
     outline: 0;
-    box-shadow: 0 0 10px blue;
+    box-shadow: 0 0 10px #0057FF;
 }
 
 .desktop-taskbar-hide {
@@ -264,7 +264,7 @@
     margin-top: 3px;
     margin-left: 3px;
     outline: 0;
-    box-shadow: 0 0 10px blue;
+    box-shadow: 0 0 10px #0057FF;
 }
 
 .desktop-window-container {
@@ -386,7 +386,13 @@
 
 .desktop-window-active {
     outline: 0;
-    box-shadow: 0 0 10px blue;
+    box-shadow: 0 0 10px #0057FF;
+}
+
+.desktop-window-maximized {
+    border-radius: 0;
+    -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 .desktop-window-is-dirty {
