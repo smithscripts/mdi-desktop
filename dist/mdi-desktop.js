@@ -12,7 +12,7 @@
             };
         }]);
 
-    module.directive('mdiDesktopMenubar', ['$compile', '$http', '$templateCache', function($compile, $http, $templateCache) {
+    module.directive('mdiDesktopMenubar', ['$compile', '$http', function($compile, $http) {
         return {
             restrict: 'A',
             replace: true,
@@ -24,7 +24,7 @@
                 scope.options = desktopCtrl.getOptions();
 
                 attrs.$observe('templateUrl', function (url) {
-                    $http.get(url, {cache: $templateCache}).then(function (response) {
+                    $http.get(url, {cache: true}).then(function (response) {
                         var tpl = $compile(response.data)(scope);
                         element.append(tpl);
                     });
