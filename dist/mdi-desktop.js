@@ -430,7 +430,8 @@
                 self.removeForwardViews();
                 var activeView = self.getActiveView();
                 activeView.active = false;
-                var viewConfigInstance = Object.create(self.viewConfig);
+                var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
+                var viewConfigInstance = Object.create(viewConfig);
                 var extended = angular.extend(viewConfigInstance, viewConfigOverlay);
                 $scope.window.views.push(extended);
                 self.updateNavigationState();
@@ -719,6 +720,20 @@
             self.maxWindowCascadePosition = 100;
             self.lastWindowCascadePosition = { top: self.minWindowCascadePosition, left: self.minWindowCascadePosition };
             self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.getDesktop
+             * @module mdi.desktop
+             *
+             * @description
+             * Return an object of desktop.
+             *
+             * @returns {object} desktop.
+             */
+            self.getDesktop = function() {
+                return self.desktop;
+            };
 
             /**
              * @mdi.doc function
