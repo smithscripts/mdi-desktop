@@ -223,8 +223,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document', '$window',
-        function ($scope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
+        function ($scope, $rootScope, $element, $document, $window) {
             var self = this;
 
             self.top,
@@ -317,7 +317,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.updateNavigationState
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Updates window navigation buttons based location of the active view in the views array.
@@ -342,7 +341,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.isWindowInViewport
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Determines if the window is within the viewport boundaries.
@@ -366,7 +364,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getWindow
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the window object.
@@ -381,7 +378,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.setWindowTitle
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Sets the window title.
@@ -396,7 +392,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getActiveView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the active view.
@@ -417,7 +412,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.removeForwardViews
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all view(s) forward of the active view.
@@ -436,7 +430,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.addView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all inactive view(s) following the active view and inserts a new view.
@@ -456,7 +449,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getGlobals
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * returns the global values.
@@ -466,9 +458,32 @@
                 return $scope.window.globals;
             };
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
             angular.element($window).bind('resize', function () {
                 self.isWindowInViewport()
             });
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window element for height and width changes. Broadcasts changes to any listening parties
+             *
+             */
+            $scope.$watch(
+                function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
+                function (value) {
+                    $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            )
 
             $scope.disablePrevious = true;
             $scope.disableNext = true;
@@ -639,6 +654,7 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
@@ -648,8 +664,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
-        function ($rootScope, $scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', '$animate', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -823,6 +839,8 @@
             $scope.options = self.options;
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
+
+            $animate.enabled($scope.options.enableAnimation);
 
             /**
              * @mdi.doc object
