@@ -474,6 +474,7 @@
                 $scope.$apply(function() {
                     var keyCode = event.keyCode || event.which;
                     if (event.altKey && keyCode === 87 && $scope.window.active) {
+                        event.preventDefault();
                         $scope.desktopCtrl.closeWindow($scope.window);
                         $scope.$destroy();
                     }
