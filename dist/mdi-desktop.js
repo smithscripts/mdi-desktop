@@ -463,6 +463,24 @@
             });
 
             /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keyCode = event.keyCode || event.which;
+                    if (event.altKey && keyCode === 87 && $scope.window.active) {
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    }
+                });
+            });
+
+            /**
              * @mdi.doc watch
              * @module mdi.desktop.window
              *
@@ -523,6 +541,7 @@
 
             $scope.close = function() {
                 $scope.desktopCtrl.closeWindow($scope.window);
+                $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
