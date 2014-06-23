@@ -6,7 +6,7 @@
     </div>
     <div class="desktop-taskbar-list" data-ng-class="{'desktop-taskbar-list-offset': options.showLaunchMenu}">
         <ul>
-            <li class="am-fade-and-scale"
+            <li class="am-fade-and-scale desktop-text"
                 data-ng-repeat="window in windows"
                 data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}"
                 data-ng-click="updateWindowState(window)">

@@ -24,7 +24,7 @@
                 scope.options = desktopCtrl.getOptions();
 
                 attrs.$observe('templateUrl', function (url) {
-                    $http.get(url).then(function (response) {
+                    $http.get(url, {cache: true}).then(function (response) {
                         var tpl = $compile(response.data)(scope);
                         element.append(tpl);
                     });
@@ -104,8 +104,8 @@
                 view: '='
             },
             link: function(scope, element, attrs) {
-                if (!scope.view.viewName) return;
-                var tpl = $compile('<div ' + scope.view.viewName + '></div>')(scope);
+                if (!scope.view.viewDirective) return;
+                var tpl = $compile('<div ' + scope.view.viewDirective + ' view="view"></div>')(scope);
                 element.append(tpl);
             }
         };
@@ -223,8 +223,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document', '$window',
-        function ($scope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
+        function ($scope, $rootScope, $element, $document, $window) {
             var self = this;
 
             self.top,
@@ -241,16 +241,8 @@
                 self.startX = 0,
                 self.startY = 0,
                 self.titleBar = undefined,
+                self.canCloseFn = undefined;
                 self.viewportDimensions = undefined;
-
-            self.viewConfig = {
-                active: true,
-                entity: undefined,
-                entityIndex: 0,
-                isDirty: false,
-                isInvalid: false,
-                viewName: undefined
-            };
 
             self.storeWindowValues = function() {
                 self.top = $scope.window.top;
@@ -266,7 +258,7 @@
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX <= 0 ||
                         event.pageX >= self.viewportDimensions.width ||
-                        $scope.split) return false;
+                        $scope.window.split) return false;
 
                     $element.css({ opacity: 0.5 });
                     self.x = event.screenX - self.startX;
@@ -290,7 +282,7 @@
             self.mouseUp = function(event) {
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
-                        $scope.split = true;
+                        $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
                         $scope.window.bottom = 0;
@@ -299,7 +291,7 @@
                     }
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
-                        $scope.split = true;
+                        $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
@@ -317,7 +309,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.updateNavigationState
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Updates window navigation buttons based location of the active view in the views array.
@@ -342,7 +333,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.isWindowInViewport
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Determines if the window is within the viewport boundaries.
@@ -366,7 +356,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getWindow
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the window object.
@@ -381,7 +370,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.setWindowTitle
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Sets the window title.
@@ -396,7 +384,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getActiveView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the active view.
@@ -417,7 +404,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.removeForwardViews
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all view(s) forward of the active view.
@@ -436,7 +422,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.addView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all inactive view(s) following the active view and inserts a new view.
@@ -446,7 +431,8 @@
                 self.removeForwardViews();
                 var activeView = self.getActiveView();
                 activeView.active = false;
-                var viewConfigInstance = Object.create(self.viewConfig);
+                var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
+                var viewConfigInstance = Object.create(viewConfig);
                 var extended = angular.extend(viewConfigInstance, viewConfigOverlay);
                 $scope.window.views.push(extended);
                 self.updateNavigationState();
@@ -456,7 +442,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getGlobals
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * returns the global values.
@@ -466,13 +451,54 @@
                 return $scope.window.globals;
             };
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
             angular.element($window).bind('resize', function () {
                 self.isWindowInViewport()
             });
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keyCode = event.keyCode || event.which;
+                    if (event.altKey && keyCode === 87 && $scope.window.active) {
+                        event.preventDefault();
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    }
+                });
+            });
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window element for height and width changes. Broadcasts changes to any listening parties
+             *
+             */
+            $scope.$watch(
+                function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
+                function (value) {
+                    $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            )
+
             $scope.disablePrevious = true;
             $scope.disableNext = true;
-            $scope.split = false;
 
             $scope.activate = function(event) {
                 if ($scope.window.maximized || $scope.window.outOfBounds) return;
@@ -496,8 +522,8 @@
             };
 
             $scope.maximize = function() {
-                if ($scope.split) {
-                    $scope.split = false;
+                if ($scope.window.split) {
+                    $scope.window.split = false;
                     $scope.resetWindowValues();
                 } else if ($scope.window.maximized) {
                     $scope.resetWindowValues();
@@ -516,11 +542,19 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
+                if (self.canCloseFn !== undefined) {
+                    if (self.canCloseFn()) {
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    };
+                } else {
+                    $scope.desktopCtrl.closeWindow($scope.window);
+                    $scope.$destroy();
+                }
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.split || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.window.split || $scope.window.outOfBounds) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
@@ -560,7 +594,10 @@
                 self.updateNavigationState();
             };
 
-            self.updateNavigationState();
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.updateNavigationState();
+            };
         }]);
 
     module.directive('mdiDesktopWindow', [function() {
@@ -578,6 +615,7 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.init();
             }
         };
     }]);
@@ -626,6 +664,59 @@
              */
             var Desktop = function () {
                 this.options = new DesktopOptions();
+                this.windowConfig = windowConfig;
+                this.viewConfig = viewConfig;
+            };
+
+            /**
+             * @mdi.doc object
+             * @name mdiDesktopController.windowConfig
+             * @module mdi.desktop
+             *
+             * @description
+             * Default configuration object for a window. windowConfig properties can be defined by the application developer and overlaid
+             * over this object.
+             *
+             */
+            var windowConfig = {
+                title: '',
+                active: true,
+                globals: undefined,
+                minimized: false,
+                maximized: false,
+                outOfBounds: false,
+                split: false,
+                top: 0,
+                left: 0,
+                right: 'auto',
+                bottom: 'auto',
+                height: '400px',
+                width: '400px',
+                minHeight: '200px',
+                minWidth: '200px',
+                zIndex: -1,
+                isDirty: false,
+                isInvalid: false,
+                views: []
+            };
+
+            /**
+             * @mdi.doc object
+             * @name mdiDesktopController.windowConfig
+             * @module mdi.desktop
+             *
+             * @description
+             * Default configuration object for a view. viewConfig properties can be defined by the application developer and overlaid
+             * over this object.
+             *
+             */
+            var viewConfig = {
+                active: true,
+                entities: undefined,
+                entityIndex: 0,
+                isDirty: false,
+                isInvalid: false,
+                viewDirective: undefined
             };
 
             /**
@@ -640,6 +731,8 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.canCloseFn = undefined;
+                this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
@@ -649,8 +742,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
-        function ($rootScope, $scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', '$animate', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -660,6 +753,20 @@
             self.maxWindowCascadePosition = 100;
             self.lastWindowCascadePosition = { top: self.minWindowCascadePosition, left: self.minWindowCascadePosition };
             self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.getDesktop
+             * @module mdi.desktop
+             *
+             * @description
+             * Return an object of desktop.
+             *
+             * @returns {object} desktop.
+             */
+            self.getDesktop = function() {
+                return self.desktop;
+            };
 
             /**
              * @mdi.doc function
@@ -707,7 +814,7 @@
                     tmp = $scope.windows[i].zIndex;
                     if (tmp > max) max = tmp;
                 }
-                return max++;
+                return ++max;
             };
 
             /**
@@ -753,13 +860,46 @@
              * overlaid here before displaying the window
              *
              */
-            self.openWindow = function(overrides) {
+            self.openWindow = function(windowConfigOverlays) {
                 self.clearActive();
-                var windowConfigInstance = Object.create(self.windowConfig);
+                var configuredWindow = self.configureWindow(windowConfigOverlays);
+                configuredWindow.views = self.configureViews(windowConfigOverlays);
+                $scope.windows.push(configuredWindow);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.configureWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Creates a new window instance.
+             *
+             */
+            self.configureWindow = function(windowConfigOverlays) {
+                var windowConfigInstance = Object.create(self.desktop.windowConfig);
                 windowConfigInstance.zIndex = self.getNextMaxZIndex();
-                windowConfigInstance.globals = $rootScope.$eval($scope.options.globals);
-                var combined = angular.extend(windowConfigInstance, overrides);
-                $scope.windows.push(combined);
+                windowConfigInstance.globals = angular.extend({}, $rootScope.$eval($scope.options.globals));
+                return angular.extend(windowConfigInstance, windowConfigOverlays);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.configureViews
+             * @module mdi.desktop
+             *
+             * @description
+             * Creates one or more view instances
+             *
+             */
+            self.configureViews = function(windowConfigOverlays) {
+                var configuredViews = [];
+                angular.forEach(windowConfigOverlays.views, function(view){
+                    var viewConfigInstance = Object.create(self.desktop.viewConfig);
+                    var configuredView = angular.extend(viewConfigInstance, view);
+                    configuredViews.push(configuredView);
+                });
+                return configuredViews;
             };
 
             /**
@@ -825,45 +965,7 @@
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
 
-            /**
-             * @mdi.doc object
-             * @name mdiDesktopController.windowConfig
-             * @module mdi.desktop
-             *
-             * @description
-             * Default configuration object for a window. windowConfig properties can be defined by the application developer and overlaid
-             * over this object.
-             *
-             */
-            self.windowConfig = {
-                title: '',
-                active: true,
-                globals: undefined,
-                minimized: false,
-                maximized: false,
-                outOfBounds: false,
-                split: null,
-                top: 0,
-                left: 0,
-                right: 'auto',
-                bottom: 'auto',
-                height: '400px',
-                width: '400px',
-                minHeight: '200px',
-                minWidth: '200px',
-                zIndex: -1,
-                isDirty: false,
-                isInvalid: false,
-                views: [
-                    {
-                        active: true,
-                        data: undefined,
-                        isDirty: false,
-                        isInvalid: false,
-                        viewName: undefined
-                    }
-                ]
-            };
+            $animate.enabled($scope.options.enableAnimation);
         }]);
 
     module.directive('mdiDesktop',
@@ -997,7 +1099,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <ul>\r" +
     "\n" +
-    "            <li class=\"am-fade-and-scale\"\r" +
+    "            <li class=\"am-fade-and-scale desktop-text\"\r" +
     "\n" +
     "                data-ng-repeat=\"window in windows\"\r" +
     "\n" +
@@ -1040,7 +1142,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
     "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
-    "    <span class=\"desktop-viewport-dimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
+    "    <span class=\"desktop-viewport-dimensions desktop-text\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
     "    <div data-ng-repeat=\"window in windows\" class=\"am-fade-and-scale\">\r" +
     "\n" +
@@ -1059,7 +1161,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-window.html',
     "<div class=\"desktop-window-container\"\r" +
     "\n" +
-    "     data-ng-class=\"{'desktop-window-active': window.active}\"\r" +
+    "     data-ng-class=\"{'desktop-window-active': window.active, 'desktop-window-maximized': window.maximized || window.split}\"\r" +
     "\n" +
     "     data-ng-style=\"{'z-index': window.zIndex, 'top': window.top, 'left': window.left, 'right': window.right, 'bottom': window.bottom, 'height': window.height, 'width': window.width, 'min-height': window.minHeight, 'minWidth': window.minWidth}\"\r" +
     "\n" +
@@ -1067,7 +1169,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "     data-ng-hide=\"window.minimized\">\r" +
     "\n" +
-    "    <div class=\"desktop-window-header\">\r" +
+    "    <div class=\"desktop-window-header\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split}\">\r" +
     "\n" +
     "        <div class=\"desktop-window-navigation\">\r" +
     "\n" +
@@ -1093,7 +1195,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"desktop-window-title-container\">\r" +
     "\n" +
-    "                <div>{{window.title}}</div>\r" +
+    "                <div class=\"desktop-text\">{{window.title}}</div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -1141,7 +1243,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </fieldset>\r" +
     "\n" +
-    "    <div class=\"desktop-window-statusbar\">\r" +
+    "    <div class=\"desktop-window-statusbar\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split}\">\r" +
     "\n" +
     "        <div class=\"desktop-window-statusbar-container\">\r" +
     "\n" +

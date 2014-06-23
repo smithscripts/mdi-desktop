@@ -41,6 +41,59 @@
              */
             var Desktop = function () {
                 this.options = new DesktopOptions();
+                this.windowConfig = windowConfig;
+                this.viewConfig = viewConfig;
+            };
+
+            /**
+             * @mdi.doc object
+             * @name mdiDesktopController.windowConfig
+             * @module mdi.desktop
+             *
+             * @description
+             * Default configuration object for a window. windowConfig properties can be defined by the application developer and overlaid
+             * over this object.
+             *
+             */
+            var windowConfig = {
+                title: '',
+                active: true,
+                globals: undefined,
+                minimized: false,
+                maximized: false,
+                outOfBounds: false,
+                split: false,
+                top: 0,
+                left: 0,
+                right: 'auto',
+                bottom: 'auto',
+                height: '400px',
+                width: '400px',
+                minHeight: '200px',
+                minWidth: '200px',
+                zIndex: -1,
+                isDirty: false,
+                isInvalid: false,
+                views: []
+            };
+
+            /**
+             * @mdi.doc object
+             * @name mdiDesktopController.windowConfig
+             * @module mdi.desktop
+             *
+             * @description
+             * Default configuration object for a view. viewConfig properties can be defined by the application developer and overlaid
+             * over this object.
+             *
+             */
+            var viewConfig = {
+                active: true,
+                entities: undefined,
+                entityIndex: 0,
+                isDirty: false,
+                isInvalid: false,
+                viewDirective: undefined
             };
 
             /**
@@ -55,6 +108,8 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.canCloseFn = undefined;
+                this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
@@ -64,8 +119,8 @@
             return service;
         });
 
-    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', 'desktopClassFactory',
-        function ($rootScope, $scope, $window, desktopClassFactory) {
+    module.controller('mdiDesktopController', ['$rootScope', '$scope', '$window', '$animate', 'desktopClassFactory',
+        function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
             self.allMinimized = false;
@@ -75,6 +130,20 @@
             self.maxWindowCascadePosition = 100;
             self.lastWindowCascadePosition = { top: self.minWindowCascadePosition, left: self.minWindowCascadePosition };
             self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.getDesktop
+             * @module mdi.desktop
+             *
+             * @description
+             * Return an object of desktop.
+             *
+             * @returns {object} desktop.
+             */
+            self.getDesktop = function() {
+                return self.desktop;
+            };
 
             /**
              * @mdi.doc function
@@ -122,7 +191,7 @@
                     tmp = $scope.windows[i].zIndex;
                     if (tmp > max) max = tmp;
                 }
-                return max++;
+                return ++max;
             };
 
             /**
@@ -168,13 +237,46 @@
              * overlaid here before displaying the window
              *
              */
-            self.openWindow = function(overrides) {
+            self.openWindow = function(windowConfigOverlays) {
                 self.clearActive();
-                var windowConfigInstance = Object.create(self.windowConfig);
+                var configuredWindow = self.configureWindow(windowConfigOverlays);
+                configuredWindow.views = self.configureViews(windowConfigOverlays);
+                $scope.windows.push(configuredWindow);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.configureWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Creates a new window instance.
+             *
+             */
+            self.configureWindow = function(windowConfigOverlays) {
+                var windowConfigInstance = Object.create(self.desktop.windowConfig);
                 windowConfigInstance.zIndex = self.getNextMaxZIndex();
-                windowConfigInstance.globals = $rootScope.$eval($scope.options.globals);
-                var combined = angular.extend(windowConfigInstance, overrides);
-                $scope.windows.push(combined);
+                windowConfigInstance.globals = angular.extend({}, $rootScope.$eval($scope.options.globals));
+                return angular.extend(windowConfigInstance, windowConfigOverlays);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.configureViews
+             * @module mdi.desktop
+             *
+             * @description
+             * Creates one or more view instances
+             *
+             */
+            self.configureViews = function(windowConfigOverlays) {
+                var configuredViews = [];
+                angular.forEach(windowConfigOverlays.views, function(view){
+                    var viewConfigInstance = Object.create(self.desktop.viewConfig);
+                    var configuredView = angular.extend(viewConfigInstance, view);
+                    configuredViews.push(configuredView);
+                });
+                return configuredViews;
             };
 
             /**
@@ -240,45 +342,7 @@
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
 
-            /**
-             * @mdi.doc object
-             * @name mdiDesktopController.windowConfig
-             * @module mdi.desktop
-             *
-             * @description
-             * Default configuration object for a window. windowConfig properties can be defined by the application developer and overlaid
-             * over this object.
-             *
-             */
-            self.windowConfig = {
-                title: '',
-                active: true,
-                globals: undefined,
-                minimized: false,
-                maximized: false,
-                outOfBounds: false,
-                split: null,
-                top: 0,
-                left: 0,
-                right: 'auto',
-                bottom: 'auto',
-                height: '400px',
-                width: '400px',
-                minHeight: '200px',
-                minWidth: '200px',
-                zIndex: -1,
-                isDirty: false,
-                isInvalid: false,
-                views: [
-                    {
-                        active: true,
-                        data: undefined,
-                        isDirty: false,
-                        isInvalid: false,
-                        viewName: undefined
-                    }
-                ]
-            };
+            $animate.enabled($scope.options.enableAnimation);
         }]);
 
     module.directive('mdiDesktop',

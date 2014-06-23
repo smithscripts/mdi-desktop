@@ -3,8 +3,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$element', '$document', '$window',
-        function ($scope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
+        function ($scope, $rootScope, $element, $document, $window) {
             var self = this;
 
             self.top,
@@ -21,16 +21,8 @@
                 self.startX = 0,
                 self.startY = 0,
                 self.titleBar = undefined,
+                self.canCloseFn = undefined;
                 self.viewportDimensions = undefined;
-
-            self.viewConfig = {
-                active: true,
-                entity: undefined,
-                entityIndex: 0,
-                isDirty: false,
-                isInvalid: false,
-                viewName: undefined
-            };
 
             self.storeWindowValues = function() {
                 self.top = $scope.window.top;
@@ -46,7 +38,7 @@
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX <= 0 ||
                         event.pageX >= self.viewportDimensions.width ||
-                        $scope.split) return false;
+                        $scope.window.split) return false;
 
                     $element.css({ opacity: 0.5 });
                     self.x = event.screenX - self.startX;
@@ -70,7 +62,7 @@
             self.mouseUp = function(event) {
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
-                        $scope.split = true;
+                        $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
                         $scope.window.bottom = 0;
@@ -79,7 +71,7 @@
                     }
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
-                        $scope.split = true;
+                        $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
@@ -97,7 +89,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.updateNavigationState
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Updates window navigation buttons based location of the active view in the views array.
@@ -122,7 +113,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.isWindowInViewport
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Determines if the window is within the viewport boundaries.
@@ -146,7 +136,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getWindow
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the window object.
@@ -161,7 +150,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.setWindowTitle
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Sets the window title.
@@ -176,7 +164,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getActiveView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Gets the active view.
@@ -197,7 +184,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.removeForwardViews
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all view(s) forward of the active view.
@@ -216,7 +202,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.addView
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * Removes all inactive view(s) following the active view and inserts a new view.
@@ -226,7 +211,8 @@
                 self.removeForwardViews();
                 var activeView = self.getActiveView();
                 activeView.active = false;
-                var viewConfigInstance = Object.create(self.viewConfig);
+                var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
+                var viewConfigInstance = Object.create(viewConfig);
                 var extended = angular.extend(viewConfigInstance, viewConfigOverlay);
                 $scope.window.views.push(extended);
                 self.updateNavigationState();
@@ -236,7 +222,6 @@
              * @mdi.doc function
              * @name mdiDesktopWindowController.getGlobals
              * @module mdi.desktop.window
-             * @function
              *
              * @description
              * returns the global values.
@@ -246,13 +231,54 @@
                 return $scope.window.globals;
             };
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
             angular.element($window).bind('resize', function () {
                 self.isWindowInViewport()
             });
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the browser window for height and width changes and updates the viewport accordingly.
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keyCode = event.keyCode || event.which;
+                    if (event.altKey && keyCode === 87 && $scope.window.active) {
+                        event.preventDefault();
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    }
+                });
+            });
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window element for height and width changes. Broadcasts changes to any listening parties
+             *
+             */
+            $scope.$watch(
+                function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
+                function (value) {
+                    $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            )
+
             $scope.disablePrevious = true;
             $scope.disableNext = true;
-            $scope.split = false;
 
             $scope.activate = function(event) {
                 if ($scope.window.maximized || $scope.window.outOfBounds) return;
@@ -276,8 +302,8 @@
             };
 
             $scope.maximize = function() {
-                if ($scope.split) {
-                    $scope.split = false;
+                if ($scope.window.split) {
+                    $scope.window.split = false;
                     $scope.resetWindowValues();
                 } else if ($scope.window.maximized) {
                     $scope.resetWindowValues();
@@ -296,11 +322,19 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
+                if (self.canCloseFn !== undefined) {
+                    if (self.canCloseFn()) {
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    };
+                } else {
+                    $scope.desktopCtrl.closeWindow($scope.window);
+                    $scope.$destroy();
+                }
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.split || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.window.split || $scope.window.outOfBounds) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
@@ -340,7 +374,10 @@
                 self.updateNavigationState();
             };
 
-            self.updateNavigationState();
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.updateNavigationState();
+            };
         }]);
 
     module.directive('mdiDesktopWindow', [function() {
@@ -358,6 +395,7 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.init();
             }
         };
     }]);

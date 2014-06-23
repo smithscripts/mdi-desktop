@@ -24,7 +24,7 @@
                 scope.options = desktopCtrl.getOptions();
 
                 attrs.$observe('templateUrl', function (url) {
-                    $http.get(url).then(function (response) {
+                    $http.get(url, {cache: true}).then(function (response) {
                         var tpl = $compile(response.data)(scope);
                         element.append(tpl);
                     });

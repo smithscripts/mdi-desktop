@@ -2,25 +2,23 @@ var module = angular.module('demo', []);
 
 module.controller('demoController', function($rootScope, $scope) {
     $rootScope.globals = { issueRef: 1 };
+
+    $scope.canClose = function() {
+        alert('Can Close');
+        return true;
+    }
+
     $scope.desktopOptions = {
         showLaunchMenu: false,
         globals: 'globals',
-        menubarTemplateUrl: 'demo/templates/menu.html'
+        menubarTemplateUrl: 'demo/templates/menu.html',
+        canCloseFn: $scope.canClose
     };
 });
 
 module.controller('demoMenubarController', function($scope) {
-    $scope.openWindow = function($event, viewName) {
-        $scope.windowConfig = {
-            views: [
-                {
-                    active: true,
-                    viewName: viewName
-                }
-            ]
-        };
-
-        $scope.$parent.desktopCtrl.openWindow($scope.windowConfig);
+    $scope.openWindow = function($event, overrides) {
+        $scope.$parent.desktopCtrl.openWindow(overrides);
     };
 });
 

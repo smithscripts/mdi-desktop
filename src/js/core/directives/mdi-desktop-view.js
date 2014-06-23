@@ -11,8 +11,8 @@
                 view: '='
             },
             link: function(scope, element, attrs) {
-                if (!scope.view.viewName) return;
-                var tpl = $compile('<div ' + scope.view.viewName + '></div>')(scope);
+                if (!scope.view.viewDirective) return;
+                var tpl = $compile('<div ' + scope.view.viewDirective + ' view="view"></div>')(scope);
                 element.append(tpl);
             }
         };
