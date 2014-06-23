@@ -1,7 +1,7 @@
 <div data-ng-controller="demoMenubarController">
     <nav class="navbar navbar-default">
         <ul class="nav navbar-nav">
-            <li><a href="#" class="menuItem" data-ng-click="openWindow($event, 'view1')">Item1</a></li>
+            <li><a href="#" class="menuItem" data-ng-click="openWindow($event, { height: '450px', width: '900px', views: [{viewDirective:'view1', active: true}]})">Item1</a></li>
         </ul>
     </nav>
 </div>
