@@ -241,6 +241,7 @@
                 self.startX = 0,
                 self.startY = 0,
                 self.titleBar = undefined,
+                self.canCloseFn = undefined;
                 self.viewportDimensions = undefined;
 
             self.storeWindowValues = function() {
@@ -541,8 +542,15 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
-                $scope.$destroy();
+                if (self.canCloseFn !== undefined) {
+                    if (self.canCloseFn()) {
+                        $scope.desktopCtrl.closeWindow($scope.window);
+                        $scope.$destroy();
+                    };
+                } else {
+                    $scope.desktopCtrl.closeWindow($scope.window);
+                    $scope.$destroy();
+                }
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -586,7 +594,10 @@
                 self.updateNavigationState();
             };
 
-            self.updateNavigationState();
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.updateNavigationState();
+            };
         }]);
 
     module.directive('mdiDesktopWindow', [function() {
@@ -604,6 +615,7 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.init();
             }
         };
     }]);
@@ -719,6 +731,7 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.canCloseFn = undefined;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
