@@ -123,9 +123,8 @@
                     var windowTop = $element[0].offsetTop;
                     var windowLeft = $element[0].offsetLeft;
                     if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
-                        (windowLeft + 200) >= $scope.viewportCtrl.getViewportDimensions().width) {
+                        (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
                         $scope.window.outOfBounds = true;
-                        $scope.window.active = false;
                     } else {
                         $scope.window.outOfBounds = false;
                     };
@@ -256,8 +255,14 @@
                     var keyCode = event.keyCode || event.which;
                     if (event.altKey && keyCode === 87 && $scope.window.active) {
                         event.preventDefault();
-                        $scope.desktopCtrl.closeWindow($scope.window);
-                        $scope.$destroy();
+                        $scope.close();
+                    }
+                    if (keyCode === 8 &&
+                        $scope.window.active &&
+                        event.target.tagName.toLowerCase() !== 'input' &&
+                        event.target.tagName.toLowerCase() !== 'textarea') {
+                        event.preventDefault();
+                        $scope.previousView();
                     }
                 });
             });
@@ -334,7 +339,7 @@
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.window.split || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.window.split) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;

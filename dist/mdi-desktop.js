@@ -53,6 +53,7 @@
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
+                    $scope.desktopCtrl.activeForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
@@ -152,6 +153,7 @@
             $scope.dimensions = {};
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
+            $scope.displayViewportDimensions = false;
 
             $scope.viewportMouseDown = function (event) {
                 $document.on('mousemove', self.mouseMove);
@@ -198,6 +200,10 @@
                     };
                 });
             });
+
+            $scope.init = function() {
+                $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+            }
         }]);
 
     module.directive('mdiDesktopViewport', ['$timeout', '$window', function($timeout, $window) {
@@ -213,6 +219,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);
@@ -343,9 +350,8 @@
                     var windowTop = $element[0].offsetTop;
                     var windowLeft = $element[0].offsetLeft;
                     if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
-                        (windowLeft + 200) >= $scope.viewportCtrl.getViewportDimensions().width) {
+                        (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
                         $scope.window.outOfBounds = true;
-                        $scope.window.active = false;
                     } else {
                         $scope.window.outOfBounds = false;
                     };
@@ -476,8 +482,14 @@
                     var keyCode = event.keyCode || event.which;
                     if (event.altKey && keyCode === 87 && $scope.window.active) {
                         event.preventDefault();
-                        $scope.desktopCtrl.closeWindow($scope.window);
-                        $scope.$destroy();
+                        $scope.close();
+                    }
+                    if (keyCode === 8 &&
+                        $scope.window.active &&
+                        event.target.tagName.toLowerCase() !== 'input' &&
+                        event.target.tagName.toLowerCase() !== 'textarea') {
+                        event.preventDefault();
+                        $scope.previousView();
                     }
                 });
             });
@@ -554,7 +566,7 @@
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.window.split || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.window.split) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
@@ -732,6 +744,7 @@
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
                 this.canCloseFn = undefined;
+                this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
@@ -922,7 +935,27 @@
                     return;
                 }
                 $scope.windows.splice($scope.windows.indexOf(window), 1);
+                self.activeForemostWindow();
             };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.activeForemostWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Set the foremost window to an active state
+             *
+             */
+            self.activeForemostWindow = function() {
+                var foremost = undefined;
+                for (var i = 0; i < $scope.windows.length; i++) {
+                    if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)
+                        foremost = $scope.windows[i];
+                }
+                if (foremost)
+                    foremost.active = true;
+            }
 
             /**
              * @mdi.doc function
@@ -1111,7 +1144,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <div class=\"desktop-taskbar-list-item-title\">\r" +
     "\n" +
-    "                        <span data-ng-show=\"!window.outOfBounds\">{{window.title}}</span>\r" +
+    "                        <span>{{window.title}}</span>\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +
@@ -1142,7 +1175,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
     "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
-    "    <span class=\"desktop-viewport-dimensions desktop-text\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
+    "    <span class=\"desktop-viewport-dimensions desktop-text\" data-ng-show=\"displayViewportDimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
     "    <div data-ng-repeat=\"window in windows\" class=\"am-fade-and-scale\">\r" +
     "\n" +
@@ -1193,7 +1226,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-title\" data-ng-dblclick=\"maximize()\" data-ng-mousedown=\"windowTitleMouseDown($event)\">\r" +
     "\n" +
-    "            <div class=\"desktop-window-title-container\">\r" +
+    "            <div>\r" +
     "\n" +
     "                <div class=\"desktop-text\">{{window.title}}</div>\r" +
     "\n" +
@@ -1255,21 +1288,21 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-nw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"nw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-nw\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"nw\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-ne\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"ne\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-ne\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"ne\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-sw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"sw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-sw\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"sw\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-se\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"se\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-se\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"se\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-n\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"n\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-n\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"n\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-s\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"s\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-s\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"s\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-w\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"w\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-w\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"w\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-e\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"e\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-e\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"e\"></span>\r" +
     "\n" +
     "</div>"
   );
