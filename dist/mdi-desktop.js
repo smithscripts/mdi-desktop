@@ -53,6 +53,7 @@
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
+                    $scope.desktopCtrl.activeForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
@@ -934,7 +935,27 @@
                     return;
                 }
                 $scope.windows.splice($scope.windows.indexOf(window), 1);
+                self.activeForemostWindow();
             };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.activeForemostWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Set the foremost window to an active state
+             *
+             */
+            self.activeForemostWindow = function() {
+                var foremost = undefined;
+                for (var i = 0; i < $scope.windows.length; i++) {
+                    if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)
+                        foremost = $scope.windows[i];
+                }
+                if (foremost)
+                    foremost.active = true;
+            }
 
             /**
              * @mdi.doc function
