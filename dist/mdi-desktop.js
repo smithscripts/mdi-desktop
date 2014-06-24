@@ -484,7 +484,10 @@
                         event.preventDefault();
                         $scope.close();
                     }
-                    if (keyCode === 8 && $scope.window.active && event.tagName !== 'input' && event.tagName !== 'textarea') {
+                    if (keyCode === 8 &&
+                        $scope.window.active &&
+                        event.target.tagName.toLowerCase() !== 'input' &&
+                        event.target.tagName.toLowerCase() !== 'textarea') {
                         event.preventDefault();
                         $scope.previousView();
                     }
