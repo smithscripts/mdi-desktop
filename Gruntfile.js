@@ -90,7 +90,6 @@ module.exports = function(grunt) {
         'uglify',
         'clean:templates',
         'copy:cssToBuild',
-        'gh-pages',
         'copy:srcToDist',
         'clean',
         'karma:unit']);
