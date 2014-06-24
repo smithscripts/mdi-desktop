@@ -349,9 +349,8 @@
                     var windowTop = $element[0].offsetTop;
                     var windowLeft = $element[0].offsetLeft;
                     if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
-                        (windowLeft + 200) >= $scope.viewportCtrl.getViewportDimensions().width) {
+                        (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
                         $scope.window.outOfBounds = true;
-                        $scope.window.active = false;
                     } else {
                         $scope.window.outOfBounds = false;
                     };
@@ -566,7 +565,7 @@
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.window.split || $scope.window.outOfBounds) return;
+                if ($scope.window.maximized || $scope.window.split) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement);
                 self.x = $element[0].offsetLeft;
@@ -1206,7 +1205,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"desktop-window-title\" data-ng-dblclick=\"maximize()\" data-ng-mousedown=\"windowTitleMouseDown($event)\">\r" +
     "\n" +
-    "            <div class=\"desktop-window-title-container\">\r" +
+    "            <div>\r" +
     "\n" +
     "                <div class=\"desktop-text\">{{window.title}}</div>\r" +
     "\n" +

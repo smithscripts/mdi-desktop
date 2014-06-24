@@ -346,7 +346,7 @@ fieldset[disabled] .btn {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 60px;
+    width: 50px;
     background: transparent;
 }
 
@@ -365,7 +365,7 @@ fieldset[disabled] .btn {
 .desktop-window-title {
      position: absolute !important;
      top: 0;
-     left: 60px;
+     left: 50px;
      right: 80px;
      bottom: 0;
      height: 27px;
@@ -375,6 +375,7 @@ fieldset[disabled] .btn {
 .desktop-window-title > div {
     position: absolute !important;
     top: 3px;
+    left: 5px;
 }
 
 .desktop-window-action {
