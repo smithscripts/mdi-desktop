@@ -1234,7 +1234,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div data-ng-repeat=\"view in window.views\">\r" +
     "\n" +
-    "                <!--<div data-mdi-desktop-view view=\"view\" data-ng-show=\"view.active\"></div>-->\r" +
+    "                <div data-mdi-desktop-view view=\"view\" data-ng-show=\"view.active\"></div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
