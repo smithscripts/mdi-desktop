@@ -17,6 +17,7 @@
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
+                    $scope.desktopCtrl.activeForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;

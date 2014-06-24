@@ -4,7 +4,6 @@ module.controller('demoController', function($rootScope, $scope) {
     $rootScope.globals = { issueRef: 1 };
 
     $scope.canClose = function() {
-        alert('Can Close');
         return true;
     }
 
@@ -12,7 +11,8 @@ module.controller('demoController', function($rootScope, $scope) {
         showLaunchMenu: false,
         globals: 'globals',
         menubarTemplateUrl: 'demo/templates/menu.html',
-        canCloseFn: $scope.canClose
+        canCloseFn: $scope.canClose,
+        displayViewportDimensions: true
     };
 });
 

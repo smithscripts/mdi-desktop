@@ -52,6 +52,7 @@ module.exports = function(grunt) {
         'gh-pages': {
             options: {
                 base: 'build',
+                repo: 'https://84227805282e52b258f61d8af56fa7f4554f3b6a@github.com/smithscripts/gh-pages.git',
                 add:true
             },
             src: '**/*'

@@ -38,6 +38,7 @@
             $scope.dimensions = {};
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
+            $scope.displayViewportDimensions = false;
 
             $scope.viewportMouseDown = function (event) {
                 $document.on('mousemove', self.mouseMove);
@@ -84,6 +85,10 @@
                     };
                 });
             });
+
+            $scope.init = function() {
+                $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+            }
         }]);
 
     module.directive('mdiDesktopViewport', ['$timeout', '$window', function($timeout, $window) {
@@ -99,6 +104,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);
