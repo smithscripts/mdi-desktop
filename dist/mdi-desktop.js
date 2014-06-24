@@ -1288,21 +1288,21 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-nw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"nw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-nw\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"nw\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-ne\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"ne\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-ne\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"ne\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-sw\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"sw\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-sw\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"sw\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-se\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"se\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-se\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"se\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-n\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"n\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-n\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"n\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-s\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"s\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-s\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"s\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-w\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"w\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-w\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"w\"></span>\r" +
     "\n" +
-    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-e\" data-mdi-resizable data-window=\"window\" data-maximized=\"maximized\" data-direction=\"e\"></span>\r" +
+    "    <span class=\"desktop-window-resizable-handle desktop-window-resizable-e\" data-mdi-resizable data-window=\"window\" data-ng-show=\"!window.maximized && !window.split\" data-direction=\"e\"></span>\r" +
     "\n" +
     "</div>"
   );
