@@ -152,6 +152,7 @@
             $scope.dimensions = {};
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
+            $scope.displayViewportDimensions = false;
 
             $scope.viewportMouseDown = function (event) {
                 $document.on('mousemove', self.mouseMove);
@@ -198,6 +199,10 @@
                     };
                 });
             });
+
+            $scope.init = function() {
+                $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+            }
         }]);
 
     module.directive('mdiDesktopViewport', ['$timeout', '$window', function($timeout, $window) {
@@ -213,6 +218,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);
@@ -478,6 +484,10 @@
                         event.preventDefault();
                         $scope.close();
                     }
+                    if (keyCode === 8 && $scope.window.active && event.tagName !== 'input' && event.tagName !== 'textarea') {
+                        event.preventDefault();
+                        $scope.previousView();
+                    }
                 });
             });
 
@@ -731,6 +741,7 @@
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
                 this.canCloseFn = undefined;
+                this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
                 this.menubarHeight = 32;
@@ -1141,7 +1152,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
     "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
-    "    <span class=\"desktop-viewport-dimensions desktop-text\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
+    "    <span class=\"desktop-viewport-dimensions desktop-text\" data-ng-show=\"displayViewportDimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
     "    <div data-ng-repeat=\"window in windows\" class=\"am-fade-and-scale\">\r" +
     "\n" +
