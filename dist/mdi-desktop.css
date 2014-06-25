@@ -223,10 +223,12 @@ fieldset[disabled] .btn {
 
 .desktop-taskbar-list li:active span {
     top: 1px;
+    left: 5px;
 }
 
 .desktop-taskbar-list li:active div {
     top: 1px;
+    left: 1px;
 }
 
 .desktop-taskbar-list-item-recover {
