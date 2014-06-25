@@ -48,6 +48,8 @@
                     $scope.desktopCtrl.cascadeWindow(window);
                     window.active = true;
                     window.outOfBounds = false;
+                    window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
+                    $scope.desktopCtrl.activeForemostWindow();
                     return;
                 }
                 if (window.active) {
