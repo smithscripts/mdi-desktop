@@ -161,6 +161,19 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopWindowController.goToPreviousView
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Public method for navigating to the previous view.
+             *
+             */
+            self.goToPreviousView = function() {
+                $scope.previousView();
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopWindowController.getActiveView
              * @module mdi.desktop.window
              *

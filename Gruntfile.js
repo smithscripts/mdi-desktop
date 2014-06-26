@@ -52,7 +52,6 @@ module.exports = function(grunt) {
         'gh-pages': {
             options: {
                 base: 'build',
-                repo: 'https://84227805282e52b258f61d8af56fa7f4554f3b6a@github.com/smithscripts/master.git',
                 add:true
             },
             src: '**/*'
@@ -90,6 +89,7 @@ module.exports = function(grunt) {
         'uglify',
         'clean:templates',
         'copy:cssToBuild',
+        'gh-pages',
         'copy:srcToDist',
         'clean',
         'karma:unit']);

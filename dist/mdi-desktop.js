@@ -48,6 +48,8 @@
                     $scope.desktopCtrl.cascadeWindow(window);
                     window.active = true;
                     window.outOfBounds = false;
+                    window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
+                    $scope.desktopCtrl.activeForemostWindow();
                     return;
                 }
                 if (window.active) {
@@ -384,6 +386,19 @@
              */
             self.setWindowTitle = function(value) {
                 $scope.window.title = value;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.goToPreviousView
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Public method for navigating to the previous view.
+             *
+             */
+            self.goToPreviousView = function() {
+                $scope.previousView();
             };
 
             /**
@@ -1208,13 +1223,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"previous\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Back One View - [Backspace]\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-arrow-left2\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"next\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Forward One View\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-arrow-right2\"></span>\r" +
     "\n" +
@@ -1244,13 +1259,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default maximize\" title=\"\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default maximize\" data-ng-attr-title=\"{{ window.maximized ? 'Restore Window' : 'Maximize Window' }}\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
     "\n" +
     "                    <span data-ng-class=\"{'desktop-icon-expand': !window.maximized, 'desktop-icon-contract': window.maximized}\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" data-ng-class=\"{'desktop-window-close-button': window.active}\" title=\"Close\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" data-ng-class=\"{'desktop-window-close-button': window.active}\" title=\"Close Window - [Alt + W]\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-close\"></span>\r" +
     "\n" +
