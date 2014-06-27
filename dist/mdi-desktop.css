@@ -230,10 +230,10 @@ fieldset[disabled] .btn:hover {
 }
 
 .desktop-taskbar-list ul > li > div:active {
-    zoom: 0.98;
-    -webkit-transform: scale(0.98);
-    -ms-transform: scale(0.98);
-    transform: scale(0.98);
+    zoom: 0.99;
+    -webkit-transform: scale(0.99);
+    -ms-transform: scale(0.99);
+    transform: scale(0.99);
 }
 
 .desktop-taskbar-list li span {
