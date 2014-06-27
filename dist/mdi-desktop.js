@@ -1151,11 +1151,9 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                data-ng-repeat=\"window in windows\"\r" +
     "\n" +
-    "                data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}\"\r" +
-    "\n" +
     "                data-ng-click=\"updateWindowState(window)\">\r" +
     "\n" +
-    "                <div class=\"desktop-relative\">\r" +
+    "                <div class=\"desktop-relative\" data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}\">\r" +
     "\n" +
     "                    <div class=\"desktop-taskbar-list-item-title\">\r" +
     "\n" +
