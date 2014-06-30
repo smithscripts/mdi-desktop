@@ -499,7 +499,6 @@
             angular.element($window).bind('keydown', function (event) {
                 $scope.$apply(function() {
                     var keyCode = event.keyCode || event.which;
-                    var activeViewIndex = $scope.desktopCtrl.getActiveViewIndex();
                     if (event.altKey && keyCode === 87 && $scope.window.active) {
                         event.preventDefault();
                         $scope.close();
