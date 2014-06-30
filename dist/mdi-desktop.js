@@ -43,6 +43,8 @@
         function ($scope) {
             var self = this;
 
+            $scope.desktopShown = false;
+
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.cascadeWindow(window);
@@ -62,9 +64,11 @@
                     window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                 }
+                if ($scope.desktopShown) $scope.desktopShown = false;
             };
 
             $scope.hideShowAll = function(event) {
+                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
             }
 
@@ -1173,7 +1177,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-taskbar-hide\">\r" +
     "\n" +
-    "        <div class=\"desktop-taskbar-hide-button\" data-ng-click=\"hideShowAll()\">\r" +
+    "        <div class=\"desktop-taskbar-hide-button\" data-ng-click=\"hideShowAll()\" data-ng-attr-title=\"{{ desktopShown ? 'Restore Windows' : 'Hide All Windows' }}\">\r" +
     "\n" +
     "\r" +
     "\n" +

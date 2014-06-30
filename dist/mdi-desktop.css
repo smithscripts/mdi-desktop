@@ -249,7 +249,7 @@ fieldset[disabled] .btn:hover {
 }
 
 .desktop-taskbar-list-item-title {
-    width:145px;
+    width:140px;
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
