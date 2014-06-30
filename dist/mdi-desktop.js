@@ -499,16 +499,19 @@
             angular.element($window).bind('keydown', function (event) {
                 $scope.$apply(function() {
                     var keyCode = event.keyCode || event.which;
+                    var activeViewIndex = $scope.desktopCtrl.getActiveViewIndex();
                     if (event.altKey && keyCode === 87 && $scope.window.active) {
                         event.preventDefault();
                         $scope.close();
                     }
-                    if (keyCode === 8 &&
-                        $scope.window.active &&
-                        event.target.tagName.toLowerCase() !== 'input' &&
-                        event.target.tagName.toLowerCase() !== 'textarea') {
+                    if (keyCode === 8 ) {
+                        if ($scope.window.active &&
+                            !$scope.disablePrevious &&
+                            event.target.tagName.toLowerCase() !== 'input' &&
+                            event.target.tagName.toLowerCase() !== 'textarea') {
+                            $scope.previousView();
+                        }
                         event.preventDefault();
-                        $scope.previousView();
                     }
                 });
             });
