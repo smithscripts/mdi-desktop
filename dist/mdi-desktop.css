@@ -230,10 +230,8 @@ fieldset[disabled] .btn:hover {
 }
 
 .desktop-taskbar-list ul > li > div:active {
-    zoom: 0.99;
-    -webkit-transform: scale(0.99);
-    -ms-transform: scale(0.99);
-    transform: scale(0.99);
+    top: 1px;
+    left: 1px
 }
 
 .desktop-taskbar-list li span {
@@ -249,19 +247,20 @@ fieldset[disabled] .btn:hover {
 }
 
 .desktop-taskbar-list-item-title {
-    width:140px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+    width: 135px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: default;
 }
 
 .desktop-taskbar-list-item-close {
-    position:absolute;
-    z-index:1;
-    top:11px;
-    right:5px;
-    font-size:9px;
-    color:gray
+    position: absolute;
+    z-index: 1;
+    top: 11px;
+    right: 5px;
+    font-size: 9px;
+    color: gray
 }
 
 .desktop-taskbar-list-item-close:hover {
