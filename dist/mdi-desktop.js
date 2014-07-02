@@ -42,6 +42,7 @@
     module.controller('mdiDesktopTaskbarController', ['$scope',
         function ($scope) {
             var self = this;
+            self.canCloseFn = undefined;
 
             $scope.desktopShown = false;
 
@@ -72,12 +73,23 @@
                 $scope.desktopCtrl.hideShowAll();
             }
 
-            $scope.close = function(event, index) {
-                $scope.desktopCtrl.getWindows().splice(index, 1);
+            $scope.close = function(event, window) {
+                //TODO: Centralize this code from the window and taskbar controllers
+                if (self.canCloseFn !== undefined) {
+                    if (self.canCloseFn()) {
+                        $scope.desktopCtrl.closeWindow(window);
 
+                    };
+                } else {
+                    $scope.desktopCtrl.closeWindow(window);
+                }
                 event.stopPropagation();
                 event.preventDefault();
             };
+
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+            }
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {
@@ -93,6 +105,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);
@@ -575,6 +588,7 @@
             };
 
             $scope.close = function() {
+                //TODO: Centralize this code from the window and taskbar controllers
                 if (self.canCloseFn !== undefined) {
                     if (self.canCloseFn()) {
                         $scope.desktopCtrl.closeWindow($scope.window);
@@ -1167,7 +1181,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, $index)\"></i>\r" +
+    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, window)\"></i>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
