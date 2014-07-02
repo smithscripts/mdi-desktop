@@ -173,6 +173,7 @@
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
             $scope.displayViewportDimensions = false;
+            $scope.logoUrl = undefined;
 
             $scope.viewportMouseDown = function (event) {
                 $document.on('mousemove', self.mouseMove);
@@ -222,6 +223,7 @@
 
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+                $scope.logoUrl = $scope.options.logoUrl;
             }
         }]);
 
@@ -781,6 +783,7 @@
                 this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
+                this.logoUrl = undefined;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
                 this.showLaunchMenu = false;
@@ -1218,6 +1221,8 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "    <div class=\"desktop-viewport-left-split-outline\" data-ng-show=\"showLeftOutline\"></div>\r" +
     "\n" +
     "    <div class=\"desktop-viewport-right-split-outline\" data-ng-show=\"showRightOutline\"></div>\r" +
+    "\n" +
+    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
     "\n" +
     "</div>"
   );
