@@ -51,13 +51,13 @@
                     window.active = true;
                     window.outOfBounds = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                     return;
                 }
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
@@ -298,7 +298,7 @@
                         $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -308,7 +308,7 @@
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -566,8 +566,8 @@
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
-                    $scope.window.bottom = 0;
-                    $scope.window.height = '100%';
+                    $scope.window.bottom = '1px';
+                    $scope.window.height = 'auto';
                     $scope.window.width = '100%';
 
                     $scope.window.maximized = true;
@@ -956,19 +956,19 @@
                     return;
                 }
                 $scope.windows.splice($scope.windows.indexOf(window), 1);
-                self.activeForemostWindow();
+                self.activateForemostWindow();
             };
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopController.activeForemostWindow
+             * @name mdiDesktopController.activateForemostWindow
              * @module mdi.desktop
              *
              * @description
              * Set the foremost window to an active state
              *
              */
-            self.activeForemostWindow = function() {
+            self.activateForemostWindow = function() {
                 var foremost = undefined;
                 for (var i = 0; i < $scope.windows.length; i++) {
                     if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)
