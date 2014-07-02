@@ -43,6 +43,8 @@
         function ($scope) {
             var self = this;
 
+            $scope.desktopShown = false;
+
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.cascadeWindow(window);
@@ -62,9 +64,11 @@
                     window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                 }
+                if ($scope.desktopShown) $scope.desktopShown = false;
             };
 
             $scope.hideShowAll = function(event) {
+                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
             }
 
@@ -499,12 +503,14 @@
                         event.preventDefault();
                         $scope.close();
                     }
-                    if (keyCode === 8 &&
-                        $scope.window.active &&
-                        event.target.tagName.toLowerCase() !== 'input' &&
-                        event.target.tagName.toLowerCase() !== 'textarea') {
+                    if (keyCode === 8 ) {
+                        if ($scope.window.active &&
+                            !$scope.disablePrevious &&
+                            event.target.tagName.toLowerCase() !== 'input' &&
+                            event.target.tagName.toLowerCase() !== 'textarea') {
+                            $scope.previousView();
+                        }
                         event.preventDefault();
-                        $scope.previousView();
                     }
                 });
             });
@@ -1151,11 +1157,9 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                data-ng-repeat=\"window in windows\"\r" +
     "\n" +
-    "                data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}\"\r" +
-    "\n" +
     "                data-ng-click=\"updateWindowState(window)\">\r" +
     "\n" +
-    "                <div class=\"desktop-relative\">\r" +
+    "                <div class=\"desktop-relative\" data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}\">\r" +
     "\n" +
     "                    <div class=\"desktop-taskbar-list-item-title\">\r" +
     "\n" +
@@ -1175,7 +1179,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-taskbar-hide\">\r" +
     "\n" +
-    "        <div class=\"desktop-taskbar-hide-button\" data-ng-click=\"hideShowAll()\">\r" +
+    "        <div class=\"desktop-taskbar-hide-button\" data-ng-click=\"hideShowAll()\" data-ng-attr-title=\"{{ desktopShown ? 'Restore Windows' : 'Hide All Windows' }}\">\r" +
     "\n" +
     "\r" +
     "\n" +

@@ -8,9 +8,8 @@
         <ul>
             <li class="am-fade-and-scale desktop-text"
                 data-ng-repeat="window in windows"
-                data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}"
                 data-ng-click="updateWindowState(window)">
-                <div class="desktop-relative">
+                <div class="desktop-relative" data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}">
                     <div class="desktop-taskbar-list-item-title">
                         <span>{{window.title}}</span>
                     </div>
@@ -20,7 +19,7 @@
         </ul>
     </div>
     <div class="desktop-taskbar-hide">
-        <div class="desktop-taskbar-hide-button" data-ng-click="hideShowAll()">
+        <div class="desktop-taskbar-hide-button" data-ng-click="hideShowAll()" data-ng-attr-title="{{ desktopShown ? 'Restore Windows' : 'Hide All Windows' }}">
 
         </div>
     </div>

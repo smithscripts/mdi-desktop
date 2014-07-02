@@ -7,6 +7,8 @@
         function ($scope) {
             var self = this;
 
+            $scope.desktopShown = false;
+
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.cascadeWindow(window);
@@ -26,9 +28,11 @@
                     window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                 }
+                if ($scope.desktopShown) $scope.desktopShown = false;
             };
 
             $scope.hideShowAll = function(event) {
+                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
             }
 

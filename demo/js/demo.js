@@ -42,7 +42,7 @@ module.controller('view1Controller', ['$scope',
         };
 
         $scope.init = function() {
-            $scope.windowCtrl.setWindowTitle('View 1');
+            $scope.windowCtrl.setWindowTitle('View 1 BLAH BLAH BLAH');
         };
     }]);
 
