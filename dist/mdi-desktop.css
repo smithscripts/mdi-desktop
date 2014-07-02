@@ -578,10 +578,10 @@ div.desktop-window-resizable-handle {
 
 .desktop-viewport-logo {
     position: absolute;
-    top: 50%;
     left: 50%;
-    right: 50%;
-    bottom: 50%
+    top: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
 }
 
 /*Utilities*/
