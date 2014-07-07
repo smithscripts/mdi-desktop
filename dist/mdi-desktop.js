@@ -760,6 +760,7 @@
                 entities: undefined,
                 entityIndex: 0,
                 isDirty: false,
+                isEditing: false,
                 isInvalid: false,
                 viewDirective: undefined
             };
