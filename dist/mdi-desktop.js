@@ -267,6 +267,7 @@
                 self.startY = 0,
                 self.titleBar = undefined,
                 self.canCloseFn = undefined;
+                self.canNavigateFn = undefined;
                 self.viewportDimensions = undefined;
 
             self.storeWindowValues = function() {
@@ -439,6 +440,46 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopWindowController.viewIsEditing
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Checks whether view is editing.
+             *
+             * @returns {boolean}.
+             */
+            self.viewIsEditing = function () {
+                var isEditing = false;
+                angular.forEach($scope.window.views, function (view) {
+                    if (view.isEditing === true) {
+                        isEditing = true;
+                    }
+                });
+                return isEditing;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.canNavigate
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Checks whether navigation can occur..
+             *
+             * @returns {boolean}.
+             */
+            self.canNavigate = function () {
+                var canNavigate = true;
+                if (self.canNavigateFn !== undefined) {
+                    if (self.viewIsEditing()) {
+                        canNavigate = self.canNavigateFn();
+                    }
+                }
+                return canNavigate;
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopWindowController.removeForwardViews
              * @module mdi.desktop.window
              *
@@ -539,7 +580,7 @@
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
                 }
-            )
+            );
 
             $scope.disablePrevious = true;
             $scope.disableNext = true;
@@ -614,6 +655,7 @@
             };
 
             $scope.previousView = function() {
+                if (!self.canNavigate()) return;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -627,6 +669,7 @@
             };
 
             $scope.nextView = function() {
+                if (!self.canNavigate()) return;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -641,6 +684,7 @@
 
             $scope.init = function() {
                 self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.canNavigateFn = $scope.desktopCtrl.getOptions().canNavigateFn;
                 self.updateNavigationState();
             };
         }]);
