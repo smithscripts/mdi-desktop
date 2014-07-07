@@ -44,8 +44,6 @@
             var self = this;
             self.canCloseFn = undefined;
 
-            $scope.desktopShown = false;
-
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.cascadeWindow(window);
@@ -69,7 +67,6 @@
             };
 
             $scope.hideShowAll = function(event) {
-                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
             }
 
@@ -780,6 +777,7 @@
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
                 this.canCloseFn = undefined;
+                this.canNavigateFn = undefined;
                 this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
@@ -796,7 +794,7 @@
         function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
-            self.allMinimized = false;
+            self.minimize = false;
             self.desktop = desktopClassFactory.createDesktop();
             self.options = undefined;
             self.minWindowCascadePosition = 40;
@@ -885,6 +883,25 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.allWindowsAreMinimized
+             * @module mdi.desktop
+             *
+             * @description
+             * Iterates through windows to determine if all are minimized.
+             *
+             */
+            self.allWindowsAreMinimized = function() {
+                var allMinimized = true;
+                angular.forEach($scope.windows, function(window){
+                    if (!window.minimized) {
+                        allMinimized = false;
+                    }
+                });
+                return allMinimized;
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.hideShowAll
              * @module mdi.desktop
              *
@@ -893,11 +910,12 @@
              *
              */
             self.hideShowAll = function() {
-                self.allMinimized = !self.allMinimized;
+                self.minimize = self.allWindowsAreMinimized() ? false : !self.minimize;
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
-                    window.minimized = self.allMinimized;
+                    window.minimized = self.minimize;
                 });
+                self.activateForemostWindow();
             };
 
             /**
