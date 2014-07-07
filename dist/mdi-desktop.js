@@ -268,6 +268,7 @@
                 self.titleBar = undefined,
                 self.canCloseFn = undefined;
                 self.canNavigateFn = undefined;
+                self.cancelEditingOnNavigation = false;
                 self.viewportDimensions = undefined;
 
             self.storeWindowValues = function() {
@@ -656,6 +657,7 @@
 
             $scope.previousView = function() {
                 if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) self.getActiveView().isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -670,6 +672,7 @@
 
             $scope.nextView = function() {
                 if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) self.getActiveView().isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -685,6 +688,7 @@
             $scope.init = function() {
                 self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
                 self.canNavigateFn = $scope.desktopCtrl.getOptions().canNavigateFn;
+                self.cancelEditingOnNavigation = $scope.desktopCtrl.getOptions().cancelEditingOnNavigation;
                 self.updateNavigationState();
             };
         }]);
@@ -821,6 +825,7 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.cancelEditingOnNavigation = false;
                 this.canCloseFn = undefined;
                 this.canNavigateFn = undefined;
                 this.displayViewportDimensions = false;
