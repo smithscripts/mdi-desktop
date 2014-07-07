@@ -299,7 +299,7 @@ fieldset[disabled] .btn:hover {
 
 .desktop-window-container {
     position: absolute !important;
-    background-color: transparent;
+    background-color: #ffffff;
     background-clip: padding-box;
     border-radius: 6px;
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
