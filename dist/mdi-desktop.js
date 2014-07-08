@@ -165,6 +165,9 @@
             $scope.logoUrl = undefined;
 
             $scope.viewportMouseDown = function (event) {
+                //Ignore resize events.
+                if (event.target.nodeName.toLowerCase() === 'span') return;
+
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
             };
@@ -1145,13 +1148,17 @@
                     mouseOffsetX = 0,
                     mouseOffsetY = 0,
                     lastMouseX = 0,
-                    lastMouseY = 0;
+                    lastMouseY = 0,
+                    originalHeight = 0,
+                    originalWidth = 0;
 
                 element.bind('mousedown', function(event) {
                     if (scope.maximized) return;
                     event.preventDefault();
                     mouseOffsetY = event.clientY;
                     mouseOffsetX = event.clientX;
+                    originalHeight = parseInt(scope.window.height, 10);
+                    originalWidth = parseInt(scope.window.width, 10);
                     $document.on('mousemove', mouseMove);
                     $document.on('mouseup', mouseUp);
                 });
@@ -1176,11 +1183,14 @@
 
                         if (scope.direction.indexOf("w") > -1) {
                             if (currentWidth - diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentWidth - currentMinWidth));
+                            //Contain resizing to the west
+                            if (currentLeft + diffX < 0) mouseOffsetX = mouseOffsetX - (diffX - (diffX = 0 - currentLeft));
                             scope.window.left = (currentLeft + diffX) + 'px';
                             scope.window.width = (currentWidth - diffX) + 'px';
                         }
                         if (scope.direction.indexOf("n") > -1) {
                             if (currentHeight - diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentHeight - currentMinHeight));
+                            //Contain resizing to the north
                             if (currentTop + diffY < 0) mouseOffsetY = mouseOffsetY - (diffY - (diffY = 0 - currentTop));
                             scope.window.top = (currentTop + diffY) + 'px';
                             scope.window.height = (currentHeight - diffY) + 'px';
@@ -1268,7 +1278,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
-    "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
+    "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px' }\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
     "    <span class=\"desktop-viewport-dimensions desktop-text\" data-ng-show=\"displayViewportDimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
