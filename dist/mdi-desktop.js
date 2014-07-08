@@ -68,18 +68,10 @@
 
             $scope.hideShowAll = function(event) {
                 $scope.desktopCtrl.hideShowAll();
-            }
+            };
 
             $scope.close = function(event, window) {
-                //TODO: Centralize this code from the window and taskbar controllers
-                if (self.canCloseFn !== undefined) {
-                    if (self.canCloseFn()) {
-                        $scope.desktopCtrl.closeWindow(window);
-
-                    };
-                } else {
-                    $scope.desktopCtrl.closeWindow(window);
-                }
+                $scope.desktopCtrl.closeWindow(window);
                 event.stopPropagation();
                 event.preventDefault();
             };
@@ -421,26 +413,6 @@
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopWindowController.getActiveView
-             * @module mdi.desktop.window
-             *
-             * @description
-             * Gets the active view.
-             *
-             * @returns {object} view object.
-             */
-            self.getActiveView = function () {
-                var activeView = null;
-                angular.forEach($scope.window.views, function (view) {
-                    if (view.active === true) {
-                        activeView = view;
-                    }
-                });
-                return activeView;
-            };
-
-            /**
-             * @mdi.doc function
              * @name mdiDesktopWindowController.viewIsEditing
              * @module mdi.desktop.window
              *
@@ -489,7 +461,7 @@
              *
              */
             self.removeForwardViews = function () {
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 var activeViewIndex = $scope.window.views.indexOf(activeView);
                 for (var i =  $scope.window.views.length; i > activeViewIndex; i--) {
                     $scope.window.views.splice(i, 1);
@@ -508,7 +480,7 @@
              */
             self.addView = function(viewConfigOverlay) {
                 self.removeForwardViews();
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 activeView.active = false;
                 var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
                 var viewConfigInstance = Object.create(viewConfig);
@@ -628,16 +600,8 @@
             };
 
             $scope.close = function() {
-                //TODO: Centralize this code from the window and taskbar controllers
-                if (self.canCloseFn !== undefined) {
-                    if (self.canCloseFn()) {
-                        $scope.desktopCtrl.closeWindow($scope.window);
-                        $scope.$destroy();
-                    };
-                } else {
-                    $scope.desktopCtrl.closeWindow($scope.window);
-                    $scope.$destroy();
-                }
+                $scope.desktopCtrl.closeWindow($scope.window);
+                //$scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -657,7 +621,7 @@
 
             $scope.previousView = function() {
                 if (!self.canNavigate()) return;
-                if (self.cancelEditingOnNavigation) self.getActiveView().isEditing = false;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -672,7 +636,7 @@
 
             $scope.nextView = function() {
                 if (!self.canNavigate()) return;
-                if (self.cancelEditingOnNavigation) self.getActiveView().isEditing = false;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -933,6 +897,26 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.clearActive
+             * @module mdi.desktop
+             *
+             * @description
+             * Gets the active view.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveView = function (wdw) {
+                var activeView = null;
+                angular.forEach(wdw.views, function (view) {
+                    if (view.active === true) {
+                        activeView = view;
+                    }
+                });
+                return activeView;
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.allWindowsAreMinimized
              * @module mdi.desktop
              *
@@ -1039,7 +1023,15 @@
                     alert("Data is invalid. Correct Invalid data before closing window.");
                     return;
                 }
-                $scope.windows.splice($scope.windows.indexOf(window), 1);
+
+                if (self.options.canCloseFn !== undefined) {
+                    if (self.options.canCloseFn(window)) {
+                        $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    };
+                } else {
+                    $scope.windows.splice($scope.windows.indexOf(window), 1);
+                }
+
                 self.activateForemostWindow();
             };
 
