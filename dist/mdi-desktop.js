@@ -604,7 +604,7 @@
 
             $scope.close = function() {
                 $scope.desktopCtrl.closeWindow($scope.window);
-                //$scope.$destroy();
+                $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
