@@ -675,6 +675,10 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.$on("$destroy",function() {
+                    element.remove();
+                });
+
                 scope.init();
             }
         };
