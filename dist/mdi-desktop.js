@@ -42,8 +42,7 @@
     module.controller('mdiDesktopTaskbarController', ['$scope',
         function ($scope) {
             var self = this;
-
-            $scope.desktopShown = false;
+            self.canCloseFn = undefined;
 
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
@@ -51,13 +50,13 @@
                     window.active = true;
                     window.outOfBounds = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                     return;
                 }
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
@@ -68,16 +67,18 @@
             };
 
             $scope.hideShowAll = function(event) {
-                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
-            }
+            };
 
-            $scope.close = function(event, index) {
-                $scope.desktopCtrl.getWindows().splice(index, 1);
-
+            $scope.close = function(event, window) {
+                $scope.desktopCtrl.closeWindow(window);
                 event.stopPropagation();
                 event.preventDefault();
             };
+
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+            }
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {
@@ -93,6 +94,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);
@@ -160,8 +162,12 @@
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
             $scope.displayViewportDimensions = false;
+            $scope.logoUrl = undefined;
 
             $scope.viewportMouseDown = function (event) {
+                //Ignore resize events.
+                if (event.target.nodeName.toLowerCase() === 'span') return;
+
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
             };
@@ -209,6 +215,7 @@
 
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+                $scope.logoUrl = $scope.options.logoUrl;
             }
         }]);
 
@@ -255,6 +262,8 @@
                 self.startY = 0,
                 self.titleBar = undefined,
                 self.canCloseFn = undefined;
+                self.canNavigateFn = undefined;
+                self.cancelEditingOnNavigation = false;
                 self.viewportDimensions = undefined;
 
             self.storeWindowValues = function() {
@@ -298,7 +307,7 @@
                         $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -308,7 +317,7 @@
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -407,22 +416,42 @@
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopWindowController.getActiveView
+             * @name mdiDesktopWindowController.viewIsEditing
              * @module mdi.desktop.window
              *
              * @description
-             * Gets the active view.
+             * Checks whether view is editing.
              *
-             * @returns {object} view object.
+             * @returns {boolean}.
              */
-            self.getActiveView = function () {
-                var activeView = null;
+            self.viewIsEditing = function () {
+                var isEditing = false;
                 angular.forEach($scope.window.views, function (view) {
-                    if (view.active === true) {
-                        activeView = view;
+                    if (view.isEditing === true) {
+                        isEditing = true;
                     }
                 });
-                return activeView;
+                return isEditing;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.canNavigate
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Checks whether navigation can occur..
+             *
+             * @returns {boolean}.
+             */
+            self.canNavigate = function () {
+                var canNavigate = true;
+                if (self.canNavigateFn !== undefined) {
+                    if (self.viewIsEditing()) {
+                        canNavigate = self.canNavigateFn();
+                    }
+                }
+                return canNavigate;
             };
 
             /**
@@ -435,7 +464,7 @@
              *
              */
             self.removeForwardViews = function () {
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 var activeViewIndex = $scope.window.views.indexOf(activeView);
                 for (var i =  $scope.window.views.length; i > activeViewIndex; i--) {
                     $scope.window.views.splice(i, 1);
@@ -454,7 +483,7 @@
              */
             self.addView = function(viewConfigOverlay) {
                 self.removeForwardViews();
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 activeView.active = false;
                 var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
                 var viewConfigInstance = Object.create(viewConfig);
@@ -503,14 +532,13 @@
                         event.preventDefault();
                         $scope.close();
                     }
-                    if (keyCode === 8 ) {
-                        if ($scope.window.active &&
-                            !$scope.disablePrevious &&
-                            event.target.tagName.toLowerCase() !== 'input' &&
-                            event.target.tagName.toLowerCase() !== 'textarea') {
+                    if (keyCode === 8 &&
+                        $scope.window.active &&
+                        !$scope.disablePrevious &&
+                        event.target.tagName.toLowerCase() !== 'input' &&
+                        event.target.tagName.toLowerCase() !== 'textarea') {
                             $scope.previousView();
-                        }
-                        event.preventDefault();
+                            event.preventDefault();
                     }
                 });
             });
@@ -528,7 +556,7 @@
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
                 }
-            )
+            );
 
             $scope.disablePrevious = true;
             $scope.disableNext = true;
@@ -566,8 +594,8 @@
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
-                    $scope.window.bottom = 0;
-                    $scope.window.height = '100%';
+                    $scope.window.bottom = '1px';
+                    $scope.window.height = 'auto';
                     $scope.window.width = '100%';
 
                     $scope.window.maximized = true;
@@ -575,15 +603,8 @@
             };
 
             $scope.close = function() {
-                if (self.canCloseFn !== undefined) {
-                    if (self.canCloseFn()) {
-                        $scope.desktopCtrl.closeWindow($scope.window);
-                        $scope.$destroy();
-                    };
-                } else {
-                    $scope.desktopCtrl.closeWindow($scope.window);
-                    $scope.$destroy();
-                }
+                $scope.desktopCtrl.closeWindow($scope.window);
+                $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -602,6 +623,8 @@
             };
 
             $scope.previousView = function() {
+                if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -615,6 +638,8 @@
             };
 
             $scope.nextView = function() {
+                if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -629,6 +654,8 @@
 
             $scope.init = function() {
                 self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.canNavigateFn = $scope.desktopCtrl.getOptions().canNavigateFn;
+                self.cancelEditingOnNavigation = $scope.desktopCtrl.getOptions().cancelEditingOnNavigation;
                 self.updateNavigationState();
             };
         }]);
@@ -648,6 +675,10 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.$on("$destroy",function() {
+                    element.remove();
+                });
+
                 scope.init();
             }
         };
@@ -748,6 +779,7 @@
                 entities: undefined,
                 entityIndex: 0,
                 isDirty: false,
+                isEditing: false,
                 isInvalid: false,
                 viewDirective: undefined
             };
@@ -764,10 +796,13 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.cancelEditingOnNavigation = false;
                 this.canCloseFn = undefined;
+                this.canNavigateFn = undefined;
                 this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
+                this.logoUrl = undefined;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
                 this.showLaunchMenu = false;
@@ -780,7 +815,7 @@
         function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
-            self.allMinimized = false;
+            self.minimize = false;
             self.desktop = desktopClassFactory.createDesktop();
             self.options = undefined;
             self.minWindowCascadePosition = 40;
@@ -869,6 +904,45 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.clearActive
+             * @module mdi.desktop
+             *
+             * @description
+             * Gets the active view.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveView = function (wdw) {
+                var activeView = null;
+                angular.forEach(wdw.views, function (view) {
+                    if (view.active === true) {
+                        activeView = view;
+                    }
+                });
+                return activeView;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.allWindowsAreMinimized
+             * @module mdi.desktop
+             *
+             * @description
+             * Iterates through windows to determine if all are minimized.
+             *
+             */
+            self.allWindowsAreMinimized = function() {
+                var allMinimized = true;
+                angular.forEach($scope.windows, function(window){
+                    if (!window.minimized) {
+                        allMinimized = false;
+                    }
+                });
+                return allMinimized;
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.hideShowAll
              * @module mdi.desktop
              *
@@ -877,11 +951,12 @@
              *
              */
             self.hideShowAll = function() {
-                self.allMinimized = !self.allMinimized;
+                self.minimize = self.allWindowsAreMinimized() ? false : !self.minimize;
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
-                    window.minimized = self.allMinimized;
+                    window.minimized = self.minimize;
                 });
+                self.activateForemostWindow();
             };
 
             /**
@@ -955,20 +1030,28 @@
                     alert("Data is invalid. Correct Invalid data before closing window.");
                     return;
                 }
-                $scope.windows.splice($scope.windows.indexOf(window), 1);
-                self.activeForemostWindow();
+
+                if (self.options.canCloseFn !== undefined) {
+                    if (self.options.canCloseFn(window)) {
+                        $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    };
+                } else {
+                    $scope.windows.splice($scope.windows.indexOf(window), 1);
+                }
+
+                self.activateForemostWindow();
             };
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopController.activeForemostWindow
+             * @name mdiDesktopController.activateForemostWindow
              * @module mdi.desktop
              *
              * @description
              * Set the foremost window to an active state
              *
              */
-            self.activeForemostWindow = function() {
+            self.activateForemostWindow = function() {
                 var foremost = undefined;
                 for (var i = 0; i < $scope.windows.length; i++) {
                     if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)
@@ -1069,13 +1152,17 @@
                     mouseOffsetX = 0,
                     mouseOffsetY = 0,
                     lastMouseX = 0,
-                    lastMouseY = 0;
+                    lastMouseY = 0,
+                    originalHeight = 0,
+                    originalWidth = 0;
 
                 element.bind('mousedown', function(event) {
                     if (scope.maximized) return;
                     event.preventDefault();
                     mouseOffsetY = event.clientY;
                     mouseOffsetX = event.clientX;
+                    originalHeight = parseInt(scope.window.height, 10);
+                    originalWidth = parseInt(scope.window.width, 10);
                     $document.on('mousemove', mouseMove);
                     $document.on('mouseup', mouseUp);
                 });
@@ -1100,11 +1187,14 @@
 
                         if (scope.direction.indexOf("w") > -1) {
                             if (currentWidth - diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentWidth - currentMinWidth));
+                            //Contain resizing to the west
+                            if (currentLeft + diffX < 0) mouseOffsetX = mouseOffsetX - (diffX - (diffX = 0 - currentLeft));
                             scope.window.left = (currentLeft + diffX) + 'px';
                             scope.window.width = (currentWidth - diffX) + 'px';
                         }
                         if (scope.direction.indexOf("n") > -1) {
                             if (currentHeight - diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentHeight - currentMinHeight));
+                            //Contain resizing to the north
                             if (currentTop + diffY < 0) mouseOffsetY = mouseOffsetY - (diffY - (diffY = 0 - currentTop));
                             scope.window.top = (currentTop + diffY) + 'px';
                             scope.window.height = (currentHeight - diffY) + 'px';
@@ -1167,7 +1257,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, $index)\"></i>\r" +
+    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, window)\"></i>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1192,7 +1282,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('src/templates/mdi-desktop-viewport.html',
-    "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px'}\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
+    "<div class=\"desktop-viewport-container\" data-ng-style=\"{'top': options.viewportTop + 'px' }\" data-ng-mousedown=\"viewportMouseDown($event)\">\r" +
     "\n" +
     "    <span class=\"desktop-viewport-dimensions desktop-text\" data-ng-show=\"displayViewportDimensions\">{{dimensions.height}} x {{dimensions.width}}</span>\r" +
     "\n" +
@@ -1205,6 +1295,8 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "    <div class=\"desktop-viewport-left-split-outline\" data-ng-show=\"showLeftOutline\"></div>\r" +
     "\n" +
     "    <div class=\"desktop-viewport-right-split-outline\" data-ng-show=\"showRightOutline\"></div>\r" +
+    "\n" +
+    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
     "\n" +
     "</div>"
   );

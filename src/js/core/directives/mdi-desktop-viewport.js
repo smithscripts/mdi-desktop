@@ -39,8 +39,12 @@
             $scope.showLeftOutline = false;
             $scope.showRightOutline = false;
             $scope.displayViewportDimensions = false;
+            $scope.logoUrl = undefined;
 
             $scope.viewportMouseDown = function (event) {
+                //Ignore resize events.
+                if (event.target.nodeName.toLowerCase() === 'span') return;
+
                 $document.on('mousemove', self.mouseMove);
                 $document.on('mouseup', self.mouseUp);
             };
@@ -88,6 +92,7 @@
 
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
+                $scope.logoUrl = $scope.options.logoUrl;
             }
         }]);
 

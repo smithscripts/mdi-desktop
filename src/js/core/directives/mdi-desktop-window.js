@@ -22,6 +22,8 @@
                 self.startY = 0,
                 self.titleBar = undefined,
                 self.canCloseFn = undefined;
+                self.canNavigateFn = undefined;
+                self.cancelEditingOnNavigation = false;
                 self.viewportDimensions = undefined;
 
             self.storeWindowValues = function() {
@@ -65,7 +67,7 @@
                         $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -75,7 +77,7 @@
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
-                        $scope.window.bottom = 0;
+                        $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -174,22 +176,42 @@
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopWindowController.getActiveView
+             * @name mdiDesktopWindowController.viewIsEditing
              * @module mdi.desktop.window
              *
              * @description
-             * Gets the active view.
+             * Checks whether view is editing.
              *
-             * @returns {object} view object.
+             * @returns {boolean}.
              */
-            self.getActiveView = function () {
-                var activeView = null;
+            self.viewIsEditing = function () {
+                var isEditing = false;
                 angular.forEach($scope.window.views, function (view) {
-                    if (view.active === true) {
-                        activeView = view;
+                    if (view.isEditing === true) {
+                        isEditing = true;
                     }
                 });
-                return activeView;
+                return isEditing;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.canNavigate
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Checks whether navigation can occur..
+             *
+             * @returns {boolean}.
+             */
+            self.canNavigate = function () {
+                var canNavigate = true;
+                if (self.canNavigateFn !== undefined) {
+                    if (self.viewIsEditing()) {
+                        canNavigate = self.canNavigateFn();
+                    }
+                }
+                return canNavigate;
             };
 
             /**
@@ -202,7 +224,7 @@
              *
              */
             self.removeForwardViews = function () {
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 var activeViewIndex = $scope.window.views.indexOf(activeView);
                 for (var i =  $scope.window.views.length; i > activeViewIndex; i--) {
                     $scope.window.views.splice(i, 1);
@@ -221,7 +243,7 @@
              */
             self.addView = function(viewConfigOverlay) {
                 self.removeForwardViews();
-                var activeView = self.getActiveView();
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
                 activeView.active = false;
                 var viewConfig = $scope.desktopCtrl.getDesktop().viewConfig;
                 var viewConfigInstance = Object.create(viewConfig);
@@ -270,14 +292,13 @@
                         event.preventDefault();
                         $scope.close();
                     }
-                    if (keyCode === 8 ) {
-                        if ($scope.window.active &&
-                            !$scope.disablePrevious &&
-                            event.target.tagName.toLowerCase() !== 'input' &&
-                            event.target.tagName.toLowerCase() !== 'textarea') {
+                    if (keyCode === 8 &&
+                        $scope.window.active &&
+                        !$scope.disablePrevious &&
+                        event.target.tagName.toLowerCase() !== 'input' &&
+                        event.target.tagName.toLowerCase() !== 'textarea') {
                             $scope.previousView();
-                        }
-                        event.preventDefault();
+                            event.preventDefault();
                     }
                 });
             });
@@ -295,7 +316,7 @@
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
                 }
-            )
+            );
 
             $scope.disablePrevious = true;
             $scope.disableNext = true;
@@ -333,8 +354,8 @@
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
-                    $scope.window.bottom = 0;
-                    $scope.window.height = '100%';
+                    $scope.window.bottom = '1px';
+                    $scope.window.height = 'auto';
                     $scope.window.width = '100%';
 
                     $scope.window.maximized = true;
@@ -342,15 +363,8 @@
             };
 
             $scope.close = function() {
-                if (self.canCloseFn !== undefined) {
-                    if (self.canCloseFn()) {
-                        $scope.desktopCtrl.closeWindow($scope.window);
-                        $scope.$destroy();
-                    };
-                } else {
-                    $scope.desktopCtrl.closeWindow($scope.window);
-                    $scope.$destroy();
-                }
+                $scope.desktopCtrl.closeWindow($scope.window);
+                $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -369,6 +383,8 @@
             };
 
             $scope.previousView = function() {
+                if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -382,6 +398,8 @@
             };
 
             $scope.nextView = function() {
+                if (!self.canNavigate()) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
                     if (view.active)
@@ -396,6 +414,8 @@
 
             $scope.init = function() {
                 self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+                self.canNavigateFn = $scope.desktopCtrl.getOptions().canNavigateFn;
+                self.cancelEditingOnNavigation = $scope.desktopCtrl.getOptions().cancelEditingOnNavigation;
                 self.updateNavigationState();
             };
         }]);
@@ -415,6 +435,10 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.$on("$destroy",function() {
+                    element.remove();
+                });
+
                 scope.init();
             }
         };

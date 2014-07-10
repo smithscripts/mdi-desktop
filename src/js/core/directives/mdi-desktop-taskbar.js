@@ -6,8 +6,7 @@
     module.controller('mdiDesktopTaskbarController', ['$scope',
         function ($scope) {
             var self = this;
-
-            $scope.desktopShown = false;
+            self.canCloseFn = undefined;
 
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
@@ -15,13 +14,13 @@
                     window.active = true;
                     window.outOfBounds = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                     return;
                 }
                 if (window.active) {
                     window.active = false;
                     window.minimized = true;
-                    $scope.desktopCtrl.activeForemostWindow();
+                    $scope.desktopCtrl.activateForemostWindow();
                 } else {
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
@@ -32,16 +31,18 @@
             };
 
             $scope.hideShowAll = function(event) {
-                $scope.desktopShown = !$scope.desktopShown;
                 $scope.desktopCtrl.hideShowAll();
-            }
+            };
 
-            $scope.close = function(event, index) {
-                $scope.desktopCtrl.getWindows().splice(index, 1);
-
+            $scope.close = function(event, window) {
+                $scope.desktopCtrl.closeWindow(window);
                 event.stopPropagation();
                 event.preventDefault();
             };
+
+            $scope.init = function() {
+                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
+            }
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {
@@ -57,6 +58,7 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
+                scope.init();
             }
         };
     }]);

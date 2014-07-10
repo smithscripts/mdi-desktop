@@ -92,6 +92,7 @@
                 entities: undefined,
                 entityIndex: 0,
                 isDirty: false,
+                isEditing: false,
                 isInvalid: false,
                 viewDirective: undefined
             };
@@ -108,10 +109,13 @@
             function DesktopOptions() {
                 this.allowDirtyClose = false;
                 this.allowInvalidClose = false;
+                this.cancelEditingOnNavigation = false;
                 this.canCloseFn = undefined;
+                this.canNavigateFn = undefined;
                 this.displayViewportDimensions = false;
                 this.enableAnimation = true;
                 this.enableWindowCascading = true;
+                this.logoUrl = undefined;
                 this.menubarHeight = 32;
                 this.menubarTemplateUrl = undefined;
                 this.showLaunchMenu = false;
@@ -124,7 +128,7 @@
         function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
-            self.allMinimized = false;
+            self.minimize = false;
             self.desktop = desktopClassFactory.createDesktop();
             self.options = undefined;
             self.minWindowCascadePosition = 40;
@@ -213,6 +217,45 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.clearActive
+             * @module mdi.desktop
+             *
+             * @description
+             * Gets the active view.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveView = function (wdw) {
+                var activeView = null;
+                angular.forEach(wdw.views, function (view) {
+                    if (view.active === true) {
+                        activeView = view;
+                    }
+                });
+                return activeView;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.allWindowsAreMinimized
+             * @module mdi.desktop
+             *
+             * @description
+             * Iterates through windows to determine if all are minimized.
+             *
+             */
+            self.allWindowsAreMinimized = function() {
+                var allMinimized = true;
+                angular.forEach($scope.windows, function(window){
+                    if (!window.minimized) {
+                        allMinimized = false;
+                    }
+                });
+                return allMinimized;
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.hideShowAll
              * @module mdi.desktop
              *
@@ -221,11 +264,12 @@
              *
              */
             self.hideShowAll = function() {
-                self.allMinimized = !self.allMinimized;
+                self.minimize = self.allWindowsAreMinimized() ? false : !self.minimize;
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
-                    window.minimized = self.allMinimized;
+                    window.minimized = self.minimize;
                 });
+                self.activateForemostWindow();
             };
 
             /**
@@ -299,20 +343,28 @@
                     alert("Data is invalid. Correct Invalid data before closing window.");
                     return;
                 }
-                $scope.windows.splice($scope.windows.indexOf(window), 1);
-                self.activeForemostWindow();
+
+                if (self.options.canCloseFn !== undefined) {
+                    if (self.options.canCloseFn(window)) {
+                        $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    };
+                } else {
+                    $scope.windows.splice($scope.windows.indexOf(window), 1);
+                }
+
+                self.activateForemostWindow();
             };
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopController.activeForemostWindow
+             * @name mdiDesktopController.activateForemostWindow
              * @module mdi.desktop
              *
              * @description
              * Set the foremost window to an active state
              *
              */
-            self.activeForemostWindow = function() {
+            self.activateForemostWindow = function() {
                 var foremost = undefined;
                 for (var i = 0; i < $scope.windows.length; i++) {
                     if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)

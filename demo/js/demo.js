@@ -3,16 +3,30 @@ var module = angular.module('demo', []);
 module.controller('demoController', function($rootScope, $scope) {
     $rootScope.globals = { issueRef: 1 };
 
-    $scope.canClose = function() {
+    $scope.canClose = function(wdw) {
+        var activeView = {};
+        angular.forEach(wdw.views, function (view) {
+            if (view.active === true) {
+                activeView = view;
+            }
+        });
+        if (activeView.isEditing && activeView.isDirty) return false;
         return true;
-    }
+    };
+
+    $scope.canNavigate = function() {
+        //alert('Save or Cancel before navigating');
+        return true;
+    };
 
     $scope.desktopOptions = {
         showLaunchMenu: false,
         globals: 'globals',
         menubarTemplateUrl: 'demo/templates/menu.html',
         canCloseFn: $scope.canClose,
-        displayViewportDimensions: true
+        canNavigateFn: $scope.canNavigate,
+        displayViewportDimensions: true,
+        cancelEditingOnNavigation: true
     };
 });
 
@@ -42,7 +56,7 @@ module.controller('view1Controller', ['$scope',
         };
 
         $scope.init = function() {
-            $scope.windowCtrl.setWindowTitle('View 1 BLAH BLAH BLAH');
+            $scope.windowCtrl.setWindowTitle('View 1');
         };
     }]);
 

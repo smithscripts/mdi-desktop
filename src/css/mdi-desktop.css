@@ -299,7 +299,7 @@ fieldset[disabled] .btn:hover {
 
 .desktop-window-container {
     position: absolute !important;
-    background-color: transparent;
+    background-color: #ffffff;
     background-clip: padding-box;
     border-radius: 6px;
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
@@ -574,6 +574,14 @@ div.desktop-window-resizable-handle {
     width: 49.8%;
     height: auto;
     border: 1px dashed #000000;
+}
+
+.desktop-viewport-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
 }
 
 /*Utilities*/
