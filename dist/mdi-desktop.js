@@ -39,8 +39,8 @@
 
     var module = angular.module('mdi.desktop.taskbar', []);
 
-    module.controller('mdiDesktopTaskbarController', ['$scope',
-        function ($scope) {
+    module.controller('mdiDesktopTaskbarController', ['$scope', '$window',
+        function ($scope, $window) {
             var self = this;
             self.canCloseFn = undefined;
 
@@ -243,8 +243,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
-        function ($scope, $rootScope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window', '$timeout',
+        function ($scope, $rootScope, $element, $document, $window, $timeout) {
             var self = this;
 
             self.top,
@@ -361,16 +361,14 @@
              *
              */
             self.isWindowInViewport = function() {
-                $scope.$apply(function() {
-                    var windowTop = $element[0].offsetTop;
-                    var windowLeft = $element[0].offsetLeft;
-                    if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
-                        (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
-                        $scope.window.outOfBounds = true;
-                    } else {
-                        $scope.window.outOfBounds = false;
-                    };
-                })
+                var windowTop = $element[0].offsetTop;
+                var windowLeft = $element[0].offsetLeft;
+                if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
+                    (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
+                    $scope.window.outOfBounds = true;
+                } else {
+                    $scope.window.outOfBounds = false;
+                };
             };
 
             /**
@@ -514,7 +512,9 @@
              *
              */
             angular.element($window).bind('resize', function () {
-                self.isWindowInViewport()
+                $scope.$apply(function() {
+                    self.isWindowInViewport();
+                });
             });
 
             /**
@@ -555,6 +555,24 @@
                 function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            );
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window's active state
+             *
+             */
+            $scope.$watch('window.active',
+                function (value) {
+                    if (value) {
+                        $timeout(function() {
+                            self.isWindowInViewport();
+                        }, 100);
+                    }
                 }
             );
 
