@@ -49,6 +49,7 @@
                     $scope.desktopCtrl.cascadeWindow(window);
                     window.active = true;
                     window.outOfBounds = false;
+                    window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                     $scope.desktopCtrl.activateForemostWindow();
                     return;
@@ -361,14 +362,23 @@
              *
              */
             self.isWindowInViewport = function() {
-                var windowTop = $element[0].offsetTop;
-                var windowLeft = $element[0].offsetLeft;
-                if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
-                    (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
-                    $scope.window.outOfBounds = true;
-                } else {
-                    $scope.window.outOfBounds = false;
-                };
+                $scope.$apply(function() {
+                    var windowTop = 0;
+                    var windowLeft = 0;
+                    if (!$scope.window.minimized) {
+                        windowTop = $element[0].offsetTop;
+                        windowLeft = $element[0].offsetLeft;
+                    } else {
+                        windowTop = parseInt(self.top, 10);
+                        windowLeft = parseInt(self.left, 10);
+                    }
+                    if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
+                        (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
+                        $scope.window.outOfBounds = true;
+                    } else {
+                        $scope.window.outOfBounds = false;
+                    }
+                });
             };
 
             /**
@@ -512,9 +522,7 @@
              *
              */
             angular.element($window).bind('resize', function () {
-                $scope.$apply(function() {
-                    self.isWindowInViewport();
-                });
+                self.isWindowInViewport();
             });
 
             /**
@@ -563,15 +571,13 @@
              * @module mdi.desktop.window
              *
              * @description
-             * Monitors the window's active state
+             * Monitors the window's minimized state
              *
              */
-            $scope.$watch('window.active',
+            $scope.$watch('window.minimized',
                 function (value) {
                     if (value) {
-                        $timeout(function() {
-                            self.isWindowInViewport();
-                        }, 100);
+                        self.storeWindowValues();
                     }
                 }
             );
