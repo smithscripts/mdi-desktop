@@ -214,6 +214,11 @@
                 });
             });
 
+            document.querySelectorAll(".desktop-viewport-container")[0].onscroll = function (event) {
+                event.preventDefault();
+                document.querySelectorAll(".desktop-viewport-container")[0].scrollTop = 0;
+            };
+
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
                 $scope.logoUrl = $scope.options.logoUrl;
@@ -1125,7 +1130,8 @@
             $scope.options = self.options;
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
-
+            
+            $scope.logoUrl = $scope.options.logoUrl;
             $animate.enabled($scope.options.enableAnimation);
         }]);
 
@@ -1320,8 +1326,6 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-viewport-right-split-outline\" data-ng-show=\"showRightOutline\"></div>\r" +
     "\n" +
-    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
-    "\n" +
     "</div>"
   );
 
@@ -1467,6 +1471,10 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\r" +
     "\n" +
     "    <div data-mdi-desktop-taskbar windows=\"windows\"></div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
     "\n" +
     "</div>"
   );
