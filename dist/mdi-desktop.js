@@ -632,8 +632,8 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
-                $scope.$destroy();
+                var closed = $scope.desktopCtrl.closeWindow($scope.window);
+                if (closed) $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -1048,27 +1048,31 @@
              * @description
              * Remove a window {object} from the windows array.
              *
+             * @returns {boolean} returns true if window was closed, false if not closed.
              */
             self.closeWindow = function(window) {
                 if (!self.options.allowDirtyClose && window.isDirty) {
                     alert("Unsaved Changes. Save changes before closing window.");
-                    return;
+                    return false;
                 }
 
                 if (!self.options.allowInvalidClose && window.isInvalid) {
                     alert("Data is invalid. Correct Invalid data before closing window.");
-                    return;
+                    return false;
                 }
 
                 if (self.options.canCloseFn !== undefined) {
                     if (self.options.canCloseFn(window)) {
                         $scope.windows.splice($scope.windows.indexOf(window), 1);
+                        self.activateForemostWindow();
+                        return true;
                     };
                 } else {
                     $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    self.activateForemostWindow();
+                    return true;
                 }
-
-                self.activateForemostWindow();
+                return false;
             };
 
             /**
@@ -1130,7 +1134,7 @@
             $scope.options = self.options;
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
-            
+
             $scope.logoUrl = $scope.options.logoUrl;
             $animate.enabled($scope.options.enableAnimation);
         }]);
