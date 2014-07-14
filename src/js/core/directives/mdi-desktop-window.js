@@ -3,8 +3,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
-        function ($scope, $rootScope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window', '$timeout',
+        function ($scope, $rootScope, $element, $document, $window, $timeout) {
             var self = this;
 
             self.top,
@@ -122,15 +122,22 @@
              */
             self.isWindowInViewport = function() {
                 $scope.$apply(function() {
-                    var windowTop = $element[0].offsetTop;
-                    var windowLeft = $element[0].offsetLeft;
+                    var windowTop = 0;
+                    var windowLeft = 0;
+                    if (!$scope.window.minimized) {
+                        windowTop = $element[0].offsetTop;
+                        windowLeft = $element[0].offsetLeft;
+                    } else {
+                        windowTop = parseInt(self.top, 10);
+                        windowLeft = parseInt(self.left, 10);
+                    }
                     if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
                         (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
                         $scope.window.outOfBounds = true;
                     } else {
                         $scope.window.outOfBounds = false;
-                    };
-                })
+                    }
+                });
             };
 
             /**
@@ -274,7 +281,7 @@
              *
              */
             angular.element($window).bind('resize', function () {
-                self.isWindowInViewport()
+                self.isWindowInViewport();
             });
 
             /**
@@ -315,6 +322,22 @@
                 function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            );
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window's minimized state
+             *
+             */
+            $scope.$watch('window.minimized',
+                function (value) {
+                    if (value) {
+                        self.storeWindowValues();
+                    }
                 }
             );
 
@@ -363,8 +386,8 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
-                $scope.$destroy();
+                var closed = $scope.desktopCtrl.closeWindow($scope.window);
+                if (closed) $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {

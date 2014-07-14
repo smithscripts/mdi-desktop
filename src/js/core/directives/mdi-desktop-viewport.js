@@ -90,6 +90,11 @@
                 });
             });
 
+            document.querySelectorAll(".desktop-viewport-container")[0].onscroll = function (event) {
+                event.preventDefault();
+                document.querySelectorAll(".desktop-viewport-container")[0].scrollTop = 0;
+            };
+
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
                 $scope.logoUrl = $scope.options.logoUrl;

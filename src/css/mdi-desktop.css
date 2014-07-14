@@ -263,6 +263,11 @@ fieldset[disabled] .btn:hover {
     color: gray
 }
 
+.desktop-taskbar-list-item-close:active {
+    top: 10px;
+    right: 6px
+}
+
 .desktop-taskbar-list-item-close:hover {
     color:red;
 }

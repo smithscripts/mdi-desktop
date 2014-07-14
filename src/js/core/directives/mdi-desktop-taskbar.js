@@ -3,8 +3,8 @@
 
     var module = angular.module('mdi.desktop.taskbar', []);
 
-    module.controller('mdiDesktopTaskbarController', ['$scope',
-        function ($scope) {
+    module.controller('mdiDesktopTaskbarController', ['$scope', '$window',
+        function ($scope, $window) {
             var self = this;
             self.canCloseFn = undefined;
 
@@ -13,6 +13,7 @@
                     $scope.desktopCtrl.cascadeWindow(window);
                     window.active = true;
                     window.outOfBounds = false;
+                    window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                     $scope.desktopCtrl.activateForemostWindow();
                     return;

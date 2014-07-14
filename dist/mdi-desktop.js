@@ -39,8 +39,8 @@
 
     var module = angular.module('mdi.desktop.taskbar', []);
 
-    module.controller('mdiDesktopTaskbarController', ['$scope',
-        function ($scope) {
+    module.controller('mdiDesktopTaskbarController', ['$scope', '$window',
+        function ($scope, $window) {
             var self = this;
             self.canCloseFn = undefined;
 
@@ -49,6 +49,7 @@
                     $scope.desktopCtrl.cascadeWindow(window);
                     window.active = true;
                     window.outOfBounds = false;
+                    window.minimized = false;
                     window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
                     $scope.desktopCtrl.activateForemostWindow();
                     return;
@@ -213,6 +214,11 @@
                 });
             });
 
+            document.querySelectorAll(".desktop-viewport-container")[0].onscroll = function (event) {
+                event.preventDefault();
+                document.querySelectorAll(".desktop-viewport-container")[0].scrollTop = 0;
+            };
+
             $scope.init = function() {
                 $scope.displayViewportDimensions = $scope.options.displayViewportDimensions;
                 $scope.logoUrl = $scope.options.logoUrl;
@@ -243,8 +249,8 @@
 
     var module = angular.module('mdi.desktop.window', []);
 
-    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window',
-        function ($scope, $rootScope, $element, $document, $window) {
+    module.controller('mdiDesktopWindowController', ['$scope', '$rootScope', '$element', '$document', '$window', '$timeout',
+        function ($scope, $rootScope, $element, $document, $window, $timeout) {
             var self = this;
 
             self.top,
@@ -362,15 +368,22 @@
              */
             self.isWindowInViewport = function() {
                 $scope.$apply(function() {
-                    var windowTop = $element[0].offsetTop;
-                    var windowLeft = $element[0].offsetLeft;
+                    var windowTop = 0;
+                    var windowLeft = 0;
+                    if (!$scope.window.minimized) {
+                        windowTop = $element[0].offsetTop;
+                        windowLeft = $element[0].offsetLeft;
+                    } else {
+                        windowTop = parseInt(self.top, 10);
+                        windowLeft = parseInt(self.left, 10);
+                    }
                     if ((windowTop + 10) >= $scope.viewportCtrl.getViewportDimensions().height ||
                         (windowLeft + 60) >= $scope.viewportCtrl.getViewportDimensions().width) {
                         $scope.window.outOfBounds = true;
                     } else {
                         $scope.window.outOfBounds = false;
-                    };
-                })
+                    }
+                });
             };
 
             /**
@@ -514,7 +527,7 @@
              *
              */
             angular.element($window).bind('resize', function () {
-                self.isWindowInViewport()
+                self.isWindowInViewport();
             });
 
             /**
@@ -555,6 +568,22 @@
                 function () { return [$element[0].clientWidth, $element[0].clientHeight].join('x'); },
                 function (value) {
                     $rootScope.$broadcast('windowResize', value.split('x'));
+                }
+            );
+
+            /**
+             * @mdi.doc watch
+             * @module mdi.desktop.window
+             *
+             * @description
+             * Monitors the window's minimized state
+             *
+             */
+            $scope.$watch('window.minimized',
+                function (value) {
+                    if (value) {
+                        self.storeWindowValues();
+                    }
                 }
             );
 
@@ -603,8 +632,8 @@
             };
 
             $scope.close = function() {
-                $scope.desktopCtrl.closeWindow($scope.window);
-                $scope.$destroy();
+                var closed = $scope.desktopCtrl.closeWindow($scope.window);
+                if (closed) $scope.$destroy();
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -1019,27 +1048,31 @@
              * @description
              * Remove a window {object} from the windows array.
              *
+             * @returns {boolean} returns true if window was closed, false if not closed.
              */
             self.closeWindow = function(window) {
                 if (!self.options.allowDirtyClose && window.isDirty) {
                     alert("Unsaved Changes. Save changes before closing window.");
-                    return;
+                    return false;
                 }
 
                 if (!self.options.allowInvalidClose && window.isInvalid) {
                     alert("Data is invalid. Correct Invalid data before closing window.");
-                    return;
+                    return false;
                 }
 
                 if (self.options.canCloseFn !== undefined) {
                     if (self.options.canCloseFn(window)) {
                         $scope.windows.splice($scope.windows.indexOf(window), 1);
+                        self.activateForemostWindow();
+                        return true;
                     };
                 } else {
                     $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    self.activateForemostWindow();
+                    return true;
                 }
-
-                self.activateForemostWindow();
+                return false;
             };
 
             /**
@@ -1102,6 +1135,7 @@
             $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
             $scope.windows = [];
 
+            $scope.logoUrl = $scope.options.logoUrl;
             $animate.enabled($scope.options.enableAnimation);
         }]);
 
@@ -1296,8 +1330,6 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"desktop-viewport-right-split-outline\" data-ng-show=\"showRightOutline\"></div>\r" +
     "\n" +
-    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
-    "\n" +
     "</div>"
   );
 
@@ -1443,6 +1475,10 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\r" +
     "\n" +
     "    <div data-mdi-desktop-taskbar windows=\"windows\"></div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <img class=\"desktop-viewport-logo\" data-ng-src=\"{{logoUrl}}\" data-ng-show=\"logoUrl\" alt=\"\">\r" +
     "\n" +
     "</div>"
   );
