@@ -639,7 +639,7 @@
             $scope.windowTitleMouseDown = function (event) {
                 if ($scope.window.maximized || $scope.window.split) return;
                 event.preventDefault();
-                self.titleBar = angular.element(event.srcElement);
+                self.titleBar = angular.element(event.srcElement || event.target);
                 self.x = $element[0].offsetLeft;
                 self.y = $element[0].offsetTop;
                 self.startX = event.screenX - self.x;
