@@ -600,6 +600,7 @@
             $scope.minimize = function() {
                 $scope.window.active = false;
                 $scope.window.minimized = true;
+                $scope.desktopCtrl.activateForemostWindow();
             };
 
             $scope.resetWindowValues = function() {
