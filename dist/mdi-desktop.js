@@ -311,7 +311,7 @@
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
                         $scope.window.split = true;
-                        $scope.window.top = 0;
+                        $scope.window.top = '-1px';
                         $scope.window.left = 0;
                         $scope.window.bottom = '1px';
                         $scope.window.width = '50%';
@@ -320,7 +320,7 @@
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
                         $scope.window.split = true;
-                        $scope.window.top = 0;
+                        $scope.window.top = '-1px';
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
                         $scope.window.bottom = '1px';
@@ -1375,11 +1375,11 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Back One View - [Backspace]\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
-    "                    <span class=\"desktop-icon-arrow-left2\"></span>\r" +
+    "                    <span class=\"desktop-icon-arrow-left2 custom-nav-button\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Forward One View\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default custom-nav-button\" title=\"Go Forward One View\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-arrow-right2\"></span>\r" +
     "\n" +
