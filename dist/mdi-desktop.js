@@ -1189,7 +1189,8 @@
                     lastMouseX = 0,
                     lastMouseY = 0,
                     originalHeight = 0,
-                    originalWidth = 0;
+                    originalWidth = 0,
+                    viewport;
 
                 element.bind('mousedown', function(event) {
                     if (scope.maximized) return;
@@ -1198,6 +1199,7 @@
                     mouseOffsetX = event.clientX;
                     originalHeight = parseInt(scope.window.height, 10);
                     originalWidth = parseInt(scope.window.width, 10);
+                    viewport = getViewport();
                     $document.on('mousemove', mouseMove);
                     $document.on('mouseup', mouseUp);
                 });
@@ -1222,24 +1224,39 @@
 
                         if (scope.direction.indexOf("w") > -1) {
                             if (currentWidth - diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentWidth - currentMinWidth));
+
                             //Contain resizing to the west
-                            if (currentLeft + diffX < 0) mouseOffsetX = mouseOffsetX - (diffX - (diffX = 0 - currentLeft));
+                            if (currentLeft + diffX < 0)
+                                mouseOffsetX = mouseOffsetX - (diffX - (diffX = 0 - currentLeft));
+
                             scope.window.left = (currentLeft + diffX) + 'px';
                             scope.window.width = (currentWidth - diffX) + 'px';
                         }
                         if (scope.direction.indexOf("n") > -1) {
                             if (currentHeight - diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentHeight - currentMinHeight));
+
                             //Contain resizing to the north
                             if (currentTop + diffY < 0) mouseOffsetY = mouseOffsetY - (diffY - (diffY = 0 - currentTop));
+
                             scope.window.top = (currentTop + diffY) + 'px';
                             scope.window.height = (currentHeight - diffY) + 'px';
                         }
                         if (scope.direction.indexOf("e") > -1) {
                             if (currentWidth + diffX < currentMinWidth) mouseOffsetX = mouseOffsetX - (diffX - (diffX = currentMinWidth - currentWidth));
+
+                            //Contain resizing to the east
+                            if ((currentLeft + currentWidth) + diffX > viewport[0].offsetWidth)
+                                mouseOffsetX = mouseOffsetX - (diffX - (diffX = viewport[0].offsetWidth - (currentLeft + currentWidth)));
+
                             scope.window.width = (currentWidth + diffX) + 'px';
                         }
                         if (scope.direction.indexOf("s") > -1) {
                             if (currentHeight + diffY < currentMinHeight) mouseOffsetY = mouseOffsetY - (diffY - (diffY = currentMinHeight- currentHeight));
+
+                            //Contain resizing to the south
+                            if ((currentTop + currentHeight) + diffY > viewport[0].offsetHeight)
+                                mouseOffsetY = mouseOffsetY - (diffY - (diffY = viewport[0].offsetHeight - (currentTop + currentHeight)));
+
                             scope.window.height = (currentHeight + diffY) + 'px';
                         }
                     });
@@ -1252,7 +1269,11 @@
                     lastMouseY = 0;
                     $document.unbind('mousemove', mouseMove);
                     $document.unbind('mouseup', mouseUp);
-                }
+                };
+
+                var getViewport = function() {
+                    return angular.element(document.querySelectorAll('.desktop-viewport-container')[0]);
+                };
             }
         };
     }]);
