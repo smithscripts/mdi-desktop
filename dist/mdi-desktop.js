@@ -311,19 +311,19 @@
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
                         $scope.window.split = true;
-                        $scope.window.top = '-1px';
+                        $scope.window.top = 0;
                         $scope.window.left = 0;
-                        $scope.window.bottom = '1px';
+                        $scope.window.bottom = 0;
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
                         $scope.window.split = true;
-                        $scope.window.top = '-1px';
+                        $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
-                        $scope.window.bottom = '1px';
+                        $scope.window.bottom = 0;
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -624,7 +624,7 @@
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
-                    $scope.window.bottom = '1px';
+                    $scope.window.bottom = 0;
                     $scope.window.height = 'auto';
                     $scope.window.width = '100%';
 
