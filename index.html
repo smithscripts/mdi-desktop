@@ -158,10 +158,46 @@ function ($scope) {
                     <td>Allows a window to close when its in a invalid state.</td>
                 </tr>
                 <tr>
+                    <td>cancelEditingOnNavigation</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>canCloseFn</td>
+                    <td>undefined</td>
+                    <td>function</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>canNavigateFn</td>
+                    <td>undefined</td>
+                    <td>function</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>displayViewportDimensions</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>enableAnimation</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>Sets a value indicating whether the window should animate when opened.</td>
+                </tr>
+                <tr>
                     <td>enableWindowCascading</td>
                     <td>true</td>
                     <td>boolean</td>
                     <td>Each newly open window positions itself offset of the previously open window.</td>
+                </tr>
+                <tr>
+                    <td>logoUrl</td>
+                    <td>undefined</td>
+                    <td>string</td>
+                    <td>...</td>
                 </tr>
                 <tr>
                     <td>menubarHeight</td>
@@ -174,12 +210,6 @@ function ($scope) {
                     <td>undefined</td>
                     <td>string</td>
                     <td>The location of the html menubar file.</td>
-                </tr>
-                <tr>
-                    <td>showMenubar</td>
-                    <td>false</td>
-                    <td>boolean</td>
-                    <td>Removes or adds menubar placeholder.</td>
                 </tr>
                 <tr>
                     <td>showLaunchMenu</td>
@@ -218,6 +248,12 @@ function ($scope) {
                     <td>auto</td>
                     <td>string</td>
                     <td>Sets the bottom edge of the window to a position in the viewport.</td>
+                </tr>
+                <tr>
+                    <td>globals</td>
+                    <td>undefined</td>
+                    <td>object</td>
+                    <td>...</td>
                 </tr>
                 <tr>
                     <td>height</td>
@@ -364,7 +400,25 @@ function ($scope) {
                     <td>...</td>
                 </tr>
                 <tr>
+                    <td>entities</td>
+                    <td>undefined</td>
+                    <td>object</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>entityIndex</td>
+                    <td>0</td>
+                    <td>integer</td>
+                    <td>...</td>
+                </tr>
+                <tr>
                     <td>isDirty</td>
+                    <td>false</td>
+                    <td>boolean</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>isEditing</td>
                     <td>false</td>
                     <td>boolean</td>
                     <td>...</td>
@@ -376,7 +430,7 @@ function ($scope) {
                     <td>...</td>
                 </tr>
                 <tr>
-                    <td>directiveName</td>
+                    <td>viewDirective</td>
                     <td>undefined</td>
                     <td>string</td>
                     <td>...</td>
