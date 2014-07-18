@@ -1409,9 +1409,9 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default maximize\" data-ng-attr-title=\"{{ window.maximized ? 'Restore Window' : 'Maximize Window' }}\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default maximize\" data-ng-attr-title=\"{{ window.maximized || window.split ? 'Restore Window' : 'Maximize Window' }}\" data-ng-click=\"maximize()\" tabindex=\"-1\">\r" +
     "\n" +
-    "                    <span data-ng-class=\"{'desktop-icon-expand': !window.maximized, 'desktop-icon-contract': window.maximized}\"></span>\r" +
+    "                    <span data-ng-class=\"{'desktop-icon-expand': !window.maximized && !window.split, 'desktop-icon-contract': window.maximized || window.split}\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
