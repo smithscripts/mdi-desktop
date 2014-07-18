@@ -145,7 +145,7 @@ fieldset[disabled] .btn:hover {
     top: 32px;
     left: 0;
     right: 0;
-    bottom: 40px;
+    bottom: 42px;
     background: white;
     overflow: hidden;
 }
@@ -432,7 +432,8 @@ fieldset[disabled] .btn:hover {
     border-radius: 0;
     -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    border-bottom-color: lightgray;
+    border-top-color: #f8f8f8 !important;
+    border-bottom-color: #f8f8f8 !important;
 }
 
 .desktop-window-is-dirty {
