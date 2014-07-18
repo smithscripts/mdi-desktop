@@ -67,7 +67,7 @@
                         $scope.window.split = true;
                         $scope.window.top = 0;
                         $scope.window.left = 0;
-                        $scope.window.bottom = '1px';
+                        $scope.window.bottom = 0;
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -77,7 +77,7 @@
                         $scope.window.top = 0;
                         $scope.window.left = '50%';
                         $scope.window.right = 0;
-                        $scope.window.bottom = '1px';
+                        $scope.window.bottom = 0;
                         $scope.window.width = '50%';
                         $scope.window.height = 'auto';
                     }
@@ -354,6 +354,7 @@
             $scope.minimize = function() {
                 $scope.window.active = false;
                 $scope.window.minimized = true;
+                $scope.desktopCtrl.activateForemostWindow();
             };
 
             $scope.resetWindowValues = function() {
@@ -377,7 +378,7 @@
                     $scope.window.top = 0;
                     $scope.window.left = 0;
                     $scope.window.right = 0;
-                    $scope.window.bottom = '1px';
+                    $scope.window.bottom = 0;
                     $scope.window.height = 'auto';
                     $scope.window.width = '100%';
 
@@ -393,7 +394,7 @@
             $scope.windowTitleMouseDown = function (event) {
                 if ($scope.window.maximized || $scope.window.split) return;
                 event.preventDefault();
-                self.titleBar = angular.element(event.srcElement);
+                self.titleBar = angular.element(event.srcElement || event.target);
                 self.x = $element[0].offsetLeft;
                 self.y = $element[0].offsetTop;
                 self.startX = event.screenX - self.x;
