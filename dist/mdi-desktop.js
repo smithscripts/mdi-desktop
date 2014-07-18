@@ -591,7 +591,7 @@
             $scope.disableNext = true;
 
             $scope.activate = function(event) {
-                if ($scope.window.maximized || $scope.window.outOfBounds) return;
+                if ($scope.window.outOfBounds) return;
                 $scope.desktopCtrl.clearActive();
                 $scope.window.active = true;
                 $scope.window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
