@@ -1367,7 +1367,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "     data-ng-hide=\"window.minimized\">\r" +
     "\n" +
-    "    <div class=\"desktop-window-header\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split}\">\r" +
+    "    <div class=\"desktop-window-header\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split, 'desktop-window-opacity': !window.active}\">\r" +
     "\n" +
     "        <div class=\"desktop-window-navigation\">\r" +
     "\n" +
@@ -1427,7 +1427,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <fieldset data-ng-disabled=\"!window.active\" class=\"desktop-window-fieldset\">\r" +
+    "    <fieldset data-ng-disabled=\"!window.active\" class=\"desktop-window-fieldset\" data-ng-class=\"{'desktop-window-opacity': !window.active}\">\r" +
     "\n" +
     "        <div class=\"desktop-window-content\">\r" +
     "\n" +
@@ -1441,7 +1441,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "    </fieldset>\r" +
     "\n" +
-    "    <div class=\"desktop-window-statusbar\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split}\">\r" +
+    "    <div class=\"desktop-window-statusbar\" data-ng-class=\"{'desktop-window-maximized': window.maximized || window.split, 'desktop-window-opacity': !window.active}\">\r" +
     "\n" +
     "        <div class=\"desktop-window-statusbar-container\">\r" +
     "\n" +
