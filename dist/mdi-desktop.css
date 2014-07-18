@@ -138,11 +138,12 @@ fieldset[disabled] .btn:hover {
     right: 0;
     height: 32px;
     background: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
 }
 
 .desktop-viewport-container {
     position: absolute !important;
-    top: 32px;
+    top: 33px;
     left: 0;
     right: 0;
     bottom: 42px;

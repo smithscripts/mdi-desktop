@@ -773,25 +773,25 @@
              *
              */
             var windowConfig = {
-                title: '',
                 active: true,
-                globals: undefined,
-                minimized: false,
-                maximized: false,
-                outOfBounds: false,
-                split: false,
-                top: 0,
-                left: 0,
-                right: 'auto',
                 bottom: 'auto',
+                globals: undefined,
                 height: '400px',
-                width: '400px',
-                minHeight: '200px',
-                minWidth: '200px',
-                zIndex: -1,
                 isDirty: false,
                 isInvalid: false,
-                views: []
+                left: 0,
+                maximized: false,
+                minHeight: '200px',
+                minimized: false,
+                minWidth: '200px',
+                outOfBounds: false,
+                right: 'auto',
+                split: false,
+                title: '',
+                top: 0,
+                width: '400px',
+                views: [],
+                zIndex: -1
             };
 
             /**
@@ -1133,7 +1133,7 @@
             }
 
             $scope.options = self.options;
-            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
+            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight + 1 : 0;
             $scope.windows = [];
 
             $scope.logoUrl = $scope.options.logoUrl;
