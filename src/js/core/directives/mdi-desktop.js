@@ -56,25 +56,24 @@
              *
              */
             var windowConfig = {
-                title: '',
                 active: true,
-                globals: undefined,
-                minimized: false,
-                maximized: false,
-                outOfBounds: false,
-                split: false,
-                top: 0,
-                left: 0,
-                right: 'auto',
                 bottom: 'auto',
+                globals: undefined,
                 height: '400px',
-                width: '400px',
-                minHeight: '200px',
-                minWidth: '200px',
-                zIndex: -1,
                 isDirty: false,
                 isInvalid: false,
-                views: []
+                left: 0,
+                maximized: undefined,
+                minHeight: '200px',
+                minimized: false,
+                minWidth: '200px',
+                outOfBounds: false,
+                right: 'auto',
+                title: '',
+                top: 0,
+                width: '400px',
+                views: [],
+                zIndex: -1
             };
 
             /**
@@ -376,7 +375,97 @@
                 }
                 if (foremost)
                     foremost.active = true;
-            }
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.minimize
+             * @module mdi.desktop
+             *
+             * @description
+             * Visually removes window from the viewport.
+             *
+             */
+            self.minimize = function (window) {
+                window.active = false;
+                window.minimized = true;
+                self.activateForemostWindow();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.maximize
+             * @module mdi.desktop
+             *
+             * @description
+             * Positions window such that it fills the whole viewport.
+             *
+             */
+            self.maximize = function (window) {
+                window.top = 0;
+                window.left = 0;
+                window.right = 0;
+                window.bottom = 0;
+                window.height = 'auto';
+                window.width = '100%';
+                window.maximized = 'fill';
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.maximizeLeft
+             * @module mdi.desktop
+             *
+             * @description
+             * Positions window such that it fills the left portion viewport.
+             *
+             */
+            self.maximizeLeft = function (window) {
+                window.split = true;
+                window.top = 0;
+                window.left = 0;
+                window.bottom = 0;
+                window.width = '50%';
+                window.height = 'auto';
+                window.maximized = 'left';
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.maximizeRight
+             * @module mdi.desktop
+             *
+             * @description
+             * Positions window such that it fills the right portion viewport.
+             *
+             */
+            self.maximizeRight = function (window) {
+                window.top = 0;
+                window.left = '50%';
+                window.right = 0;
+                window.bottom = 0;
+                window.width = '50%';
+                window.height = 'auto';
+                window.maximized = 'right';
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.recover
+             * @module mdi.desktop
+             *
+             * @description
+             * Brings window back into view when it has escaped the viewport.
+             *
+             */
+            self.recover = function (window) {
+                window.active = true;
+                window.outOfBounds = false;
+                window.minimized = false;
+                window.zIndex = self.getNextMaxZIndex();
+                self.cascadeWindow(window);
+                self.desktopCtrl.activateForemostWindow();
+            };
 
             /**
              * @mdi.doc function
@@ -416,7 +505,7 @@
             }
 
             $scope.options = self.options;
-            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight : 0;
+            $scope.options.viewportTop = $scope.options.menubarTemplateUrl !== undefined ? $scope.options.menubarHeight + 1 : 0;
             $scope.windows = [];
 
             $scope.logoUrl = $scope.options.logoUrl;

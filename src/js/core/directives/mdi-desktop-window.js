@@ -40,7 +40,7 @@
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX <= 0 ||
                         event.pageX >= self.viewportDimensions.width ||
-                        $scope.window.split) return false;
+                        $scope.window.maximized) return false;
 
                     $element.css({ opacity: 0.5 });
                     self.x = event.screenX - self.startX;
@@ -64,22 +64,11 @@
             self.mouseUp = function(event) {
                 $scope.$apply(function() {
                     if (event.pageX <= 0) {
-                        $scope.window.split = true;
-                        $scope.window.top = 0;
-                        $scope.window.left = 0;
-                        $scope.window.bottom = 0;
-                        $scope.window.width = '50%';
-                        $scope.window.height = 'auto';
+                        $scope.desktopCtrl.maximizeLeft($scope.window);
                     }
                     self.viewportDimensions = $scope.viewportCtrl.getViewportDimensions();
                     if (event.pageX >= self.viewportDimensions.width - 1) {
-                        $scope.window.split = true;
-                        $scope.window.top = 0;
-                        $scope.window.left = '50%';
-                        $scope.window.right = 0;
-                        $scope.window.bottom = 0;
-                        $scope.window.width = '50%';
-                        $scope.window.height = 'auto';
+                        $scope.desktopCtrl.maximizeRight($scope.window);
                     }
                 });
                 $element.css({ opacity: 1.0 });
@@ -335,7 +324,7 @@
              */
             $scope.$watch('window.minimized',
                 function (value) {
-                    if (value) {
+                    if (value && !$scope.window.maximized) {
                         self.storeWindowValues();
                     }
                 }
@@ -345,16 +334,14 @@
             $scope.disableNext = true;
 
             $scope.activate = function(event) {
-                if ($scope.window.maximized || $scope.window.outOfBounds) return;
+                if ($scope.window.outOfBounds) return;
                 $scope.desktopCtrl.clearActive();
                 $scope.window.active = true;
                 $scope.window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
             };
 
             $scope.minimize = function() {
-                $scope.window.active = false;
-                $scope.window.minimized = true;
-                $scope.desktopCtrl.activateForemostWindow();
+                $scope.desktopCtrl.minimize($scope.window);
             };
 
             $scope.resetWindowValues = function() {
@@ -367,22 +354,12 @@
             };
 
             $scope.maximize = function() {
-                if ($scope.window.split) {
-                    $scope.window.split = false;
+                if ($scope.window.maximized) {
                     $scope.resetWindowValues();
-                } else if ($scope.window.maximized) {
-                    $scope.resetWindowValues();
-                    $scope.window.maximized = false;
+                    $scope.window.maximized = undefined;
                 } else {
                     self.storeWindowValues();
-                    $scope.window.top = 0;
-                    $scope.window.left = 0;
-                    $scope.window.right = 0;
-                    $scope.window.bottom = 0;
-                    $scope.window.height = 'auto';
-                    $scope.window.width = '100%';
-
-                    $scope.window.maximized = true;
+                    $scope.desktopCtrl.maximize($scope.window);
                 }
             };
 
@@ -392,7 +369,7 @@
             };
 
             $scope.windowTitleMouseDown = function (event) {
-                if ($scope.window.maximized || $scope.window.split) return;
+                if ($scope.window.maximized) return;
                 event.preventDefault();
                 self.titleBar = angular.element(event.srcElement || event.target);
                 self.x = $element[0].offsetLeft;

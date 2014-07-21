@@ -138,11 +138,12 @@ fieldset[disabled] .btn:hover {
     right: 0;
     height: 32px;
     background: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
 }
 
 .desktop-viewport-container {
     position: absolute !important;
-    top: 32px;
+    top: 33px;
     left: 0;
     right: 0;
     bottom: 42px;
@@ -310,7 +311,6 @@ fieldset[disabled] .btn:hover {
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
     border: 1px solid #e7e7e7;
-
 }
 
 .desktop-window-header {
@@ -426,6 +426,10 @@ fieldset[disabled] .btn:hover {
 .desktop-window-active {
     outline: 0;
     box-shadow: 0 0 10px #0057FF;
+}
+
+.desktop-window-opacity {
+    opacity: 0.5;
 }
 
 .desktop-window-maximized {
@@ -565,7 +569,7 @@ div.desktop-window-resizable-handle {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 2px;
+    bottom: 0;
     width: 49.9%;
     height: auto;
     border: 1px dashed #000000;
@@ -576,7 +580,7 @@ div.desktop-window-resizable-handle {
     top: 0;
     left: 50.1%;
     right: 0;
-    bottom: 2px;
+    bottom: 0;
     width: 49.8%;
     height: auto;
     border: 1px dashed #000000;

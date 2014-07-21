@@ -10,19 +10,19 @@
 
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
-                    $scope.desktopCtrl.cascadeWindow(window);
-                    window.active = true;
-                    window.outOfBounds = false;
-                    window.minimized = false;
-                    window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
-                    $scope.desktopCtrl.activateForemostWindow();
+                    $scope.desktopCtrl.recover(window);
                     return;
                 }
                 if (window.active) {
-                    window.active = false;
-                    window.minimized = true;
-                    $scope.desktopCtrl.activateForemostWindow();
+                    $scope.desktopCtrl.minimize(window);
                 } else {
+                    if (window.maximized === 'fill') {
+                        $scope.desktopCtrl.maximize(window);
+                    } else if (window.maximized === 'left') {
+                        $scope.desktopCtrl.maximizeLeft(window);
+                    } else if (window.maximized === 'right') {
+                        $scope.desktopCtrl.maximizeRight(window);
+                    }
                     $scope.desktopCtrl.clearActive();
                     window.active = true;
                     window.minimized = false;
