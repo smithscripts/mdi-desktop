@@ -569,7 +569,7 @@ div.desktop-window-resizable-handle {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 2px;
+    bottom: 0px;
     width: 49.9%;
     height: auto;
     border: 1px dashed #000000;
@@ -580,7 +580,7 @@ div.desktop-window-resizable-handle {
     top: 0;
     left: 50.1%;
     right: 0;
-    bottom: 2px;
+    bottom: 0px;
     width: 49.8%;
     height: auto;
     border: 1px dashed #000000;
