@@ -3,6 +3,16 @@
     describe('mdi-desktop window controller', function() {
         var compile, scope, element, ctrl;
 
+        var viewConfig = {
+            active: true,
+            entities: undefined,
+            entityIndex: 0,
+            isDirty: false,
+            isEditing: false,
+            isInvalid: false,
+            viewDirective: undefined
+        };
+
         function windows() {
             return element.find('div.desktop-window-container');
         }
@@ -246,10 +256,18 @@
                         zIndex: -1,
                         isDirty: false,
                         isInvalid: false,
-                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                        views: [{ active: false }, { active: false }, {active: true}]
                     };
-                    ctrl.addView({});
-                    expect(scope.window.views[1].active).toBeFalsy();
+                    scope.desktopCtrl = {
+                        getActiveView: function () {
+                            return scope.window.views[2]
+                        },
+                        getDesktop: function () {
+                            return {viewConfig: viewConfig};
+                        }
+                    };
+                    ctrl.addView({active: true});
+                    expect(scope.window.views[2].active).toBeFalsy();
                 });
 
                 iit('inserts a new active view at the end of the array', function() {
@@ -273,11 +291,19 @@
                         zIndex: -1,
                         isDirty: false,
                         isInvalid: false,
-                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                        views: [{ active: false }, { active: false }, { active: false }, { active: true }]
                     };
-                    ctrl.addView({});
-                    expect(scope.window.views.length).toBe(3);
-                    expect(scope.window.views[2].active).toBeTruthy(3);
+                    scope.desktopCtrl = {
+                        getActiveView: function () {
+                            return scope.window.views[2]
+                        },
+                        getDesktop: function () {
+                            return {viewConfig: viewConfig};
+                        }
+                    };
+                    ctrl.addView({ active: true });
+                    expect(scope.window.views.length).toBe(4);
+                    expect(scope.window.views[3].active).toBeTruthy(3);
                 });
 
             });
