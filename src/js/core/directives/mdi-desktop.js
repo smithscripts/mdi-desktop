@@ -68,6 +68,7 @@
                 minimized: false,
                 minWidth: '200px',
                 outOfBounds: false,
+                savedPosition: {},
                 right: 'auto',
                 title: '',
                 top: 0,
@@ -127,7 +128,7 @@
         function ($rootScope, $scope, $window, $animate, desktopClassFactory) {
             var self = this;
 
-            self.minimize = false;
+            self.minimizeAll = false;
             self.desktop = desktopClassFactory.createDesktop();
             self.options = undefined;
             self.minWindowCascadePosition = 40;
@@ -216,7 +217,27 @@
 
             /**
              * @mdi.doc function
-             * @name mdiDesktopController.clearActive
+             * @name mdiDesktopController.getActiveWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Gets the active window.
+             *
+             * @returns {object} view object.
+             */
+            self.getActiveWindow = function () {
+                var activeWindow = null;
+                angular.forEach($scope.windows, function (wdw) {
+                    if (wdw.active === true) {
+                        activeWindow = wdw;
+                    }
+                });
+                return activeWindow;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.getActiveView
              * @module mdi.desktop
              *
              * @description
@@ -263,10 +284,10 @@
              *
              */
             self.hideShowAll = function() {
-                self.minimize = self.allWindowsAreMinimized() ? false : !self.minimize;
+                self.minimizeAll = self.allWindowsAreMinimized() ? false : !self.minimizeAll;
                 angular.forEach($scope.windows, function(window){
                     window.active = false;
-                    window.minimized = self.minimize;
+                    window.minimized = self.minimizeAll;
                 });
                 self.activateForemostWindow();
             };
@@ -299,6 +320,7 @@
              */
             self.configureWindow = function(windowConfigOverlays) {
                 var windowConfigInstance = Object.create(self.desktop.windowConfig);
+                windowConfigInstance.savedPosition = Object.create({ top: 0, left: 0, right: 0, bottom: 0, height: 0, width: 0 });
                 windowConfigInstance.zIndex = self.getNextMaxZIndex();
                 windowConfigInstance.globals = angular.extend({}, $rootScope.$eval($scope.options.globals));
                 return angular.extend(windowConfigInstance, windowConfigOverlays);
@@ -370,11 +392,38 @@
             self.activateForemostWindow = function() {
                 var foremost = undefined;
                 for (var i = 0; i < $scope.windows.length; i++) {
-                    if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized)
+                    if ((foremost === undefined || $scope.windows[i].zIndex > foremost.zIndex) && !$scope.windows[i].minimized && !$scope.windows[i].outOfBounds)
                         foremost = $scope.windows[i];
                 }
                 if (foremost)
                     foremost.active = true;
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.activateNextWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Set the next window to an active state
+             *
+             */
+            self.activateNextWindow = function(activeWindowLocation) {
+                if ($scope.windows.length <= 1) return;
+                var backend = $scope.windows.slice(activeWindowLocation);
+                var frontend = $scope.windows.slice(0, activeWindowLocation - 1);
+                var sorted = backend.concat(frontend);
+                var nextWindow = undefined;
+                for (var i = 0; i < sorted.length; i++) {
+                    if (!sorted[i].minimized && !sorted[i].outOfBounds && !nextWindow)
+                        nextWindow = sorted[i];
+                }
+
+                if (nextWindow) {
+                    self.clearActive();
+                    nextWindow.zIndex = self.getNextMaxZIndex();
+                    nextWindow.active = true;
+                }
             };
 
             /**
@@ -464,7 +513,50 @@
                 window.minimized = false;
                 window.zIndex = self.getNextMaxZIndex();
                 self.cascadeWindow(window);
-                self.desktopCtrl.activateForemostWindow();
+                self.clearActive();
+                self.activateForemostWindow();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.restoreSavedPosition
+             * @module mdi.desktop
+             *
+             * @description
+             * Set the windows last know position to the current position.
+             *
+             */
+            self.restoreSavedPosition = function (wdw) {
+                self.clearActive();
+                wdw.top = wdw.savedPosition.top;
+                wdw.left = wdw.savedPosition.left;
+                wdw.right = wdw.savedPosition.right;
+                wdw.bottom = wdw.savedPosition.bottom;
+                wdw.height = wdw.savedPosition.height;
+                wdw.width = wdw.savedPosition.width;
+                wdw.maximized = undefined;
+                wdw.minimized = undefined;
+                wdw.active = true;
+                wdw.minimized = false;
+                wdw.zIndex = self.getNextMaxZIndex();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.savePosition
+             * @module mdi.desktop
+             *
+             * @description
+             * Save the windows last know position.
+             *
+             */
+            self.savePosition = function (wdw) {
+                wdw.savedPosition.top = wdw.top;
+                wdw.savedPosition.left = wdw.left;
+                wdw.savedPosition.right = wdw.right;
+                wdw.savedPosition.bottom = wdw.bottom;
+                wdw.savedPosition.height = wdw.height;
+                wdw.savedPosition.width = wdw.width;
             };
 
             /**
@@ -488,6 +580,46 @@
                 window.top = self.lastWindowCascadePosition.top + 'px';
                 window.left = self.lastWindowCascadePosition.left + 'px';
             };
+
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keyCode = event.keyCode || event.which;
+                    if (event.altKey && keyCode === 68) { //[Alt + d] Toggle Desktop
+                        self.hideShowAll();
+                        event.preventDefault();
+                    }
+                    if (event.altKey && keyCode === 77) { //[Alt + m] Maximize
+                        var activeWindow = self.getActiveWindow();
+                        if (activeWindow === null) return;
+                        if (!activeWindow.maximized) {
+                            self.savePosition(activeWindow);
+                            self.maximize(activeWindow);
+                        } else if (activeWindow.maximized === 'right' || activeWindow.maximized === 'left')
+                            self.maximize(activeWindow);
+                        else
+                            self.restoreSavedPosition(activeWindow);
+                        event.preventDefault();
+                    }
+                    if (event.altKey && keyCode === 78) { //[Alt + n] Minimize
+                        var activeWindow = self.getActiveWindow();
+                        if (activeWindow === null || activeWindow.minimized) return;
+                        self.minimize(activeWindow);
+                        event.preventDefault();
+                    }
+                    if (event.altKey && keyCode === 87) { //[Alt + w]Cycle
+                        var index = $scope.windows.indexOf(self.getActiveWindow());
+                        self.activateNextWindow(index + 1);
+                        event.preventDefault();
+                    }
+                });
+            });
 
             /**
              * @mdi.doc function

@@ -13,27 +13,21 @@
             
             self.mouseMove = function(event) {
                 $scope.$apply(function() {
-                    if (event.pageX <= 0) {
-                        $scope.showLeftOutline = true;
-                    } else {
-                        $scope.showLeftOutline = false;
-                    };
-                    if (event.pageX >= $scope.dimensions.width - 1) {
-                        $scope.showRightOutline = true;
-                    } else {
-                        $scope.showRightOutline = false;
-                    };
+                    $scope.showFillOutline = event.pageY <= $scope.options.viewportTop;
+                    $scope.showLeftOutline = event.pageX <= 0;
+                    $scope.showRightOutline = event.pageX >= $scope.dimensions.width - 1;
                 });
-            }
+            };
 
-            self.mouseUp = function(event) {
+            self.mouseUp = function() {
                 $scope.$apply(function() {
+                    $scope.showFillOutline = false;
                     $scope.showLeftOutline = false;
                     $scope.showRightOutline = false;
                 });
                 $document.unbind('mousemove', self.mouseMove);
                 $document.unbind('mouseup', self.mouseUp);
-            }
+            };
 
             $scope.dimensions = {};
             $scope.showLeftOutline = false;
@@ -63,7 +57,7 @@
             $scope.$watch(function () {
                 //Emulates jQuery's $(element).is(':visible')
                 return $element[0].offsetWidth > 0 && $element[0].offsetHeight > 0;
-            }, function (newValue, oldValue) {
+            }, function () {
                 $scope.dimensions = {
                     height: $element[0].clientHeight,
                     width: $element[0].clientWidth
@@ -101,7 +95,7 @@
             }
         }]);
 
-    module.directive('mdiDesktopViewport', ['$timeout', '$window', function($timeout, $window) {
+    module.directive('mdiDesktopViewport', [function() {
         return {
             restrict: 'A',
             replace: true,

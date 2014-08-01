@@ -565,7 +565,18 @@ div.desktop-window-resizable-handle {
     visibility: hidden !important;
 }
 
-.desktop-viewport-left-split-outline {
+.desktop-viewport-fill-outline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    border: 1px dashed #000000;
+}
+
+.desktop-viewport-left-outline {
     position: absolute;
     top: 0;
     left: 0;
@@ -575,7 +586,7 @@ div.desktop-window-resizable-handle {
     border: 1px dashed #000000;
 }
 
-.desktop-viewport-right-split-outline {
+.desktop-viewport-right-outline {
     position: absolute;
     top: 0;
     left: 50.1%;
@@ -602,6 +613,10 @@ div.desktop-window-resizable-handle {
 
 .desktop-display-none {
     display: none;
+}
+
+.desktop-click-through {
+    pointer-events: none;
 }
 
 /*Icons*/

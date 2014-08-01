@@ -6,25 +6,25 @@
     <div class="desktop-window-header" data-ng-class="{'desktop-window-maximized': window.maximized, 'desktop-window-opacity': !window.active}">
         <div class="desktop-window-navigation">
             <div class="desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="desktop-btn desktop-btn-default" title="Go Back One View - [Backspace]" tabindex="-1" data-ng-disabled="disablePrevious" data-ng-click="previousView()">
+                <button type="button" class="desktop-btn desktop-btn-default" title="Go Back One View - [Alt + B]" tabindex="-1" data-ng-disabled="disablePrevious" data-ng-click="previousView()">
                     <span class="desktop-icon-arrow-left2 custom-nav-button"></span>
                 </button>
-                <button type="button" class="desktop-btn desktop-btn-default custom-nav-button" title="Go Forward One View" tabindex="-1" data-ng-disabled="disableNext" data-ng-click="nextView()">
+                <button type="button" class="desktop-btn desktop-btn-default custom-nav-button" title="Go Forward One View - [Alt + F]" tabindex="-1" data-ng-disabled="disableNext" data-ng-click="nextView()">
                     <span class="desktop-icon-arrow-right2"></span>
                 </button>
             </div>
         </div>
         <div class="desktop-window-title" data-ng-dblclick="maximize()" data-ng-mousedown="windowTitleMouseDown($event)">
-            <div>
+            <div class="desktop-click-through">
                 <div class="desktop-text">{{window.title}}</div>
             </div>
         </div>
         <div class="desktop-window-action">
             <div class="desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group">
-                <button type="button" class="desktop-btn desktop-btn-default minimize" title="Minimize" data-ng-click="minimize()" tabindex="-1">
+                <button type="button" class="desktop-btn desktop-btn-default minimize" title="Minimize - [Alt + N]" data-ng-click="minimize()" tabindex="-1">
                     <span class="desktop-icon-minus"></span>
                 </button>
-                <button type="button" class="desktop-btn desktop-btn-default maximize" data-ng-attr-title="{{ window.maximized ? 'Restore Window' : 'Maximize Window' }}" data-ng-click="maximize()" tabindex="-1">
+                <button type="button" class="desktop-btn desktop-btn-default maximize" data-ng-attr-title="{{ window.maximized ? 'Restore Window' : 'Maximize Window - [Alt + M]' }}" data-ng-click="maximize()" tabindex="-1">
                     <span data-ng-class="{'desktop-icon-expand': !window.maximized, 'desktop-icon-contract': window.maximized}"></span>
                 </button>
                 <button type="button" class="desktop-btn desktop-btn-default" data-ng-class="{'desktop-window-close-button': window.active}" title="Close Window - [Alt + W]" data-ng-click="close()" tabindex="-1">

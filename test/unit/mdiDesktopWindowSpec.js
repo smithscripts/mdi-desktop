@@ -1,7 +1,7 @@
 (function() {
     "use strict";
     describe('mdi-desktop window controller', function() {
-        var compile, scope, element, ctrl;
+        var compile, desktopScope, windowScope, element, desktopCtrl, windowCtrl;
 
         var viewConfig = {
             active: true,
@@ -21,20 +21,32 @@
             return element.find(type)[index];
         };
 
+        beforeEach(module('mdi.desktop'));
         beforeEach(module('mdi.desktop.window'));
 
-        beforeEach(inject(function ($rootScope, $templateCache, $compile, $controller, $document, $window) {
+        beforeEach(inject(function ($rootScope, $templateCache, $compile, $controller, $document, $window, $animate) {
             $templateCache.put('src/templates/mdi-desktop-window.html', __html__['src/templates/mdi-desktop-window.html']);
-            scope = $rootScope.$new();
+            desktopScope = $rootScope.$new();
+            windowScope = $rootScope.$new();
             compile = $compile;
-            var elm = $templateCache.get('src/templates/mdi-desktop-window.html')
-            element = compile(elm)(scope);
+            var elm = $templateCache.get('src/templates/mdi-desktop-window.html');
+            element = compile(elm)(windowScope);
 
-            scope.window = { views: [{ active: true }] };
+            windowScope.window = { views: [{ active: true }] };
 
-            ctrl = $controller('mdiDesktopWindowController', {'$scope': scope, '$element': element, '$document': $document, '$window': $window});
-            scope.$digest();
+            desktopCtrl = $controller('mdiDesktopController', {'$rootScope': desktopScope, '$scope': desktopScope, '$window': $window, '$animate': $animate});
+            windowCtrl = $controller('mdiDesktopWindowController', {'$scope': windowScope, '$element': element, '$document': $document, '$window': $window});
+            windowScope.desktopCtrl = desktopCtrl;
+
+            desktopScope.$digest();
+            windowScope.$digest();
         }));
+
+        describe('minimize button behavior', function() {
+            it('should visually hide window', function() {
+
+            });
+        });
 
         describe('mdi-desktop-window', function() {
             it('previous and next buttons should be disabled when no views are loaded', function() {
@@ -50,8 +62,8 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                ctrl.updateNavigationState();
-                scope.$digest();
+                windowCtrl.updateNavigationState();
+                windowScope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
@@ -63,10 +75,10 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.window = { views: [{ active: true },  { active: false }] };
+                windowScope.window = { views: [{ active: true },  { active: false }] };
 
-                ctrl.updateNavigationState();
-                scope.$digest();
+                windowCtrl.updateNavigationState();
+                windowScope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
@@ -77,9 +89,9 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.window = { views: [{ active: false },  { active: true }] };
-                ctrl.updateNavigationState();
-                scope.$digest();
+                windowScope.window = { views: [{ active: false },  { active: true }] };
+                windowCtrl.updateNavigationState();
+                windowScope.$digest();
 
                 expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
@@ -90,9 +102,9 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.window = { views: [{ active: true },  { active: false }] };
-                ctrl.updateNavigationState();
-                scope.$digest();
+                windowScope.window = { views: [{ active: true },  { active: false }] };
+                windowCtrl.updateNavigationState();
+                windowScope.$digest();
 
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
@@ -108,9 +120,9 @@
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
 
-                scope.window = { views: [{ active: false },  { active: true }] };
-                ctrl.updateNavigationState();
-                scope.$digest();
+                windowScope.window = { views: [{ active: false },  { active: true }] };
+                windowCtrl.updateNavigationState();
+                windowScope.$digest();
 
                 expect(previousButton[0]).not.toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
@@ -121,22 +133,10 @@
                 expect(nextButton[0]).not.toHaveAttr('disabled', 'disabled');
             });
 
-            it('getActiveWindow returns the active window', function() {
-                element.appendTo(document.body);
-
-                scope.window = { views: [{ active: false },  { active: true }] };
-                ctrl.updateNavigationState();
-                scope.$digest();
-
-                var activeView = ctrl.getActiveView();
-
-                expect(scope.window.views.indexOf(activeView)).toBe(1);
-            });
-
             it('outOfBounds should be true when window leaves the viewport boundaries', function() {
                 element.appendTo(document.body);
 
-                scope.window = {
+                windowScope.window = {
                     title: '',
                     active: true,
                     minimized: false,
@@ -157,18 +157,17 @@
                     views: [{ active: false },  { active: true }]
                 };
 
-                scope.viewportCtrl = {
+                windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 100, width: 100 }}
                 };
-                ctrl.isWindowInViewport();
-                expect(scope.window.outOfBounds).toBeTruthy();
-                expect(scope.window.active).toBeFalsy();
+                windowCtrl.isWindowInViewport();
+                expect(windowScope.window.outOfBounds).toBeTruthy();
             });
 
             it('outOfBounds should be false when window enters the viewport boundaries', function() {
                 element.appendTo(document.body);
 
-                scope.window = {
+                windowScope.window = {
                     title: '',
                     active: true,
                     minimized: false,
@@ -189,17 +188,17 @@
                     views: [{ active: false },  { active: true }]
                 };
 
-                scope.viewportCtrl = {
+                windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 100, width: 100 }}
                 };
-                ctrl.isWindowInViewport();
-                expect(scope.window.outOfBounds).toBeTruthy();
+                windowCtrl.isWindowInViewport();
+                expect(windowScope.window.outOfBounds).toBeTruthy();
 
-                scope.viewportCtrl = {
+                windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 1000, width: 1000 }}
                 };
-                ctrl.isWindowInViewport();
-                expect(scope.window.outOfBounds).toBeFalsy();
+                windowCtrl.isWindowInViewport();
+                expect(windowScope.window.outOfBounds).toBeFalsy();
             });
 
             describe('removeForwardViews', function() {
@@ -207,7 +206,7 @@
                 it('should remove all view after the first active window', function() {
                     element.appendTo(document.body);
 
-                    scope.window = {
+                    windowScope.window = {
                         title: '',
                         active: true,
                         minimized: false,
@@ -227,18 +226,18 @@
                         isInvalid: false,
                         views: [{ active: false }, { active: true }, { active: false }, { active: false }]
                     };
-                    ctrl.removeForwardViews();
-                    expect(scope.window.views.length).toBe(2);
+                    windowCtrl.removeForwardViews();
+                    expect(windowScope.window.views.length).toBe(2);
                 });
 
             });
 
             describe('addView', function() {
 
-                iit('deactivates currently active view', function() {
+                it('deactivates currently active view', function() {
                     element.appendTo(document.body);
 
-                    scope.window = {
+                    windowScope.window = {
                         title: '',
                         active: true,
                         minimized: false,
@@ -258,22 +257,22 @@
                         isInvalid: false,
                         views: [{ active: false }, { active: false }, {active: true}]
                     };
-                    scope.desktopCtrl = {
+                    windowScope.desktopCtrl = {
                         getActiveView: function () {
-                            return scope.window.views[2]
+                            return windowScope.window.views[2]
                         },
                         getDesktop: function () {
                             return {viewConfig: viewConfig};
                         }
                     };
-                    ctrl.addView({active: true});
-                    expect(scope.window.views[2].active).toBeFalsy();
+                    windowCtrl.addView({active: true});
+                    expect(windowScope.window.views[2].active).toBeFalsy();
                 });
 
-                iit('inserts a new active view at the end of the array', function() {
+                it('inserts a new active view at the end of the array', function() {
                     element.appendTo(document.body);
 
-                    scope.window = {
+                    windowScope.window = {
                         title: '',
                         active: true,
                         minimized: false,
@@ -293,17 +292,17 @@
                         isInvalid: false,
                         views: [{ active: false }, { active: false }, { active: false }, { active: true }]
                     };
-                    scope.desktopCtrl = {
+                    windowScope.desktopCtrl = {
                         getActiveView: function () {
-                            return scope.window.views[2]
+                            return windowScope.window.views[2]
                         },
                         getDesktop: function () {
                             return {viewConfig: viewConfig};
                         }
                     };
-                    ctrl.addView({ active: true });
-                    expect(scope.window.views.length).toBe(4);
-                    expect(scope.window.views[3].active).toBeTruthy(3);
+                    windowCtrl.addView({ active: true });
+                    expect(windowScope.window.views.length).toBe(4);
+                    expect(windowScope.window.views[3].active).toBeTruthy(3);
                 });
 
             });
