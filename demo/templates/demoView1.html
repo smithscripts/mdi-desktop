@@ -1,0 +1,8 @@
+<div class="view-container" style="height:100%">
+    <div class="view-content">
+        <button data-ng-click="toggleDirtyState()" style="margin:10px;width:100px">{{$parent.view.isDirty === true ? 'Clean' : 'Make Dirty'}}</button>
+        <button data-ng-click="toggleValidState()" style="margin:10px;width:100px">{{$parent.view.isInvalid === true ? 'Clean' : 'Make Invalid'}}</button>
+        <button data-ng-click="$parent.view.isEditing = !$parent.view.isEditing" style="margin:10px;width:100px">{{$parent.view.isEditing === true ? 'Editing' : 'Not Editing'}}</button>
+        <button data-ng-click="addAView()" style="margin:10px;width:100px">Add A View</button>
+    </div>
+</div>
