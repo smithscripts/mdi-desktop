@@ -1,3 +1,15 @@
+body {
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input,
+textarea {
+    -moz-user-select: text;
+}
+
 .desktop-btn {
     margin: 0;
     text-transform: none;
@@ -261,7 +273,11 @@ fieldset[disabled] .btn:hover {
     top: 11px;
     right: 5px;
     font-size: 9px;
-    color: gray
+    color: #333333
+}
+
+.desktop-taskbar-list-item-close-minimized {
+    color: #bababa;
 }
 
 .desktop-taskbar-list-item-close:active {
@@ -273,9 +289,19 @@ fieldset[disabled] .btn:hover {
     color:red;
 }
 
+.desktop-taskbar-list-item {
+    background-color: #f8f8f8;
+}
+
 .desktop-active-taskbar-list-item {
+    opacity: 1.0;
     outline: 0;
     box-shadow: 0 0 10px #0057FF;
+    color: #333333
+}
+
+.desktop-minimized-taskbar-list-item {
+    color: #bababa;
 }
 
 .desktop-taskbar-hide {

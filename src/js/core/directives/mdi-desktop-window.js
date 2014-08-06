@@ -259,50 +259,39 @@
              * @module mdi.desktop.window
              *
              * @description
-             * Monitors the browser window for height and width changes and updates the viewport accordingly.
              *
              */
             angular.element($window).bind('keydown', function (event) {
                 $scope.$apply(function() {
                     if (!$scope.window.active) return;
-                    var keyCode = event.keyCode || event.which;
-                    if (event.altKey && keyCode === 66) { //[Alt + b] Previous View
+                    var keySequence = $scope.desktopCtrl.getKeySequence(event);
+                    if (keySequence === 'alt+left') { //Previous View
                         $scope.previousView();
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 70) { //[Alt + f] Next View
+                    if (keySequence === 'alt+right') { //Next View
                         $scope.nextView();
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 76) { //[Alt + l] Maximize left
+                    if (keySequence === 'alt+l') { //Maximize left
                         if (!$scope.window.maximized) {
                             $scope.desktopCtrl.savePosition($scope.window);
                             $scope.desktopCtrl.maximizeLeft($scope.window);
-                        } else if ($scope.window.maximized === 'right')
+                        } else if ($scope.window.maximized === 'right' || $scope.window.maximized === 'fill')
                             $scope.desktopCtrl.maximizeLeft($scope.window);
                         else
                             $scope.desktopCtrl.restoreSavedPosition($scope.window);
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 82) { //[Alt + r] Maximize right
+                    if (keySequence === 'alt+r') { //Maximize right
                         if (!$scope.window.maximized) {
                             $scope.desktopCtrl.savePosition($scope.window);
                             $scope.desktopCtrl.maximizeRight($scope.window);
-                        } else if ($scope.window.maximized === 'left')
+                        } else if ($scope.window.maximized === 'left' || $scope.window.maximized === 'fill')
                             $scope.desktopCtrl.maximizeRight($scope.window);
                         else
                             $scope.desktopCtrl.restoreSavedPosition($scope.window);
                         event.preventDefault();
-                    }
-                    if (event.altKey && keyCode === 88) { //[Alt + x] Close
-                        event.preventDefault();
-                        $scope.close();
-                    }
-                    if (keyCode === 8 && !$scope.disablePrevious &&
-                        event.target.tagName.toLowerCase() !== 'input' &&
-                        event.target.tagName.toLowerCase() !== 'textarea') { //[backspace] Alternative Previous View For Windows
-                            $scope.previousView();
-                            event.preventDefault();
                     }
                 });
             });
@@ -363,8 +352,7 @@
             };
 
             $scope.close = function() {
-                var closed = $scope.desktopCtrl.closeWindow($scope.window);
-                if (closed) $scope.$destroy();
+                $scope.desktopCtrl.closeWindow($scope.window);
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -383,7 +371,7 @@
             };
 
             $scope.previousView = function() {
-                if (!self.canNavigate()) return;
+                if (!self.canNavigate() || $scope.disablePrevious) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
@@ -398,7 +386,7 @@
             };
 
             $scope.nextView = function() {
-                if (!self.canNavigate()) return;
+                if (!self.canNavigate() || $scope.disableNext) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
@@ -435,10 +423,10 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.window.scope = scope;
                 scope.$on("$destroy",function() {
                     element.remove();
                 });
-
                 scope.init();
             }
         };

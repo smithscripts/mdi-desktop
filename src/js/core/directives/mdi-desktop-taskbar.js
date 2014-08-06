@@ -8,6 +8,25 @@
             var self = this;
             self.canCloseFn = undefined;
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keySequence = $scope.desktopCtrl.getKeySequence(event);
+                    if (keySequence === 'alt+d') { //Toggle Desktop
+                        $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            $scope.desktopShown = false;
+
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.recover(window);
@@ -32,7 +51,7 @@
             };
 
             $scope.hideShowAll = function(event) {
-                $scope.desktopCtrl.hideShowAll();
+                $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
             };
 
             $scope.close = function(event, window) {

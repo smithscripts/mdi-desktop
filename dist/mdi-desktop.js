@@ -44,6 +44,25 @@
             var self = this;
             self.canCloseFn = undefined;
 
+            /**
+             * @mdi.doc event
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            angular.element($window).bind('keydown', function (event) {
+                $scope.$apply(function() {
+                    var keySequence = $scope.desktopCtrl.getKeySequence(event);
+                    if (keySequence === 'alt+d') { //Toggle Desktop
+                        $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            $scope.desktopShown = false;
+
             $scope.updateWindowState = function(window) {
                 if (window.outOfBounds) {
                     $scope.desktopCtrl.recover(window);
@@ -68,7 +87,7 @@
             };
 
             $scope.hideShowAll = function(event) {
-                $scope.desktopCtrl.hideShowAll();
+                $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
             };
 
             $scope.close = function(event, window) {
@@ -499,50 +518,39 @@
              * @module mdi.desktop.window
              *
              * @description
-             * Monitors the browser window for height and width changes and updates the viewport accordingly.
              *
              */
             angular.element($window).bind('keydown', function (event) {
                 $scope.$apply(function() {
                     if (!$scope.window.active) return;
-                    var keyCode = event.keyCode || event.which;
-                    if (event.altKey && keyCode === 66) { //[Alt + b] Previous View
+                    var keySequence = $scope.desktopCtrl.getKeySequence(event);
+                    if (keySequence === 'alt+left') { //Previous View
                         $scope.previousView();
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 70) { //[Alt + f] Next View
+                    if (keySequence === 'alt+right') { //Next View
                         $scope.nextView();
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 76) { //[Alt + l] Maximize left
+                    if (keySequence === 'alt+l') { //Maximize left
                         if (!$scope.window.maximized) {
                             $scope.desktopCtrl.savePosition($scope.window);
                             $scope.desktopCtrl.maximizeLeft($scope.window);
-                        } else if ($scope.window.maximized === 'right')
+                        } else if ($scope.window.maximized === 'right' || $scope.window.maximized === 'fill')
                             $scope.desktopCtrl.maximizeLeft($scope.window);
                         else
                             $scope.desktopCtrl.restoreSavedPosition($scope.window);
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 82) { //[Alt + r] Maximize right
+                    if (keySequence === 'alt+r') { //Maximize right
                         if (!$scope.window.maximized) {
                             $scope.desktopCtrl.savePosition($scope.window);
                             $scope.desktopCtrl.maximizeRight($scope.window);
-                        } else if ($scope.window.maximized === 'left')
+                        } else if ($scope.window.maximized === 'left' || $scope.window.maximized === 'fill')
                             $scope.desktopCtrl.maximizeRight($scope.window);
                         else
                             $scope.desktopCtrl.restoreSavedPosition($scope.window);
                         event.preventDefault();
-                    }
-                    if (event.altKey && keyCode === 88) { //[Alt + x] Close
-                        event.preventDefault();
-                        $scope.close();
-                    }
-                    if (keyCode === 8 && !$scope.disablePrevious &&
-                        event.target.tagName.toLowerCase() !== 'input' &&
-                        event.target.tagName.toLowerCase() !== 'textarea') { //[backspace] Alternative Previous View For Windows
-                            $scope.previousView();
-                            event.preventDefault();
                     }
                 });
             });
@@ -603,8 +611,7 @@
             };
 
             $scope.close = function() {
-                var closed = $scope.desktopCtrl.closeWindow($scope.window);
-                if (closed) $scope.$destroy();
+                $scope.desktopCtrl.closeWindow($scope.window);
             };
 
             $scope.windowTitleMouseDown = function (event) {
@@ -623,7 +630,7 @@
             };
 
             $scope.previousView = function() {
-                if (!self.canNavigate()) return;
+                if (!self.canNavigate() || $scope.disablePrevious) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length; i++) {
                     var view = $scope.window.views[i];
@@ -638,7 +645,7 @@
             };
 
             $scope.nextView = function() {
-                if (!self.canNavigate()) return;
+                if (!self.canNavigate() || $scope.disableNext) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
                 for (var i = 0; i < $scope.window.views.length - 1; i++) {
                     var view = $scope.window.views[i];
@@ -675,10 +682,10 @@
                 scope.desktopCtrl = ctrls[0];
                 scope.viewportCtrl = ctrls[1];
                 scope.desktopCtrl.cascadeWindow(scope.window);
+                scope.window.scope = scope;
                 scope.$on("$destroy",function() {
                     element.remove();
                 });
-
                 scope.init();
             }
         };
@@ -757,6 +764,7 @@
                 outOfBounds: false,
                 savedPosition: {},
                 right: 'auto',
+                scope: undefined,
                 title: '',
                 top: 0,
                 width: '400px',
@@ -822,6 +830,10 @@
             self.maxWindowCascadePosition = 100;
             self.lastWindowCascadePosition = { top: self.minWindowCascadePosition, left: self.minWindowCascadePosition };
             self.options = angular.extend(self.desktop.options, $scope.mdiDesktop);
+            self.shiftPressed = false;
+            self.altPressed = false;
+            self.xPressed = false;
+            self.keyboardMap = ["","","","CANCEL","","","HELP","","BACK_SPACE","TAB","","","CLEAR","ENTER","RETURN","","SHIFT","CONTROL","ALT","PAUSE","CAPS_LOCK","KANA","EISU","JUNJA","FINAL","HANJA","","ESCAPE","CONVERT","NONCONVERT","ACCEPT","MODECHANGE","SPACE","PAGE_UP","PAGE_DOWN","END","HOME","LEFT","UP","RIGHT","DOWN","SELECT","PRINT","EXECUTE","PRINTSCREEN","INSERT","DELETE","","0","1","2","3","4","5","6","7","8","9","COLON","SEMICOLON","LESS_THAN","EQUALS","GREATER_THAN","QUESTION_MARK","AT","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","WIN","","CONTEXT_MENU","","SLEEP","NUMPAD0","NUMPAD1","NUMPAD2","NUMPAD3","NUMPAD4","NUMPAD5","NUMPAD6","NUMPAD7","NUMPAD8","NUMPAD9","MULTIPLY","ADD","SEPARATOR","SUBTRACT","DECIMAL","DIVIDE","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15","F16","F17","F18","F19","F20","F21","F22","F23","F24","","","","","","","","","NUM_LOCK","SCROLL_LOCK","WIN_OEM_FJ_JISHO","WIN_OEM_FJ_MASSHOU","WIN_OEM_FJ_TOUROKU","WIN_OEM_FJ_LOYA","WIN_OEM_FJ_ROYA","","","","","","","","","","CIRCUMFLEX","EXCLAMATION","DOUBLE_QUOTE","HASH","DOLLAR","PERCENT","AMPERSAND","UNDERSCORE","OPEN_PAREN","CLOSE_PAREN","ASTERISK","PLUS","PIPE","HYPHEN_MINUS","OPEN_CURLY_BRACKET","CLOSE_CURLY_BRACKET","TILDE","","","","","VOLUME_MUTE","VOLUME_DOWN","VOLUME_UP","","","","","COMMA","","PERIOD","SLASH","BACK_QUOTE","","","","","","","","","","","","","","","","","","","","","","","","","","","OPEN_BRACKET","BACK_SLASH","CLOSE_BRACKET","QUOTE","","META","ALTGR","","WIN_ICO_HELP","WIN_ICO_00","","WIN_ICO_CLEAR","","","WIN_OEM_RESET","WIN_OEM_JUMP","WIN_OEM_PA1","WIN_OEM_PA2","WIN_OEM_PA3","WIN_OEM_WSCTRL","WIN_OEM_CUSEL","WIN_OEM_ATTN","WIN_OEM_FINISH","WIN_OEM_COPY","WIN_OEM_AUTO","WIN_OEM_ENLW","WIN_OEM_BACKTAB","ATTN","CRSEL","EXSEL","EREOF","PLAY","ZOOM","","PA1","WIN_OEM_CLEAR",""];
 
             /**
              * @mdi.doc function
@@ -977,6 +989,7 @@
                     window.minimized = self.minimizeAll;
                 });
                 self.activateForemostWindow();
+                return self.minimizeAll;
             };
 
             /**
@@ -1042,25 +1055,26 @@
              *
              * @returns {boolean} returns true if window was closed, false if not closed.
              */
-            self.closeWindow = function(window) {
-                if (!self.options.allowDirtyClose && window.isDirty) {
+            self.closeWindow = function(wdw) {
+                if (!self.options.allowDirtyClose && wdw.isDirty) {
                     alert("Unsaved Changes. Save changes before closing window.");
                     return false;
                 }
 
-                if (!self.options.allowInvalidClose && window.isInvalid) {
+                if (!self.options.allowInvalidClose && wdw.isInvalid) {
                     alert("Data is invalid. Correct Invalid data before closing window.");
                     return false;
                 }
 
                 if (self.options.canCloseFn !== undefined) {
-                    if (self.options.canCloseFn(window)) {
-                        $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    if (self.options.canCloseFn(wdw)) {
+                        $scope.windows.splice($scope.windows.indexOf(wdw), 1);
+                        wdw.scope.$destroy();
                         self.activateForemostWindow();
                         return true;
                     };
                 } else {
-                    $scope.windows.splice($scope.windows.indexOf(window), 1);
+                    $scope.windows.splice($scope.windows.indexOf(wdw), 1);
                     self.activateForemostWindow();
                     return true;
                 }
@@ -1102,6 +1116,33 @@
                 var sorted = backend.concat(frontend);
                 var nextWindow = undefined;
                 for (var i = 0; i < sorted.length; i++) {
+                    if (!sorted[i].minimized && !sorted[i].outOfBounds && !nextWindow)
+                        nextWindow = sorted[i];
+                }
+
+                if (nextWindow) {
+                    self.clearActive();
+                    nextWindow.zIndex = self.getNextMaxZIndex();
+                    nextWindow.active = true;
+                }
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.activatePreviousWindow
+             * @module mdi.desktop
+             *
+             * @description
+             * Set the previous window to an active state
+             *
+             */
+            self.activatePreviousWindow = function(activeWindowLocation) {
+                if ($scope.windows.length <= 1) return;
+                var backend = $scope.windows.slice(activeWindowLocation);
+                var frontend = $scope.windows.slice(0, activeWindowLocation - 1);
+                var sorted = backend.concat(frontend);
+                var nextWindow = undefined;
+                for (var i = sorted.length - 1; i >= 0; i--) {
                     if (!sorted[i].minimized && !sorted[i].outOfBounds && !nextWindow)
                         nextWindow = sorted[i];
                 }
@@ -1269,6 +1310,27 @@
             };
 
             /**
+             * @mdi.doc function
+             * @name mdiDesktopController.getKeyCode
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            self.getKeySequence = function (event) {
+                var keys = [];
+                if (event.shiftKey) keys.push('shift');
+                if (event.ctrlKey)  keys.push('ctrl');
+                if (event.altKey)   keys.push('alt');
+                if (event.metaKey)  keys.push('meta');
+
+                var keyCode = event.keyCode || event.which;
+                if (keyCode) keys.push(self.keyboardMap[keyCode].toLowerCase());
+
+                return keys.join('+');
+            };
+
+            /**
              * @mdi.doc event
              * @module mdi.desktop
              *
@@ -1277,12 +1339,8 @@
              */
             angular.element($window).bind('keydown', function (event) {
                 $scope.$apply(function() {
-                    var keyCode = event.keyCode || event.which;
-                    if (event.altKey && keyCode === 68) { //[Alt + d] Toggle Desktop
-                        self.hideShowAll();
-                        event.preventDefault();
-                    }
-                    if (event.altKey && keyCode === 77) { //[Alt + m] Maximize
+                    var keySequence = self.getKeySequence(event);
+                    if (keySequence === 'alt+m') { //Maximize
                         var activeWindow = self.getActiveWindow();
                         if (activeWindow === null) return;
                         if (!activeWindow.maximized) {
@@ -1294,17 +1352,46 @@
                             self.restoreSavedPosition(activeWindow);
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 78) { //[Alt + n] Minimize
+                    if (keySequence === 'alt+n') { //Minimize
                         var activeWindow = self.getActiveWindow();
                         if (activeWindow === null || activeWindow.minimized) return;
                         self.minimize(activeWindow);
                         event.preventDefault();
                     }
-                    if (event.altKey && keyCode === 87) { //[Alt + w]Cycle
+                    if (keySequence === 'alt+w') { //Cycles Forward
                         var index = $scope.windows.indexOf(self.getActiveWindow());
                         self.activateNextWindow(index + 1);
                         event.preventDefault();
                     }
+                    if (keySequence === 'shift+alt+w') { //Cycles Backward
+                        var index = $scope.windows.indexOf(self.getActiveWindow());
+                        self.activatePreviousWindow(index + 1);
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'shift+alt+x' && !(self.shiftPressed && self.altPressed && self.xPressed)) { //Close
+                        var activeWindow = self.getActiveWindow();
+                        if (!activeWindow) return;
+                        self.closeWindow(activeWindow);
+                        event.preventDefault();
+                    }
+
+                    if (event.shiftKey)
+                        self.shiftPressed = true;
+                    if (event.altKey)
+                        self.altPressed = true;
+                    if (event.keyCode === 88)
+                        self.xPressed = true;
+                });
+            });
+
+            angular.element($window).bind('keyup', function (event) {
+                $scope.$apply(function() {
+                    if (event.shiftKey)
+                        self.shiftPressed = false;
+                    if (event.altKey)
+                        self.altPressed = false;
+                    if (event.keyCode === 88)
+                        self.xPressed = false;
                 });
             });
 
@@ -1496,7 +1583,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                data-ng-click=\"updateWindowState(window)\">\r" +
     "\n" +
-    "                <div class=\"desktop-relative\" data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}\">\r" +
+    "                <div class=\"desktop-relative desktop-taskbar-list-item\" data-ng-class=\"{'desktop-active-taskbar-list-item': window.active, 'desktop-minimized-taskbar-list-item': window.minimized, 'desktop-taskbar-list-item-recover': window.outOfBounds}\">\r" +
     "\n" +
     "                    <div class=\"desktop-taskbar-list-item-title\">\r" +
     "\n" +
@@ -1504,7 +1591,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-click=\"close($event, window)\"></i>\r" +
+    "                    <i class=\"desktop-icon-close desktop-taskbar-list-item-close\" data-ng-class=\"{'desktop-taskbar-list-item-close-minimized': window.minimized}\" data-ng-click=\"close($event, window)\"></i>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1608,7 +1695,7 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" data-ng-class=\"{'desktop-window-close-button': window.active}\" title=\"Close Window - [Alt + W]\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" data-ng-class=\"{'desktop-window-close-button': window.active}\" title=\"Close Window - [Alt + SHIFT + X]\" data-ng-click=\"close()\" tabindex=\"-1\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-close\"></span>\r" +
     "\n" +

@@ -9,11 +9,11 @@
             <li class="am-fade-and-scale desktop-text"
                 data-ng-repeat="window in windows"
                 data-ng-click="updateWindowState(window)">
-                <div class="desktop-relative" data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-taskbar-list-item-recover': window.outOfBounds}">
+                <div class="desktop-relative desktop-taskbar-list-item" data-ng-class="{'desktop-active-taskbar-list-item': window.active, 'desktop-minimized-taskbar-list-item': window.minimized, 'desktop-taskbar-list-item-recover': window.outOfBounds}">
                     <div class="desktop-taskbar-list-item-title">
                         <span>{{window.title}}</span>
                     </div>
-                    <i class="desktop-icon-close desktop-taskbar-list-item-close" data-ng-click="close($event, window)"></i>
+                    <i class="desktop-icon-close desktop-taskbar-list-item-close" data-ng-class="{'desktop-taskbar-list-item-close-minimized': window.minimized}" data-ng-click="close($event, window)"></i>
                 </div>
             </li>
         </ul>
