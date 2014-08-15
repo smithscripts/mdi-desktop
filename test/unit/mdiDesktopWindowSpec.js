@@ -1,7 +1,7 @@
 (function() {
     "use strict";
     describe('mdi-desktop window controller', function() {
-        var compile, desktopScope, windowScope, element, desktopCtrl, windowCtrl;
+        var compile, windowScope, element, desktopCtrl, windowCtrl;
 
         var viewConfig = {
             active: true,
@@ -21,12 +21,10 @@
             return element.find(type)[index];
         };
 
-        beforeEach(module('mdi.desktop'));
         beforeEach(module('mdi.desktop.window'));
 
         beforeEach(inject(function ($rootScope, $templateCache, $compile, $controller, $document, $window, $animate) {
             $templateCache.put('src/templates/mdi-desktop-window.html', __html__['src/templates/mdi-desktop-window.html']);
-            desktopScope = $rootScope.$new();
             windowScope = $rootScope.$new();
             compile = $compile;
             var elm = $templateCache.get('src/templates/mdi-desktop-window.html');
@@ -34,11 +32,9 @@
 
             windowScope.window = { views: [{ active: true }] };
 
-            desktopCtrl = $controller('mdiDesktopController', {'$rootScope': desktopScope, '$scope': desktopScope, '$window': $window, '$animate': $animate});
             windowCtrl = $controller('mdiDesktopWindowController', {'$scope': windowScope, '$element': element, '$document': $document, '$window': $window});
-            windowScope.desktopCtrl = desktopCtrl;
+            windowScope.desktopCtrl = {};
 
-            desktopScope.$digest();
             windowScope.$digest();
         }));
 
@@ -53,6 +49,9 @@
                 element.appendTo(document.body);
                 var previousButton =  angular.element(getElement('button', 0));
                 var nextButton =  angular.element(getElement('button', 1));
+
+                windowScope.desktopCtrl.getActiveView = function() { return { isEditing: true }};
+
                 expect(previousButton[0]).toHaveAttr('disabled', 'disabled');
                 expect(nextButton[0]).toHaveAttr('disabled', 'disabled');
             });
@@ -160,6 +159,7 @@
                 windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 100, width: 100 }}
                 };
+                windowScope.desktopCtrl.activateForemostWindow = function() { return {}};
                 windowCtrl.isWindowInViewport();
                 expect(windowScope.window.outOfBounds).toBeTruthy();
             });
@@ -188,6 +188,8 @@
                     views: [{ active: false },  { active: true }]
                 };
 
+                windowScope.desktopCtrl.activateForemostWindow = function() { return {}};
+
                 windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 100, width: 100 }}
                 };
@@ -197,6 +199,7 @@
                 windowScope.viewportCtrl = {
                     getViewportDimensions: function() { return { height: 1000, width: 1000 }}
                 };
+
                 windowCtrl.isWindowInViewport();
                 expect(windowScope.window.outOfBounds).toBeFalsy();
             });
@@ -224,8 +227,10 @@
                         zIndex: -1,
                         isDirty: false,
                         isInvalid: false,
-                        views: [{ active: false }, { active: true }, { active: false }, { active: false }]
+                        views: [{ active: false }, { active: true }]
                     };
+
+                    windowScope.desktopCtrl.getActiveView = function() { return windowScope.window.views[1] };
                     windowCtrl.removeForwardViews();
                     expect(windowScope.window.views.length).toBe(2);
                 });

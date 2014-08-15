@@ -553,6 +553,40 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.restore
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            self.restore = function (wdw) {
+                if (wdw.maximized === 'fill') {
+                    self.maximize(wdw);
+                } else if (wdw.maximized === 'left') {
+                    self.maximizeLeft(wdw);
+                } else if (wdw.maximized === 'right') {
+                    self.maximizeRight(wdw);
+                }
+                self.bringToFront(wdw);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.bringToFront
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            self.bringToFront = function (wdw) {
+                self.clearActive();
+                wdw.active = true;
+                wdw.minimized = false;
+                wdw.zIndex = self.getNextMaxZIndex();
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.restoreSavedPosition
              * @module mdi.desktop
              *
@@ -678,6 +712,10 @@
                         var activeWindow = self.getActiveWindow();
                         if (!activeWindow) return;
                         self.closeWindow(activeWindow);
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'alt+d') { //Toggle Desktop
+                        $scope.desktopShown = self.hideShowAll();
                         event.preventDefault();
                     }
 

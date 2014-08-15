@@ -1,7 +1,7 @@
 (function() {
     "use strict";
     describe('mdi-desktop-taskbar-controller', function() {
-        var compile, scope, element, desktopCtrl, taskbarCtrl;
+        var compile, scope, element, desktopCtrl, taskbarCtrl, viewPort;
 
         function windows() {
             return element.find('div.desktop-window-container');
@@ -21,6 +21,8 @@
 
             var elm = angular.element('<div mdi-desktop></div>');
             element = compile(elm)(scope);
+            viewPort = compile("<div class='desktop-viewport-container'></div>")(scope);
+            viewPort.appendTo(document.body);
             scope.$digest();
             desktopCtrl = element.controller('mdiDesktop');
             taskbarCtrl = element.controller('mdiDesktopTaskbar');
@@ -28,7 +30,7 @@
 
         describe('mdi-desktop-taskbar', function() {
 
-            it('should show window when window is hidden', function() {
+            iit('should show window when window is hidden', function() {
                 var isoScope = element.isolateScope();
                 expect(windows().length).toBe(0);
                 desktopCtrl.openWindow({views: [{active: true, directiveName: 'view1'}]});

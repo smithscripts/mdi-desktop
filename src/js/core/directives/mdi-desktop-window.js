@@ -243,6 +243,40 @@
             };
 
             /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.firstView
+             * @module mdi.desktop.window
+             *
+             * @description
+             *
+             */
+            self.firstView = function() {
+                if (!self.canNavigate() || $scope.disablePrevious) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                activeView.active = false;
+                $scope.window.views[0].active = true;
+                self.updateNavigationState();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.firstView
+             * @module mdi.desktop.window
+             *
+             * @description
+             *
+             */
+            self.lastView = function() {
+                if (!self.canNavigate() || $scope.disableNext) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                activeView.active = false;
+                $scope.window.views[$scope.window.views.length - 1].active = true;
+                self.updateNavigationState();
+            };
+
+            /**
              * @mdi.doc event
              * @module mdi.desktop.window
              *
@@ -271,6 +305,14 @@
                     }
                     if (keySequence === 'alt+right') { //Next View
                         $scope.nextView();
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'alt+up') { //First View
+                        self.firstView();
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'alt+down') { //Last View
+                        self.lastView();
                         event.preventDefault();
                     }
                     if (keySequence === 'alt+l') { //Maximize left

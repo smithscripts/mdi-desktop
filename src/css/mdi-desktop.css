@@ -255,8 +255,8 @@ fieldset[disabled] .btn:hover {
 }
 
 .desktop-taskbar-list-item-recover {
-    background: red;
-    color: #ffffff
+    background: red !important;
+    color: #ffffff !important;
 }
 
 .desktop-taskbar-list-item-title {
@@ -273,7 +273,8 @@ fieldset[disabled] .btn:hover {
     top: 11px;
     right: 5px;
     font-size: 9px;
-    color: #333333
+    color: #333333;
+    cursor: pointer;
 }
 
 .desktop-taskbar-list-item-close-minimized {

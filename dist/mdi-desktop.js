@@ -502,6 +502,40 @@
             };
 
             /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.firstView
+             * @module mdi.desktop.window
+             *
+             * @description
+             *
+             */
+            self.firstView = function() {
+                if (!self.canNavigate() || $scope.disablePrevious) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                activeView.active = false;
+                $scope.window.views[0].active = true;
+                self.updateNavigationState();
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopWindowController.firstView
+             * @module mdi.desktop.window
+             *
+             * @description
+             *
+             */
+            self.lastView = function() {
+                if (!self.canNavigate() || $scope.disableNext) return;
+                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                activeView.active = false;
+                $scope.window.views[$scope.window.views.length - 1].active = true;
+                self.updateNavigationState();
+            };
+
+            /**
              * @mdi.doc event
              * @module mdi.desktop.window
              *
@@ -530,6 +564,14 @@
                     }
                     if (keySequence === 'alt+right') { //Next View
                         $scope.nextView();
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'alt+up') { //First View
+                        self.firstView();
+                        event.preventDefault();
+                    }
+                    if (keySequence === 'alt+down') { //Last View
+                        self.lastView();
                         event.preventDefault();
                     }
                     if (keySequence === 'alt+l') { //Maximize left
@@ -1653,13 +1695,13 @@ angular.module('mdi.desktop').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"desktop-btn-group desktop-btn-group-xs desktop-window-navigation-button-group\">\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Back One View - [Alt + B]\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default\" title=\"Go Back One View - [Alt + Left]\" tabindex=\"-1\" data-ng-disabled=\"disablePrevious\" data-ng-click=\"previousView()\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-arrow-left2 custom-nav-button\"></span>\r" +
     "\n" +
     "                </button>\r" +
     "\n" +
-    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default custom-nav-button\" title=\"Go Forward One View - [Alt + F]\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
+    "                <button type=\"button\" class=\"desktop-btn desktop-btn-default custom-nav-button\" title=\"Go Forward One View - [Alt + Right]\" tabindex=\"-1\" data-ng-disabled=\"disableNext\" data-ng-click=\"nextView()\">\r" +
     "\n" +
     "                    <span class=\"desktop-icon-arrow-right2\"></span>\r" +
     "\n" +
