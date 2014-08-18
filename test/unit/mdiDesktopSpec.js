@@ -40,10 +40,10 @@
         }
 
         describe('mdi-desktop init', function() {
-//            it('should have the correct init values', function() {
-//                var el = createElement();
-//                expect(el.isolateScope().windows.length).toBe(0);
-//            });
+            it('should have the correct init values', function() {
+                var el = createElement();
+                expect(el.isolateScope().windows.length).toBe(0);
+            });
 //
 //            it('should close window on click', function() {
 //                var isoScope = element.isolateScope();
