@@ -17,7 +17,6 @@ module.exports = function(config) {
 
             // app code
             'src/js/core/directives/*.js',
-            'src/js/core/services/*.js',
 
             // tests
             'test/**/*Spec.js',

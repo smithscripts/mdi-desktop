@@ -304,7 +304,7 @@
 //                    expect(windowScope.window.views[3].active).toBeTruthy(3);
 //                });
 
-            });
+//            });
         });
     });
 
