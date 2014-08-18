@@ -253,8 +253,7 @@
             self.firstView = function() {
                 if (!self.canNavigate() || $scope.disablePrevious) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
-                activeView.active = false;
+                $scope.desktopCtrl.getActiveView($scope.window).active = false;
                 $scope.window.views[0].active = true;
                 self.updateNavigationState();
             };
@@ -270,8 +269,7 @@
             self.lastView = function() {
                 if (!self.canNavigate() || $scope.disableNext) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
-                activeView.active = false;
+                $scope.desktopCtrl.getActiveView($scope.window).active = false;
                 $scope.window.views[$scope.window.views.length - 1].active = true;
                 self.updateNavigationState();
             };
@@ -414,31 +412,21 @@
 
             $scope.previousView = function() {
                 if (!self.canNavigate() || $scope.disablePrevious) return;
-                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                for (var i = 0; i < $scope.window.views.length; i++) {
-                    var view = $scope.window.views[i];
-                    if (view.active)
-                    {
-                        view.active = false;
-                        $scope.window.views[i - 1].active = true;
-                        break;
-                    }
-                }
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                var activeViewIndex = $scope.window.views.indexOf(activeView);
+                if (self.cancelEditingOnNavigation) activeView.isEditing = false;
+                activeView.active = false;
+                $scope.window.views[activeViewIndex - 1].active = true;
                 self.updateNavigationState();
             };
 
             $scope.nextView = function() {
                 if (!self.canNavigate() || $scope.disableNext) return;
-                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                for (var i = 0; i < $scope.window.views.length - 1; i++) {
-                    var view = $scope.window.views[i];
-                    if (view.active)
-                    {
-                        view.active = false;
-                        $scope.window.views[i + 1].active = true;
-                        break;
-                    }
-                }
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                var activeViewIndex = $scope.window.views.indexOf(activeView);
+                if (self.cancelEditingOnNavigation) activeView.isEditing = false;
+                activeView.active = false;
+                $scope.window.views[activeViewIndex + 1].active = true;
                 self.updateNavigationState();
             };
 
