@@ -36,7 +36,12 @@ module.exports = function(config) {
             'src/js/**/*.js' : 'coverage'
         },
 
-        reporters: ['dots', 'coverage'],
+        coverageReporter: {
+            type: "lcov",
+            dir: "coverage/"
+        },
+
+        reporters: ['coverage', 'coveralls'],
 
         // web server port
         // CLI --port 9876

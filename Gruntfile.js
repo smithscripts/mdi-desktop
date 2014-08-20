@@ -71,6 +71,16 @@ module.exports = function(grunt) {
             server: {
                 autoWatch: true
             }
+        },
+        // Test coverage
+        coveralls: {
+            options: {
+                debug: true,
+                coverage_dir: 'test/',
+                dryRun: false,
+                force: true,
+                recursive: true
+            }
         }
     });
 
@@ -81,6 +91,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-gh-pages');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-karma-coveralls');
 
     grunt.registerTask('default', [
         'clean',
@@ -92,5 +103,6 @@ module.exports = function(grunt) {
         //'gh-pages',
         'copy:srcToDist',
         'clean',
-        'karma:unit']);
+        'karma:unit',
+        'coveralls']);
 }

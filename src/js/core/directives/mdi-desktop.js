@@ -290,9 +290,10 @@
              */
             self.hideShowAll = function() {
                 self.minimizeAll = self.allWindowsAreMinimized() ? false : !self.minimizeAll;
-                angular.forEach($scope.windows, function(window){
-                    window.active = false;
-                    window.minimized = self.minimizeAll;
+                angular.forEach($scope.windows, function(wdw){
+                    if (wdw.outOfBounds) self.recover(wdw);
+                    wdw.active = false;
+                    wdw.minimized = self.minimizeAll;
                 });
                 self.activateForemostWindow();
                 return self.minimizeAll;
@@ -750,6 +751,8 @@
              */
             document.onselectstart = handleSelectAttempt;
             function handleSelectAttempt(e) {
+                var nodeName = e.target.nodeName.toLowerCase();
+                if (nodeName === 'input' || nodeName === 'textarea' || nodeName === 'select') return true;
                 if (window.event) { e.preventDefault(); }
                 return true;
             }

@@ -41,64 +41,25 @@
 
     module.controller('mdiDesktopTaskbarController', ['$scope', '$window',
         function ($scope, $window) {
-            var self = this;
-            self.canCloseFn = undefined;
 
-            /**
-             * @mdi.doc event
-             * @module mdi.desktop
-             *
-             * @description
-             *
-             */
-            angular.element($window).bind('keydown', function (event) {
-                $scope.$apply(function() {
-                    var keySequence = $scope.desktopCtrl.getKeySequence(event);
-                    if (keySequence === 'alt+d') { //Toggle Desktop
-                        $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
-                        event.preventDefault();
-                    }
-                });
-            });
-
-            $scope.desktopShown = false;
-
-            $scope.updateWindowState = function(window) {
-                if (window.outOfBounds) {
-                    $scope.desktopCtrl.recover(window);
-                    return;
-                }
-                if (window.active) {
-                    $scope.desktopCtrl.minimize(window);
-                } else {
-                    if (window.maximized === 'fill') {
-                        $scope.desktopCtrl.maximize(window);
-                    } else if (window.maximized === 'left') {
-                        $scope.desktopCtrl.maximizeLeft(window);
-                    } else if (window.maximized === 'right') {
-                        $scope.desktopCtrl.maximizeRight(window);
-                    }
-                    $scope.desktopCtrl.clearActive();
-                    window.active = true;
-                    window.minimized = false;
-                    window.zIndex = $scope.desktopCtrl.getNextMaxZIndex();
-                }
-                if ($scope.desktopShown) $scope.desktopShown = false;
+            $scope.updateWindowState = function(wdw) {
+                if (wdw.active)
+                    $scope.desktopCtrl.minimize(wdw);
+                else if (!wdw.outOfBounds)
+                    $scope.desktopCtrl.restore(wdw);
+                else if (wdw.outOfBounds)
+                    $scope.desktopCtrl.recover(wdw);
             };
 
-            $scope.hideShowAll = function(event) {
+            $scope.hideShowAll = function() {
                 $scope.desktopShown = $scope.desktopCtrl.hideShowAll();
             };
 
-            $scope.close = function(event, window) {
-                $scope.desktopCtrl.closeWindow(window);
-                event.stopPropagation();
-                event.preventDefault();
+            $scope.close = function(e, wdw) {
+                $scope.desktopCtrl.closeWindow(wdw);
+                e.stopPropagation();
+                e.preventDefault();
             };
-
-            $scope.init = function() {
-                self.canCloseFn = $scope.desktopCtrl.getOptions().canCloseFn;
-            }
         }]);
 
     module.directive('mdiDesktopTaskbar', ['$log', function($log) {
@@ -114,7 +75,6 @@
             link: function(scope, element, attrs, desktopCtrl) {
                 scope.desktopCtrl = desktopCtrl;
                 scope.options = desktopCtrl.getOptions();
-                scope.init();
             }
         };
     }]);
@@ -512,8 +472,7 @@
             self.firstView = function() {
                 if (!self.canNavigate() || $scope.disablePrevious) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
-                activeView.active = false;
+                $scope.desktopCtrl.getActiveView($scope.window).active = false;
                 $scope.window.views[0].active = true;
                 self.updateNavigationState();
             };
@@ -529,8 +488,7 @@
             self.lastView = function() {
                 if (!self.canNavigate() || $scope.disableNext) return;
                 if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
-                activeView.active = false;
+                $scope.desktopCtrl.getActiveView($scope.window).active = false;
                 $scope.window.views[$scope.window.views.length - 1].active = true;
                 self.updateNavigationState();
             };
@@ -673,31 +631,21 @@
 
             $scope.previousView = function() {
                 if (!self.canNavigate() || $scope.disablePrevious) return;
-                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                for (var i = 0; i < $scope.window.views.length; i++) {
-                    var view = $scope.window.views[i];
-                    if (view.active)
-                    {
-                        view.active = false;
-                        $scope.window.views[i - 1].active = true;
-                        break;
-                    }
-                }
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                var activeViewIndex = $scope.window.views.indexOf(activeView);
+                if (self.cancelEditingOnNavigation) activeView.isEditing = false;
+                activeView.active = false;
+                $scope.window.views[activeViewIndex - 1].active = true;
                 self.updateNavigationState();
             };
 
             $scope.nextView = function() {
                 if (!self.canNavigate() || $scope.disableNext) return;
-                if (self.cancelEditingOnNavigation) $scope.desktopCtrl.getActiveView($scope.window).isEditing = false;
-                for (var i = 0; i < $scope.window.views.length - 1; i++) {
-                    var view = $scope.window.views[i];
-                    if (view.active)
-                    {
-                        view.active = false;
-                        $scope.window.views[i + 1].active = true;
-                        break;
-                    }
-                }
+                var activeView = $scope.desktopCtrl.getActiveView($scope.window);
+                var activeViewIndex = $scope.window.views.indexOf(activeView);
+                if (self.cancelEditingOnNavigation) activeView.isEditing = false;
+                activeView.active = false;
+                $scope.window.views[activeViewIndex + 1].active = true;
                 self.updateNavigationState();
             };
 
@@ -1289,6 +1237,40 @@
 
             /**
              * @mdi.doc function
+             * @name mdiDesktopController.restore
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            self.restore = function (wdw) {
+                if (wdw.maximized === 'fill') {
+                    self.maximize(wdw);
+                } else if (wdw.maximized === 'left') {
+                    self.maximizeLeft(wdw);
+                } else if (wdw.maximized === 'right') {
+                    self.maximizeRight(wdw);
+                }
+                self.bringToFront(wdw);
+            };
+
+            /**
+             * @mdi.doc function
+             * @name mdiDesktopController.bringToFront
+             * @module mdi.desktop
+             *
+             * @description
+             *
+             */
+            self.bringToFront = function (wdw) {
+                self.clearActive();
+                wdw.active = true;
+                wdw.minimized = false;
+                wdw.zIndex = self.getNextMaxZIndex();
+            };
+
+            /**
+             * @mdi.doc function
              * @name mdiDesktopController.restoreSavedPosition
              * @module mdi.desktop
              *
@@ -1416,6 +1398,10 @@
                         self.closeWindow(activeWindow);
                         event.preventDefault();
                     }
+                    if (keySequence === 'alt+d') { //Toggle Desktop
+                        $scope.desktopShown = self.hideShowAll();
+                        event.preventDefault();
+                    }
 
                     if (event.shiftKey)
                         self.shiftPressed = true;
@@ -1475,6 +1461,7 @@
             }
         ]);
 })();
+
 (function(){
     'use strict';
 
